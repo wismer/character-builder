@@ -13,8 +13,8 @@ let App = React.createClass({
     };
   },
 
-  _selectRace(race) {
-    this.setState({ activeRace: race, selectedRace: race });
+  _selectRace(selectedRace) {
+    this.setState({ selectedRace });
   },
 
   _reveal(activeState, raceProps) {
@@ -22,28 +22,12 @@ let App = React.createClass({
   },
 
   render() {
-    var { activeRace, selectedRace } = this.state;
-    var races = this.props.races.map(race => {
-      return (
-        <Race {...race} reveal={this._reveal} selectRace={this._selectRace} />
-      );
+    var selectedRace = this.state.selectedRace || {};
+    var races = this.props.races.map((race, index) => {
+      return <Race active={selectedRace.name === race.name} selectRace={this._selectRace} index={index} {...race} />;
     });
-
-    var preview = null;
-
-
-
-    if (activeRace && selectedRace) {
-      preview = <RacePreview {...selectedRace} />;
-    }
-    var previewClassName = 'active-preview';
-
-    if (selectedRace) {
-      previewClassName = 'preview-lock';
-    } else if (!preview) {
-      previewClassName += ' no-show';
-    }
-
+    var preview;
+    var previewClassName;
     return (
       <div className='main-container'>
         <div className='race-options'>

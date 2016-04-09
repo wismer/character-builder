@@ -3,3 +3,4 @@
 .eslint.json
 .babelrc
 app/public/
+.sass-cache/

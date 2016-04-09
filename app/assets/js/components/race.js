@@ -12,12 +12,12 @@ export var Race = React.createClass({
   render() {
     var { stats, traits, name, subraces, active } = this.props;
 
-    if (active && subraces) {
-      name = subraces.map(race => <div className='subrace'>{race.name}</div>);
-    }
-
+    // if (active && subraces) {
+    //   name = subraces.map(race => <div className='subrace'>{race.name}</div>);
+    // }
+    var className = active ? 'race-item race-active' : 'race-item';
     return (
-      <div onClick={this.handleClick} onMouseEnter={this.handleEnter.bind(null, true)} key={name} className='race-item'>
+      <div onClick={this.handleClick} key={name} className={className}>
         {name}
       </div>
     );
