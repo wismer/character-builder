@@ -4,7 +4,7 @@ export default class Elf extends Race {
   static merge() {
     var { stats, traits, speed, hpMax } = super.merge();
     stats.update('dexterity', 2);
-    traits.add('Perks', 'darkvision');
+    traits.add('Perks', 'Darkvision*');
     traits.add('Languages', 'Elven');
     traits.add('Advantage Against', 'charm');
     return { stats, traits, speed, hpMax };
@@ -51,7 +51,7 @@ class Drow extends Elf {
   static merge() {
     var { stats, traits, speed, hpMax } = super.merge();
     stats.update('charisma', 1);
-    traits.add('Perks', 'darkvision (enhanced)', 'Sunlight Sensitivity');
+    traits.add('Perks', 'Darkvision* (enhanced)', 'Sunlight Sensitivity');
     traits.add('Weapons', 'rapiers', 'shortswords', 'rapiers', 'hand crossbows');
     return { stats, traits, speed, hpMax };
   }

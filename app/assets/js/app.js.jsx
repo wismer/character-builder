@@ -27,14 +27,17 @@ let App = React.createClass({
       return <Race active={selectedRace.name === race.name} selectRace={this._selectRace} index={index} {...race} />;
     });
     var preview;
-    var previewClassName;
+
+    if (selectedRace.name) {
+      preview = <RacePreview {...selectedRace} />;
+    }
     return (
       <div className='main-container'>
         <div className='race-options'>
           {races}
         </div>
 
-        <div className={previewClassName}>
+        <div className='preview-race'>
           {preview}
         </div>
       </div>

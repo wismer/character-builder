@@ -4,8 +4,8 @@ export default class Dwarf extends Race {
     var { stats, traits, speed, hpMax } = super.merge();
     speed = 25;
     stats.update('constitution', 2);
-    traits.add('Perks', 'stonecutting');
-    traits.add('Perks', 'darkvision');
+    traits.add('Perks', 'Stonecutting*');
+    traits.add('Perks', 'Darkvision*');
     traits.add('Languages', 'dwarven');
     traits.add('Advantage Against', 'poison');
     traits.add('Resistance To', 'poison');

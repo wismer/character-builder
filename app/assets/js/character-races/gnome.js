@@ -5,7 +5,7 @@ export default class Gnome extends Race {
     var { stats, traits, speed, hpMax } = super.merge();
     stats.update('intelligence', 2);
     speed -= 5;
-    traits.add('Perks', 'darkvision', 'Gnome Cunning*');
+    traits.add('Perks', 'Darkvision*', 'Gnome Cunning*');
     return { stats, traits, speed, hpMax };
   }
 

@@ -5,31 +5,41 @@ export var Race = React.createClass({
     this.props.reveal(activeState, this.props);
   },
 
-  handleClick() {
-    this.props.selectRace(this.props);
+  handleClick(race) {
+    this.props.selectRace(race);
   },
 
   render() {
-    var { stats, traits, name, subraces, active } = this.props;
-
-    // if (active && subraces) {
-    //   name = subraces.map(race => <div className='subrace'>{race.name}</div>);
-    // }
+    var { stats, traits, name, subraces, active, index } = this.props;
     var className = active ? 'race-item race-active' : 'race-item';
-    return (
-      <div onClick={this.handleClick} key={name} className={className}>
-        {name}
-      </div>
-    );
+    subraces = subraces.map((subrace, i) => {
+      return <div className='subrace-name' onClick={this.handleClick.bind(null, subrace)} key={`${i}-d`}>{subrace.name}</div>;
+    });
+
+    if (subraces.length > 0) {
+
+      return (
+        <div key={name} className={className}>
+          <div className='subrace-names'>{subraces}</div>
+        </div>
+      );
+    } else {
+      return (
+        <div key={index} onClick={this.handleClick.bind(null, this.props)} key={name} className={className}>
+          {name}
+        </div>
+      );
+    }
   }
 });
 
-const RaceSummary = React.createClass({
+const Trait = React.createClass({
   render() {
+    var { attr, values } = this.props;
     return (
-      <div className='race-summary'>
-        {this.props.name}
-        <button>select</button>
+      <div className='race-trait'>
+        <div className='trait-name'>{attr}</div>
+        <div className='trait-value'>{values}</div>
       </div>
     );
   }
@@ -37,20 +47,16 @@ const RaceSummary = React.createClass({
 
 export var RacePreview = React.createClass({
   render() {
-    var summary;
-    var { subraces, traits, stats, name } = this.props;
-    if (subraces.length > 0) {
-      summary = subraces.map((subrace, i) => {
-        return (
-          <RaceSummary {...subrace} key={i} />
-        );
-      });
-    } else {
-      summary = <RaceSummary {...this.props} />;
-    }
+    var { name, traits, stats } = this.props;
+    traits = traits.map((trait, i) => <Trait {...trait} i={i} />);
+    stats = stats.map((stat, i) => <div className='attribute' key={i}>{stat}</div>);
     return (
       <div className='race-preview'>
-        {summary}
+        <div className='race-title'>
+          <h3>{name}</h3>
+        </div>
+        <div className='primary-attributes'>{stats}</div>
+        <div className='race-traits'>{traits}</div>
       </div>
     );
   }

@@ -5,7 +5,7 @@ export default class HalfOrc extends Race {
     var { stats, traits, speed, hpMax } = super.merge();
     stats.update('strength', 2);
     stats.update('constitution', 1);
-    traits.add('Perks', 'darkvision', 'Menacing (free Intimidation skill)', 'Relentless Endurance*', 'Savage Attacks*');
+    traits.add('Perks', 'Darkvision*', 'Menacing (free Intimidation skill)', 'Relentless Endurance*', 'Savage Attacks*');
     traits.add('Languages', 'Orcish');
     return { stats, traits, speed, hpMax };
   }

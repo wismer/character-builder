@@ -16,20 +16,40 @@ body {
     background-color: black;
     color: white;
     border: 1px solid white;
-
   }
 
-  .race-active {
+  .race-item:hover {
     background-color: white;
     color: black;
-    border: 1px solid black;
   }
 
+  .subrace-names {
+    height: 100%;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-around;
+
+    .subrace-name {
+      flex-grow: 1;
+    }
+
+    .subrace-name:hover {
+      background-color: #3D2323;
+      color: white;
+      border: -1px solid white;
+    }
+  }
+}
+
+.preview-race {
+  width: 95%;
+  height: 400px;
+  border: 1px solid #5D2555;
 }
 
 .main-container {
   display: flex;
   justify-content: space-around;
-  flex-flow: row nowrap;
+  flex-flow: row wrap;
 }
 
