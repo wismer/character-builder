@@ -36,7 +36,12 @@ export default class Race {
     traits.toList = function(list=[]) {
       for (var [attr, val] of this) {
         if (val.size > 0) {
-          var values = Array.from(val).join(', ');
+          var values = Array.from(val).map(val => {
+            return {
+              isKeyword: val.includes('*'),
+              val
+            };
+          });
           list.push({ attr, values });
         }
       }

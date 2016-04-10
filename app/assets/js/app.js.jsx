@@ -33,7 +33,7 @@ let App = React.createClass({
     }
     return (
       <div className='main-container'>
-        <div className='race-options'>
+        <div className='races'>
           {races}
         </div>
 

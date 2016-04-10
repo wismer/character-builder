@@ -1,55 +1,10 @@
+@import "bourbon/bourbon";
+@import "neat/neat";
+@import "race-select/style";
+
 body {
   width: 1080px;
   margin: 0 auto;
-}
-
-.race-options {
-  display: flex;
-  justify-content: space-around;
-  flex-flow: row nowrap;
-  width: 100%;
-  text-align: center;
-
-  .race-item {
-    flex-grow: 1;
-    height: 200px;
-    background-color: black;
-    color: white;
-    border: 1px solid white;
-  }
-
-  .race-item:hover {
-    background-color: white;
-    color: black;
-  }
-
-  .subrace-names {
-    height: 100%;
-    display: flex;
-    flex-flow: column nowrap;
-    justify-content: space-around;
-
-    .subrace-name {
-      flex-grow: 1;
-    }
-
-    .subrace-name:hover {
-      background-color: #3D2323;
-      color: white;
-      border: -1px solid white;
-    }
-  }
-}
-
-.preview-race {
-  width: 95%;
-  height: 400px;
-  border: 1px solid #5D2555;
-}
-
-.main-container {
-  display: flex;
-  justify-content: space-around;
-  flex-flow: row wrap;
+  font-size: golden-ratio(14px,  1);
 }
 
