@@ -13,14 +13,16 @@ export var Race = React.createClass({
     var { stats, traits, name, subraces, active, index } = this.props;
     var className = subraces.length > 0 ? 'race race-big' : 'race';
     subraces = subraces.map((subrace, i) => {
-      return <p className='subrace-name' onClick={this.handleClick.bind(null, subrace)} key={`${i}-d`}>{subrace.name}</p>;
+      return <div className='card' onClick={this.handleClick.bind(null, subrace)} key={`${i}-d`}>{subrace.name}</div>;
     });
 
     if (subraces.length > 0) {
 
       return (
         <a key={name} className={className} href="javascript:void(0)">
-          <div className='subrace-names'>{subraces}</div>
+          <div className='cards'>
+            {subraces}
+          </div>
         </a>
       );
     } else {
