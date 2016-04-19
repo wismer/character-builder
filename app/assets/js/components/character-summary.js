@@ -1,6 +1,19 @@
 /*
   CHARACTER SUMMARY ->
 
+  *** Race Select Component ***
+    <Races />
+
+    <
+
+
+
+
+  <Application>
+    <CustomizationOption>
+      <RaceSelect> || <ClassSelect> || <SkillSelect> || <MiscSelect>
+    </CustomizationOption>
+
     <CharacterSummary>
       <ChangeOptions>
         <ChangeOption option="Race Select" />
@@ -20,4 +33,5 @@
         <Stat />
       </CharacterStats>
     </CharacterSummary>
+  </Application>
 */

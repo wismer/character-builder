@@ -1,4 +1,5 @@
 import React from 'react';
+import Races from '../character-races/races';
 
 var SubRace = React.createClass({
   render() {
@@ -28,7 +29,7 @@ var RaceItem = React.createClass({
   }
 });
 
-export var PrimaryRace = React.createClass({
+var PrimaryRace = React.createClass({
   _classAttributes() {
     return this.props.raceAttributes.map(attr => {
       return <li>{attr}</li>;
@@ -37,19 +38,12 @@ export var PrimaryRace = React.createClass({
 
   _raceTraits() {
     return this.props.traits.map((trait, key) => {
+      var values = trait.values.map(t => t.val).join(', ');
       return (
         <div className='trait-field' key={key}>
           <li className='trait-name'>{trait.attr}</li>
-          <li className='trait-value'>{trait.values}</li>
+          <li className='trait-value'>{values}</li>
         </div>
-      );
-    });
-  },
-
-  _raceAttributes() {
-    return this.props.stats.map((attr, key) => {
-      return (
-        <li key={key}>{attr}</li>
       );
     });
   },
@@ -72,14 +66,13 @@ export var PrimaryRace = React.createClass({
               <ul>
                 <div className='trait-field'>
                   <li className='trait-name'>Attributes</li>
-                  {this._raceAttributes()}
+                  {this._raceTraits()}
                 </div>
               </ul>
             </div>
 
             <div className='race-skills'>
               <ul>
-                {this._raceTraits()}
               </ul>
             </div>
 
@@ -94,3 +87,25 @@ export var PrimaryRace = React.createClass({
     );
   }
 });
+
+const races = Races.map(race => {
+  var attributes = race.merge();
+  return {
+    name: race.getName(),
+    traits: attributes.traits.toList(),
+    stats: attributes.stats.toList(),
+    klass: race,
+    subraces: race.subraces()
+  };
+});
+
+
+export default {
+  componentClass: PrimaryRace,
+  component: races,
+  type: 'list',
+  props: {
+    stats: [],
+    traits: []
+  }
+};
