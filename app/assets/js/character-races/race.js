@@ -1,4 +1,16 @@
 export default class Race {
+  constructor({ name, attrs, perks, advantages, resists, languages, subraces, weapons, armor }) {
+    this.name = name;
+    this.attrs = attrs;
+    this.perks = perks;
+    this.advantages = advantages;
+    this.resists = resists;
+    this.armor = armor;
+    this.weapons = weapons;
+    this.languages = languages;
+    this.subraces = (subraces || []).map(subrace => new Race(subrace));
+  }
+
   static merge() {
     var attrs = [
       ['constitution', 0],

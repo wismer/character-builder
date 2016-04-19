@@ -44,6 +44,12 @@ export default class Player {
     });
   }
 
+  attributeModifier(trait) {
+    var val = Math.floor((this.stats[trait.attribute.substr(0, 3)] - 10) / 2);
+    console.log(val)
+    return val;
+  }
+
   selectRace(race) {
     var { stats, traits } = race.merge();
     this.race = race.getName();
