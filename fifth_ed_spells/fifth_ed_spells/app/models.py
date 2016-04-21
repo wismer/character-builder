@@ -28,7 +28,7 @@ class Spell(TimeStampedModel):
     level = models.SmallIntegerField(default=0)
     requires_concentration = models.BooleanField(default=False)
     casting_time = models.CharField(max_length=255)
-    components = models.ArrayField(models.CharField(max_length=10), default=list, blank=False)
+    components = ArrayField(models.CharField(max_length=10), default=list, blank=False)
     spell_range = models.CharField(max_length=255)
     duration = models.CharField(max_length=255)
 
