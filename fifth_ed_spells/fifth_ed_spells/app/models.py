@@ -17,7 +17,6 @@ related_fields = [
 class PlayerClassManager(models.Manager):
     def create(self, **kwargs):
         parent_class = kwargs.get('parent_class')
-        print(kwargs)
         if parent_class:
             child_kwargs = {field: getattr(parent_class, field) + kwargs.get(field, default) for field, default in related_fields}
             kwargs.update(child_kwargs)
