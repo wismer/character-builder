@@ -13,3 +13,5 @@ from .forms import StripeTokenForm, ChargeForm
 def error(request):
     """Generate an exception. Useful for e.g. configuing Sentry"""
     raise Exception
+
+

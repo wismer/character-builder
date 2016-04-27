@@ -1,6 +1,8 @@
 import React from 'react';
-import Races from './character-races/races';
-import Race from './character-races/race';
+import ReactDOM from 'react-dom';
+import RaceSelection from './components/race-selection';
+import { sampleRaceJSON } from './util/constants';
+
 
 let App = React.createClass({
   getInitialState() {
@@ -21,31 +23,16 @@ let App = React.createClass({
 
   render() {
     return (
-      <div></div>
+      <div><RaceSelection {...sampleRaceJSON.races[0]} /></div>
     );
   }
 });
 
 function showReact() {
-  var display = (skills) => {
-    var races = skills.map(race => new Race(race));
-    console.log(races);
-  };
-
-  fetch('http://localhost:8000/api/character_creation/', {
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    mode: 'cors'
-  }).then((response) => {
-    response.json().then(display);
-  });
-
-
-  // ReactDOM.render(
-  //   <Accordion races={races} />,
-  //   document.getElementById('render')
-  // );
+  ReactDOM.render(
+    <App />,
+    document.getElementById('render')
+  );
 }
 
 

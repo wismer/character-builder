@@ -13,4 +13,7 @@ app/public/
 /fifth_ed_spells/circle.yaml
 /fifth_ed_spells/package.json/
 /fifth_ed_spells/fifth_ed_spells/static_source/
+/fifth_ed_spells/backup
 *.pyc
+/app/assets/css/bourbon/
+/app/assets/css/neat/
