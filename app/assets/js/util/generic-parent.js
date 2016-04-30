@@ -3,7 +3,23 @@ let n = 0;
 class UprootParent extends Component {
   constructor() {
     super(...arguments);
-    this.state = {};
+    this.state = {
+      score: 0
+    };
+  }
+
+
+  // TODO: when I need to make it more efficient, I should probably start here.
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   if (this.props.primaryNode) {
+  //     return this.state.score !== nextState.score;
+  //   } else {
+  //     return this.props.isActive === undefined;
+  //   }
+  // }
+
+  _updateScore(score, name, isChild) {
+    // console.log(score, this.props.score, name, isChild);
   }
 
   _style() {
@@ -18,11 +34,6 @@ class UprootParent extends Component {
         color: 'black'
       }
     }
-  }
-
-
-  testing() {
-    console.log(arguments);
   }
 
   _renderChildren(...nodes) {
@@ -55,14 +66,18 @@ class UprootParent extends Component {
 }
 
 class Child extends UprootParent {
-  _updateScore() {
-    this.props.updateScore(this.props.nodeLevel, this.props.idx);
+  _updateScore(nodeLevel, idx, score, e) {
+    super._updateScore(score, this.props.name, this.props.isChild);
+    e.preventDefault();
+    e.stopPropagation();
+    this.props.updateScore(nodeLevel, idx, score);
   }
 
   render() {
+    var { nodeLevel, idx, score } = this.props;
     return (
-      <div onClick={this._updateScore.bind(this)} key={this.props.name}>
-        <div style={this._style()}>{this.props.name}</div>
+      <div onClick={this._updateScore.bind(this, nodeLevel, idx, score)} key={this.props.name}>
+        <div style={this._style()}>{this.props.name} - has {this.props.score}</div>
       </div>
     );
   }
@@ -74,25 +89,27 @@ class Parent extends UprootParent {
     return super._renderChildren(...nodes);
   }
 
-  _updateScore(nodeLevel, idx) {
-    console.log(arguments);
-    if (!this.props.updateScore) {
+  _updateScore(nodeLevel, idx, score, e) {
+    super._updateScore(score, this.props.name, this.props.isChild);
+    if (!e) score += this.props.score;
+    if (this.props.primaryNode) {
       this.setState({
-        activeCell: [nodeLevel, idx]
+        activeCell: [nodeLevel, idx],
+        score
       });
     } else {
-      this.props.updateScore(nodeLevel, idx);
+      this.props.updateScore(nodeLevel, idx, score);
     }
   }
 
   render() {
-    var score = this.props.primaryNode ? this.state.score : '';
+    var score = this.props.primaryNode ? this.state.score : this.props.score;
     var { nodeLevel, idx } = this.props;
+    console.log(n += 1);
     return (
       <div>
-        <div style={this._style()} onClick={this._updateScore.bind(this, nodeLevel, idx)}>
-          {this.props.name}
-          <div>{score}</div>
+        <div style={this._style()} onClick={this._updateScore.bind(this, nodeLevel, idx, score)}>
+          {this.props.name} has {score}
         </div>
         <div>{this._renderChildren()}</div>
       </div>
@@ -102,7 +119,12 @@ class Parent extends UprootParent {
 
 
 Parent.defaultProps = {
-  _uprootable: true
+  _uprootable: true,
+  isChild: false
+}
+
+Child.defaultProps = {
+  isChild: true
 }
 
 export default Parent;
