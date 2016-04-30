@@ -27,18 +27,27 @@ export function readableAttributes(attributes, readable=[]) {
 export const sampleRaceJSON = {
   races: [
     {
+      name: 'Tiefling',
+      attrs: [0,0,0,1,0,2,0],
+      tags: [
+        { type: 'attributes', value: [0,0,0,1,0,2,0] },
+        { type: 'traits', value: 'Infernal Legacy' },
+        { type: 'traits', value: 'Darkvision' },
+        { type: 'resistances', value: 'fire' },
+        { type: 'languages', value: 'Infernal' }
+      ],
+      subraces: []
+    },
+
+    {
       name: 'Dragonborn',
       attrs: [2, 0, 0, 0, 0, 1, 0],
-      armor: [],
-      weapons: [],
-      perks: [],
-      traits: [],
+      tags: [],
       subraces: [
         {
           name: 'Black',
-          perks: [],
-          traits: [
-            { key: 'resistances', value: ['Poison'], category: 'traits' },
+          tags: [
+            
           ]
         }
       ]

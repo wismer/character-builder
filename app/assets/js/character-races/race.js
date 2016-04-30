@@ -1,3 +1,26 @@
+class Race {
+  constructor(race) {
+    race.tags.forEach(tag => {
+      this[tag.category]
+    });
+    this.subraces = race.subraces || [];
+    this.traits = []
+  }
+
+  collapse() {
+
+  }
+}
+
+
+class SubRace extends Race {
+  collapse() {
+
+  }
+}
+
+
+
 export default class Race {
   constructor({ name, attrs, perks, advantages, resists, languages, subraces, weapons, armor }) {
     this.name = name;

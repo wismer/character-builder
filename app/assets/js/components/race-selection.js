@@ -53,15 +53,22 @@ class SubRaces extends Component {
 }
 
 // Race Showcase
-export default class Race extends Component {
+class Race extends Component {
   constructor() {
-    super(...arguments);
-    this.state = { isSelected: false, isHighlighted: false, activeSubRace: null };
+    var christ = super(...arguments);
+    this.state = {
+      isSelected: false,
+      isHighlighted: false,
+      activeSubRace: null
+    };
   }
 
-  mergeSubrace(subrace, { perks, traits, name, attrs }) {
-    console.log(attrs, '<--');
+  mergeSubrace(subrace) {
+    var [perks, traits, attrs, name] = [[], [], [], ''];
     if (subrace) {
+      subrace.traits.forEach(trait => {
+
+      });
       perks = perks.concat(subrace.perks);
       traits = traits.concat(subrace.traits);
       name = `${subrace.name} ${name}`;
@@ -80,7 +87,6 @@ export default class Race extends Component {
   }
 
   selectAction(subrace) {
-    console.log(subrace, this.state.activeRace);
     var activeSubRace = null;
 
     if (!this.state.activeSubRace || this.state.activeSubRace.name !== subrace.name) {
@@ -93,12 +99,12 @@ export default class Race extends Component {
   _renderSubRaces({ subraces }) {
     var { selectAction, hightlightAction } = this,
         activeSubRace = this.state;
-    return subraces.map(subrace => {
+    return subraces.map((subrace, i) => {
       var className = activeSubRace.name && activeSubRace.name === subrace.name
         ? 'subrace-detail subrace-active'
         : 'subrace-detail';
       return (
-        <div key={subrace.name} className={className} onClick={selectAction.bind(this, subrace)}>
+        <div key={subrace.name} className={className} onClick={selectAction.bind(this, i)}>
           {subrace.name}
         </div>
       );
@@ -109,7 +115,7 @@ export default class Race extends Component {
     var { isSelected, isHighlighted, activeSubRace } = this.state,
         characteristics = this.mergeSubrace(activeSubRace, this.props),
         subraces = this._renderSubRaces(this.props);
-    console.log(characteristics.attrs[0]);
+
     return (
       <div>
         <div className='race-title'>{characteristics.name}</div>
@@ -125,13 +131,22 @@ export default class Race extends Component {
           <Attributes attrs={characteristics.attrs}>
             Attributes:
           </Attributes>
-
-          <SubRaces>
-            Select A RACE
-
-            {subraces}
-          </SubRaces>
         </section>
+      </div>
+    );
+  }
+}
+
+class Races extends Component {
+  constructor() {
+    super(...arguments);
+    this.state = { pickedRace: null };
+  }
+
+  render() {
+    return (
+      <div className='race-selection-view'>
+
       </div>
     );
   }

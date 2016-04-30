@@ -9,6 +9,7 @@ const readableAttributes = [
 
 export default class Player {
   constructor() {
+    debugger
     this.stats = {
       wis: 8,
       int: 8,
