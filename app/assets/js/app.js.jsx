@@ -43,6 +43,7 @@ Parent.defaultProps._childUproot = 'nested';
 Parent.defaultProps._fields = ['score', 'number'];
 Parent.defaultProps.primaryNode = false;
 Parent.defaultProps.nodeLevel = 0;
+Parent.defaultProps.idx = 0;
 
 let App = React.createClass({
   getInitialState() {

@@ -3,9 +3,7 @@ let n = 0;
 class UprootParent extends Component {
   constructor() {
     super(...arguments);
-    this.state = {
-      active: false
-    };
+    this.state = {};
   }
 
   _style() {
@@ -22,69 +20,48 @@ class UprootParent extends Component {
     }
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    return true;
-    // return this.state.score !== nextState.score && nextProps.primaryNode;
-  }
 
-  _handleClick(e, arg) {
+  testing() {
     console.log(arguments);
   }
 
-  _renderChildren(lvl, activeCell) {
+  _renderChildren(...nodes) {
     var key = this.props._childUproot;
     var children = this.props[key];
-    let parent = this,
-        index, node;
-    if (activeCell) {
-      [index, node] = activeCell;
+    var node = this.props.nodeLevel;
+    var activeCell = [-1,-1];
+    if (this.state.activeCell) {
+      activeCell = this.state.activeCell;
+    } else {
+      activeCell = this.props.activeCell || activeCell;
     }
-    var fuck = ({ score, idx, nodeLevel, name }) => {
-      if (!parent.props.primaryNode) {
-        var updated = {
-          score: this.props.score + score,
-          idx,
-          nodeLevel
-        };
-        parent.props.fuck(updated);
-      } else {
-        this.setState({
-          score: score + parent.props.score,
-          activeCell: [idx, nodeLevel],
-          name
-        });
-      }
-    }
-
-    if (children && children.length > 0) {
+    if (children.length > 0) {
       return children.map((r,i) => {
-        var isActive = i === index && lvl === node - 1;
-        if (r[key] && r[key].length > 0) {
+        r.activeCell = activeCell;
+        var isActive = activeCell[1] === i && activeCell[0] === node + 1;
+        if (r[key].length > 0) {
           return (
-            <Parent isActive={isActive} nodeLevel={lvl + 1} idx={i} fuck={fuck} {...r} />
+            <Parent updateScore={this._updateScore.bind(this)} isActive={isActive} nodeLevel={node + 1} idx={i} {...r} />
           );
         } else {
           return (
-            <Child isActive={isActive} nodeLevel={lvl + 1} idx={i} fuck={fuck} {...r} />
+            <Child updateScore={this._updateScore.bind(this)} isActive={isActive} nodeLevel={node + 1} idx={i} {...r} />
           );
         }
       })
-    } else {
-      debugger
     }
-
     return;
   }
 }
 
 class Child extends UprootParent {
-  _handleClick() {
-    this.props.fuck(this.props);
+  _updateScore() {
+    this.props.updateScore(this.props.nodeLevel, this.props.idx);
   }
 
   render() {
     return (
-      <div onClick={this._handleClick.bind(this)} key={this.props.name}>
+      <div onClick={this._updateScore.bind(this)} key={this.props.name}>
         <div style={this._style()}>{this.props.name}</div>
       </div>
     );
@@ -92,31 +69,32 @@ class Child extends UprootParent {
 }
 
 class Parent extends UprootParent {
-  _triggerClick(e) {
-    this.props.handleClick(e, this.props.score);
+  _renderChildren(...nodes) {
+    nodes.push(this.props);
+    return super._renderChildren(...nodes);
   }
 
-  _handleClick() {
-    if (!this.props.primaryNode) {
-      this.props.fuck(this.props);
+  _updateScore(nodeLevel, idx) {
+    console.log(arguments);
+    if (!this.props.updateScore) {
+      this.setState({
+        activeCell: [nodeLevel, idx]
+      });
+    } else {
+      this.props.updateScore(nodeLevel, idx);
     }
   }
 
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   return this.state.score !== nextState.score && this.props.primaryNode;
-  // }
-
   render() {
-    console.log(this.state.activeCell);
     var score = this.props.primaryNode ? this.state.score : '';
-    var nodeLevel = this.props.nodeLevel;
+    var { nodeLevel, idx } = this.props;
     return (
       <div>
-        <div style={this._style()} onClick={this._handleClick.bind(this, this.props.score)}>
+        <div style={this._style()} onClick={this._updateScore.bind(this, nodeLevel, idx)}>
           {this.props.name}
           <div>{score}</div>
         </div>
-        <div>{this._renderChildren(nodeLevel, this.state.activeCell)}</div>
+        <div>{this._renderChildren()}</div>
       </div>
     );
   }
