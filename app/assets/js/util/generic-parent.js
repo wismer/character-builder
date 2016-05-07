@@ -26,12 +26,12 @@ class UprootParent extends Component {
     if (this.props.isActive) {
       return {
         backgroundColor: 'black',
-        color: 'white'
+        color: 'white',
       };
     } else {
       return {
         backgroundColor: 'white',
-        color: 'black'
+        color: 'black',
       }
     }
   }
@@ -52,11 +52,15 @@ class UprootParent extends Component {
         var isActive = activeCell[1] === i && activeCell[0] === node + 1;
         if (r[key].length > 0) {
           return (
-            <Parent updateScore={this._updateScore.bind(this)} isActive={isActive} nodeLevel={node + 1} idx={i} {...r} />
+            <li className='parent-node'>
+              <Parent updateScore={this._updateScore.bind(this)} isActive={isActive} nodeLevel={node + 1} idx={i} {...r} />
+            </li>
           );
         } else {
           return (
-            <Child updateScore={this._updateScore.bind(this)} isActive={isActive} nodeLevel={node + 1} idx={i} {...r} />
+            <li className='child-node'>
+              <Child updateScore={this._updateScore.bind(this)} isActive={isActive} nodeLevel={node + 1} idx={i} {...r} />
+            </li>
           );
         }
       })
@@ -76,9 +80,9 @@ class Child extends UprootParent {
   render() {
     var { nodeLevel, idx, score } = this.props;
     return (
-      <div onClick={this._updateScore.bind(this, nodeLevel, idx, score)} key={this.props.name}>
-        <div style={this._style()}>{this.props.name} - has {this.props.score}</div>
-      </div>
+      <ul style={this._style()} onClick={this._updateScore.bind(this, nodeLevel, idx, score)} key={this.props.name}>
+        <li>{this.props.name} - has {this.props.score}</li>
+      </ul>
     );
   }
 }
@@ -105,17 +109,19 @@ class Parent extends UprootParent {
   render() {
     var score = this.props.primaryNode ? this.state.score : this.props.score;
     var { nodeLevel, idx } = this.props;
-    console.log(n += 1);
     return (
-      <div>
-        <div style={this._style()} onClick={this._updateScore.bind(this, nodeLevel, idx, score)}>
-          {this.props.name} has {score}
-        </div>
-        <div>{this._renderChildren()}</div>
-      </div>
+      <ul className='parent'>
+        <li>
+          <div className='generic-parent-name' style={this._style()} onClick={this._updateScore.bind(this, nodeLevel, idx, score)}>
+            {this.props.name} has {score}
+          </div>
+          <ul className='children-node'>{this._renderChildren()}</ul>
+        </li>
+      </ul>
     );
   }
 }
+
 
 
 Parent.defaultProps = {

@@ -275,3 +275,32 @@ body {
   }
 }
 
+.node-level {
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+.group-items {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-around;
+
+  > div {
+    display: flex;
+    width: 100%;
+  }
+
+  .item-level {
+    flex-grow: 1;
+    align-self: center;
+  }
+}
+
+.prime {
+  align-self: center;
+}
+
+.active-item {
+  background-color: black;
+  color: white;
+}

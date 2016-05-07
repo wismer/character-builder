@@ -24,6 +24,31 @@ export function readableAttributes(attributes, readable=[]) {
   return readable;
 }
 
+
+export const raceList = [
+  {
+    name: 'Dwarf',
+    attrs: [0,2,0,0,0,0,0],
+    armor: ['light'],
+    vision: 'Darkvision',
+    subraces: [
+      [
+        {
+          name: 'Mountain Dwarf',
+          attrs: [2,2,0,0,0,0,0]
+          armor: ['heavy'],
+        },
+
+        {
+          name: 'Hill Dwarf',
+          attrs: [0,2,0,0,0,1,0]
+        }
+      ]
+    ]
+  }
+]
+
+
 export const sampleRaceJSON = {
   races: [
     {
@@ -42,15 +67,7 @@ export const sampleRaceJSON = {
     {
       name: 'Dragonborn',
       attrs: [2, 0, 0, 0, 0, 1, 0],
-      tags: [],
-      subraces: [
-        {
-          name: 'Black',
-          tags: [
-            
-          ]
-        }
-      ]
+      tags: []
     },
     {
       name: 'Dwarf',

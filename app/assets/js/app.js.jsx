@@ -1,56 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Parent from './util/generic-parent';
-// import RaceSelection from './components/race-selection';
-// import { sampleRaceJSON } from './util/constants';
+import { MenuList, ItemGroup, Item } from './util/hierarchical-options';
+import { raceList } from './util/constants';
 
-const deeplyNestedObject = {
-  name: '1a',
-  label: 'parent 1',
-  score: 0,
-  nested: [
-    {
-      name: '2a',
-      label: 'child of parent 1a',
-      score: 10,
-      nested: [
-        {
-          name: '3a',
-          label: 'child of parent 2a',
-          score: 20,
-          nested: [
-            {
-              name: '4a',
-              label: 'child of parent 3a',
-              score: 30,
-              nested: []
-            }
-          ]
-        }
-      ]
-    },
-
-    {
-      name: '2b',
-      label: 'child of parent 1a',
-      score: 5,
-      nested: []
-    }
-  ]
-};
-
-Parent.defaultProps._childUproot = 'nested';
-Parent.defaultProps._fields = ['score', 'number'];
-Parent.defaultProps.primaryNode = false;
-Parent.defaultProps.nodeLevel = 0;
-Parent.defaultProps.idx = 0;
+const { dwarf, items } = raceList;
 
 let App = React.createClass({
   getInitialState() {
     return {
       reveal: false,
       activeRace: null,
-      selectedRace: null
+      selectedRace: null,
+      score: 0,
+      activeCell: [],
+      parent: []
     };
   },
 
@@ -62,9 +25,46 @@ let App = React.createClass({
     this.setState({ activeRace: activeState ? raceProps : null });
   },
 
+  _updateScore(score, parent, name, a, b) {
+    var [x,y] = parent.map(i => i - 1);
+    var activeCell = [];
+    var parent;
+    if (x > -1) {
+      var item = items[x][y];
+      score += item.score;
+      activeCell = [a,b];
+      parent = [x,y];
+    }
+    this.setState({ score, activeCell, parent });
+  },
+
   render() {
+    var [x,y] = this.state.parent;
+    var [a,b] = this.state.activeCell;
+    var groupItems = items.map((group, idx) => {
+      var isActive;
+      if (x === idx) {
+        isActive = (i,n) => i === x && y === n;
+      } else {
+        isActive = (f,g) => f === a && g === b;
+      }
+
+      return (
+        <ItemGroup isActive={isActive} updateScore={this._updateScore} x={idx} items={group} key={idx} />
+      );
+    });
     return (
-      <Parent {...deeplyNestedObject} primaryNode={true} />
+      <div className='primary-node'>
+        <MenuList>
+          <ItemGroup>
+            <Item primary={true} {...dwarf} score={this.state.score} />
+          </ItemGroup>
+
+          <div className='group-items'>
+            {groupItems}
+          </div>
+        </MenuList>
+      </div>
     );
   }
 });
