@@ -1,8 +1,8 @@
 module.exports = {
-    entry: "./app/assets/js/app.js.jsx",
+    entry: "./client/assets/js/app.js.jsx",
     output: {
         path: __dirname,
-        filename: "./app/public/js/app.js"
+        filename: "./client/public/js/app.js"
     },
     module: {
       loaders: [
