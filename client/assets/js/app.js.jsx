@@ -3,10 +3,7 @@ import ReactDOM from 'react-dom';
 import { RaceList, RaceChoice } from './components/races/race-list';
 import { readableAttributes } from './util/constants';
 import PlayerDashboard from './components/player-preview';
-// import { MenuList, ItemGroup, Item } from './util/hierarchical-options';
-// import { raceList } from './util/constants';
-
-
+import { getRaces } from './util/adapter';
 
 let App = React.createClass({
   getInitialState() {
@@ -64,6 +61,5 @@ function showReact() {
     document.getElementById('render')
   );
 }
-
 
 window.onload = showReact;

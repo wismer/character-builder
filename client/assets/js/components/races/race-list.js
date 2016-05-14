@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { raceList, readableAttributes, raceDetails } from '../../util/constants';
+import { constants, adapter } from '../../util/utils';
 
 
 /*

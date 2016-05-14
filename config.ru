@@ -1,2 +1,3 @@
-require './app/app'
+require './client/app'
+
 run App

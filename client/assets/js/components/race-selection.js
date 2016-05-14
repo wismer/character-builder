@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import { readableAttributes } from '../util/constants';
-// import Keyword from '../util/keyword';
-
 
 class Trait extends Component {
   onHighlight() {
