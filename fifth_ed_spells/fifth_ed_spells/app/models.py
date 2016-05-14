@@ -14,6 +14,34 @@ related_fields = [
 ]
 
 
+class BaseRace(models.Model):
+    name = models.CharField(max_length=30)
+    attributes = ArrayField(models.IntegerField(default=0), size=7, blank=False, default=list)
+    has_darkvision = models.BooleanField(default=False)
+    armor = ArrayField(models.CharField(max_length=50), blank=True, default=list)
+    weapons = ArrayField(models.CharField(max_length=50), blank=True, default=list)
+    languages = ArrayField(models.CharField(max_length=50), blank=True, default=list)
+    skills = ArrayField(models.CharField(max_length=50), blank=True, default=list)
+    speed = models.IntegerField(default=30)
+
+    def __str__(self):
+        return self.name
+
+    @property
+    def is_subrace(self):
+        return hasattr(self, 'subrace')
+
+
+class SubRace(BaseRace):
+    parent = models.ForeignKey('ParentRace', related_name='subraces')
+
+    def __str__(self):
+        return self.name + ' ' + self.parent.name
+
+class ParentRace(BaseRace):
+    pass
+
+
 class PlayerClassManager(models.Manager):
     def create(self, **kwargs):
         parent_class = kwargs.get('parent_class')
@@ -47,6 +75,17 @@ class ParentClass(BasePlayerClass):
 class SubClass(BasePlayerClass):
     parent_class = models.ForeignKey('ParentClass', null=True)
     objects = PlayerClassManager()
+
+
+class RacialTrait(models.Model):
+    name = models.CharField(max_length=30, blank=False)
+    desc = models.TextField(max_length=500)
+    race = models.ForeignKey('BaseRace', related_name='racialtraits')
+    trait_type = ArrayField(models.CharField(max_length=30, blank=True), blank=True, default=list)
+    trait_value = models.CharField(max_length=30, blank=True)
+
+    def __str__(self):
+        return '{name} - {race}'.format(name=self.name, race=self.race)
 
 
 # class CharacterClass(TimeStampedModel):

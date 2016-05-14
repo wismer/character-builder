@@ -1,24 +1,102 @@
-from copy import deepcopy
+DWARF_WEAPONS = ['warhammer', 'throwing hammer', 'handaxe', 'battleaxe']
+ELVEN_WEAPONS = ['shortbow', 'longbow', 'shortsword', 'longsword']
 
 
-class Race(object):
-    def __init__(self, name=None, **kwargs):
+class BaseRace(object):
+    languages = ['Common']
+    advantage = []
+    subraces = []
+    weapons = []
+    speed = 30
+    hp = 0
+    darkvision = False
+    enhanced_darkvision = False
+    resists = []
+    abilities = []
+    advantage = []
+    armor = []
+    weapons = []
+
+    def __init__(self, **kwargs):
         self.attributes = {attr: 0 for attr in ['str', 'dex', 'con', 'int', 'wis', 'cha']}
+        # self.resists = []
+        # self.abilities = []
+        # self.advantage = []
+        # self.subraces = []
+        # self.armor = []
+        # self.languages = []
+        # self.weapons = []
+        # self.speed = 30
+        # self.hp = 0
+        # self.darkvision = False
+        # self.enhanced_darkvision = False
 
 
-class ParentRace(Race):
-    def __init__(self, name, attributes={}, **kwargs):
-        super().__init__(name, **kwargs)
-        self.name = name
-        for attr, value in attributes.items():
-            self.attributes[attr] += value
-        for k, v in kwargs.items():
-            setattr(self, k, v)
+class Race(BaseRace):
+    def __init__(self, **kwargs):
+        if not kwargs.get('parent'):
+            super().__init__(**kwargs)
+        self.name = kwargs.pop('name')
+        ref = kwargs.get('parent', self)
+        for field, val in kwargs.items():
+            try:
+                attribute_value = getattr(ref, field)
+            except AttributeError:
+                return
+            if type(attribute_value) == int or type(attribute_value) == list:
+                setattr(self, field, attribute_value + val)
+            elif type(attribute_value) == bool:
+                setattr(self, field, val)
+            elif type(attribute_value) == dict:
+                updated_dict = {attr: v + kwargs[field].get(attr, 0) for attr, v in attribute_value.items()}
+                setattr(self, field, updated_dict)
+
+    def subrace(self, **kwargs):
+        self.subraces.append(Race(parent=self, **kwargs))
+        return self
 
 
+PRIMARY_RACES = {
+    'Dwarf': Race(
+        name='Dwarf',
+        weapons=DWARF_WEAPONS,
+        attributes={'con': 2},
+        darkvision=True,
+        languages=['Dwarven'],
+        resists=['poison'],
+        advantage=['poison'],
+        speed=-5
+    ).subrace(
+        name='Mountain Dwarf',
+        attributes={'str': 2},
+        armor=['light', 'medium']
+    ).subrace(
+        name='Hill Dwarf',
+        attributes={'wis': 1},
+        abilities=['Dwarven Toughness']
+    ),
+
+    'Elf': Race(
+        name='Elf',
+        weapons=['shortsword'],
+        attributes={'dex': 2},
+        darkvision=True,
+        languages=['Elven'],
+        advantage=['charm'],
+        resists=['charm'],
+    ).subrace(
+        name='Wood Elf',
+        weapons=['longsword', 'shortbow', 'longbow'],
+        abilities=['Mask of the Wild'],
+    ).subrace(
+        name='High Elf',
+        weapons=['longsword', 'shortbow', 'longbow'],
+        spells=[1,0,0,0,0,0,0,0,0,0],
+    )
+}
 
 
-
+# DWARF = Race(name='Dwarf', attrs=[('con', 2)], vision='Darkvision', resist=['poison'], advantage=['poison'])
 
 
 

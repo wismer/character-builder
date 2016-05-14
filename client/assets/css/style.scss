@@ -1,0 +1,415 @@
+@import "bourbon/bourbon";
+@import "neat/neat";
+@import "examples/nav-bar";
+@import "examples/breadcrumbs";
+// @import "race-select/style";
+
+body {
+  width: 1080px;
+  margin: 0 auto;
+  font-size: golden-ratio(14px,  1);
+  font-family: sans-serif;
+}
+
+.main-grid {
+  @include span-columns(12);
+  background: #DCDCDC;
+
+  .playable-races {
+    @include span-columns(3);
+  }
+
+  .preview-playable-race {
+    @include span-columns(9);
+    background-color: #F6F6F6;
+  }
+}
+
+.accordion {
+  @include span-columns(3);
+  $base-border-color: gainsboro !default;
+  $base-line-height: 1.5em !default;
+  $base-spacing: 1.5em !default;
+  $dark-gray: #333 !default;
+  $base-font-color: $dark-gray !default;
+  $accordion-menu-border-color: $base-border-color;
+  $accordion-menu-color: $base-font-color;
+  $accordion-menu-border: 1px solid $accordion-menu-border-color;
+  $accordion-menu-background: lighten($accordion-menu-border-color, 10%);
+  $accordion-menu-hover: lighten($accordion-menu-background, 2%);
+  $accordion-menu-sub-background: darken($accordion-menu-background, 5%);
+  $accordion-menu-sub-inset: darken($accordion-menu-sub-background, 6%);
+  $accordion-menu-sub-hover: lighten($accordion-menu-sub-background, 10%);
+  $accordion-menu-list-padding: ($base-spacing / 2) $gutter;
+
+  background-color: $accordion-menu-background;
+  border: $accordion-menu-border;
+  margin: 0 0 $base-spacing 0;
+  padding: 0;
+
+  ul {
+    margin: 0;
+    padding: 0;
+  }
+
+  li {
+    border-bottom: $accordion-menu-border;
+    list-style: none;
+
+    > a {
+      color: $accordion-menu-color;
+      display: block;
+      padding: $accordion-menu-list-padding;
+      text-decoration: none;
+    }
+
+    &:last-child {
+      border: 0;
+    }
+
+    &:focus,
+    &:hover {
+      background-color: lighten(black, 50%);
+    }
+  }
+
+  ul.submenu {
+    li {
+      background-color: $accordion-menu-sub-background;
+
+      .active {
+        background-color: $accordion-menu-sub-hover;
+      }
+
+
+      &:first-child {
+        border-top: $accordion-menu-border;
+        box-shadow: inset 0 1px 1px $accordion-menu-sub-inset;
+      }
+
+      &:focus,
+      &:hover {
+        background-color: $accordion-menu-sub-hover;
+      }
+    }
+  }
+
+  .is-expanded {
+    display: block;
+    padding-bottom: 0;
+  }
+}
+
+
+.flex-boxes {
+  $base-border-radius: 3px !default;
+  $base-background-color: white !default;
+  $dark-gray: #333 !default;
+  $light-gray: #DDD !default;
+  $base-font-color: $dark-gray !default;
+  $flex-box-border-color: $light-gray;
+  $flex-box-border: 1px solid $flex-box-border-color;
+  $flex-box-background: lighten($light-gray, 10%);
+  $flex-box-gutter: 0.4em;
+  $flex-box-width: 18em;
+  $flex-box-color: transparentize($base-font-color, 0.3);
+  $flex-box-top-colors:
+    tomato,
+    #72BFBF,
+    #92B1E3,
+    #E3D743,
+    #CCC,
+    #F6C05C;
+
+    @include clearfix;
+    @include display(flex);
+    @include justify-content(center);
+    @include align-items(stretch);
+    @include flex-wrap(wrap);
+    clear: both;
+    text-align: center;
+
+  .flex-box {
+    @include flex(2 2 15em);
+    @include align-self(stretch);
+    background: $flex-box-background;
+    border-radius: $base-border-radius;
+    box-shadow: inset 0 0 1px $flex-box-border-color, 0 2px 4px darken($base-background-color, 10%);
+    display: block;
+    margin: $flex-box-gutter;
+    padding: 2em 2em 3em 2em;
+    text-decoration: none;
+    transition: all 0.2s ease-in-out;
+
+    @for $i from 1 to 7 { // assign colors from $flex-box-top-colors list
+      &:nth-child(#{$i}) {
+        $color-from-list: nth($flex-box-top-colors, $i);
+        border-top: 6px solid $color-from-list;
+
+        &:focus,
+        &:hover {
+          background-color: transparentize($color-from-list, 0.9);
+        }
+      }
+    }
+
+    img {
+      display: block;
+      height: 3em;
+      margin: 0 auto 1em;
+      opacity: 0.4;
+    }
+
+    .flex-title {
+      color: $flex-box-color;
+      font-size: 1.2em;
+      margin-bottom: 0.5em;
+    }
+
+    p {
+      color: transparentize($flex-box-color, 0.1);
+      line-height: 1.5em;
+      margin: auto;
+    }
+  }
+
+  .flex-box-big {
+    @include flex(1 1 40em);
+  }
+}
+
+@mixin grid-item-columns($columns) {
+  width: (100% / 12) * $columns;
+}
+
+.grid-items-lines {
+  $base-background-color: white !default;
+  $dark-gray: #333 !default;
+  $light-gray: #DDD !default;
+  $medium-screen: em(640) !default;
+  $large-screen: em(860) !default;
+  $base-font-color: $dark-gray !default;
+  $grid-items-background: $base-background-color;
+  $grid-item-background: $base-background-color;
+  $grid-item-border: 1px solid transparentize($base-font-color, 0.8);
+  $grid-item-columns: 4;
+  $grid-item-big-columns: 8;
+  $grid-item-color: $base-font-color;
+  $grid-item-height: 14em;
+
+  @include clearfix;
+  position: relative;
+
+  .grid-item {
+    background: $grid-item-background;
+    border-bottom: $grid-item-border;
+    border-right: $grid-item-border;
+    cursor: pointer;
+    float: left;
+    height: $grid-item-height;
+    outline: none;
+    overflow: hidden;
+    padding: 2em;
+    text-decoration: none;
+    transition: all 0.2s ease-in-out;
+    width: 100%;
+
+    @include media($large-screen) {
+      @include grid-item-columns($grid-item-columns);
+    }
+
+    &:focus,
+    &:hover {
+      background: transparentize($grid-item-color, 0.95);
+    }
+  }
+
+  .grid-item img {
+      display: block;
+      height: 2.5em;
+      margin-bottom: 1.2em;
+      opacity: 0.2;
+    }
+
+  .grid-item h1 {
+      color: $grid-item-color;
+      font-size: 1.3em;
+      margin-bottom: 0.4em;
+    }
+
+  .grid-item p {
+      color: transparentize($grid-item-color, 0.4);
+      line-height: 1.5em;
+
+      @include media($medium-screen) {
+        max-width: 70%;
+      }
+    }
+
+  .grid-item-big {
+    @include media($large-screen) {
+      @include grid-item-columns($grid-item-big-columns);
+    }
+    p {
+      @include media($medium-screen) {
+        max-width: 60%;
+      }
+    }
+  }
+
+  // this, below, might not be the most beautiful solution but it removes the outer borders by using the background color.
+  .bottom-cover {
+    background: $grid-items-background;
+    bottom: 0;
+    height: 3px;
+    position: absolute;
+    width: 100%;
+  }
+
+  .right-cover {
+    background: $grid-items-background;
+    height: 100%;
+    position: absolute;
+    right: 0;
+    width: 4px;
+  }
+}
+
+.node-level {
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+.group-items {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-around;
+
+  > div {
+    display: flex;
+    width: 100%;
+  }
+
+  .item-level {
+    flex-grow: 1;
+    align-self: center;
+  }
+}
+
+.prime {
+  align-self: center;
+}
+
+.active-item {
+  background-color: black;
+  color: white;
+}
+
+.selected-race {
+  height: 100px;
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+.race-list {
+  display: flex;
+  justify-content: space-around;
+}
+
+.primary-race {
+  text-align: center;
+  min-width: 200px;
+}
+
+.subraces {
+  font-size: 14px;
+  flex-flow: row nowrap;
+  justify-content: space-around;
+}
+
+// #player-dashboard {
+//   border: 1px solid black;
+//   display: flex;
+//   flex-direction: column nowrap;
+//   height: 100px;
+//   width: auto;
+//
+//   #player-traits {
+//     border: -1px solid black;
+//   }
+// }
+
+.footer {
+  $base-spacing: 1.5em !default;
+  $action-color: #477DCA !default;
+  $medium-screen: 40em !default;
+  $large-screen: 53.75em !default;
+  $footer-background: desaturate(darken($action-color, 20%), 30%);
+  $footer-color: white;
+  $footer-link-color: transparentize($footer-color, 0.6);
+  $footer-disclaimer-color: transparentize($footer-color, 0.6);
+
+  background: $footer-background;
+  padding: ($base-spacing * 2) $gutter;
+  width: 100%;
+
+  .footer-logo {
+    margin-bottom: 2em;
+    text-align: center;
+
+    img {
+      height: 3em;
+    }
+  }
+
+  .footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: $base-spacing;
+  }
+
+  ul {
+    flex-basis: 13em;
+    flex-shrink: 0;
+    margin-bottom: $base-spacing * 2;
+    padding: 0;
+  }
+
+  li {
+    line-height: 1.5em;
+    list-style: none;
+    text-align: center;
+  }
+
+  li a {
+    color: $footer-link-color;
+    text-decoration: none;
+
+    &:focus,
+    &:hover {
+      color: transparentize($footer-color, 0);
+    }
+  }
+
+  li h3 {
+    color: $footer-color;
+    font-size: 1em;
+    margin-bottom: 0.4em;
+  }
+
+  hr {
+    border: 1px solid transparentize($footer-disclaimer-color, 0.3);
+    margin: 0 auto $base-spacing;
+    width: 12em;
+  }
+
+  p {
+    color: $footer-disclaimer-color;
+    font-size: 0.9em;
+    line-height: 1.5em;
+    margin: auto;
+    max-width: 35em;
+    text-align: center;
+  }
+}
