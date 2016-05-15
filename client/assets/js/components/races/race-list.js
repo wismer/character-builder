@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { raceList, readableAttributes, raceDetails } from '../../util/constants';
 import { constants, adapter } from '../../util/utils';
-
-
+import PlayerRace from '../../classes/race';
 /*
 <RaceList>
   <Race>
@@ -19,18 +18,15 @@ export const RaceChoice = React.createClass({
     var race = this.props.race, name, attrs, details, perks;
     if (race) {
       name = race.name;
-      attrs = readableAttributes(race.attrs).map(attr => {
+      attrs = this.props.preview.abilityScores.map(attr => {
         return (
           <li key={attr.short}>
             {attr.long}: +{attr.value}
           </li>
         );
       });
-      details = raceDetails.filter(key => race[key]).map(key => {
-        var fields = race[key].map(field => <div key={key} className={`${key}-list`}>{field.label}: {field.value.join(', ')}</div>);
-        return (
-          <div>{fields}</div>
-        );
+      details = this.props.preview.characteristics.map(field => {
+        return <div className={field.label + '-list'} key={field.label}>{field.label}: {field.value}</div>
       });
     }
     return (
@@ -118,24 +114,42 @@ export const RaceList = React.createClass({
     var { onEnter, onLeave, onSelect } = this,
         activeRaceNode = this.state.activeRaceNode;
     var selectedRace = this.state.race;
-    var races = raceList.map((race, ridx)=> {
+    var preview;
+    if (selectedRace) {
+      var parent = this.props.races[activeRaceNode];
+      var playerRace = new PlayerRace(selectedRace);
+
+      preview = playerRace.toPreview(parent)
+    }
+    var raceList = this.props.races.map((race, ridx)=> {
       var subraces = race.subraces.map((subrace, sidx) => {
-        return <SubRace parentRace={ridx} onEnter={onEnter} onLeave={onLeave} onSelect={onSelect} {...subrace} key={`subrace-${sidx}`} />
+        var sr = new PlayerRace(subrace, activeRaceNode === ridx, race);
+        return <SubRace
+          parentRace={ridx}
+          onEnter={onEnter}
+          onLeave={onLeave}
+          onSelect={onSelect}
+          {...subrace}
+          key={`subrace-${sidx}`}
+        />
       });
       return (
-        <Race toggleRace={this.toggleRace} i={ridx} isActive={ridx === activeRaceNode} key={`race-${ridx}`} {...race}>
-          {subraces}
-        </Race>
+        <Race toggleRace={this.toggleRace}
+          i={ridx}
+          isActive={ridx === activeRaceNode}
+          key={`race-${ridx}`}
+          {...race}
+        >{subraces}</Race>
       );
     });
 
     return (
       <div>
         <div className='selected-race'>
-          <RaceChoice race={selectedRace} />
+          <RaceChoice race={selectedRace} preview={preview} />
         </div>
         <div className='race-list'>
-          {races}
+          {raceList}
         </div>
       </div>
     );

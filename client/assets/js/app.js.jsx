@@ -8,7 +8,8 @@ import { getRaces } from './util/adapter';
 let App = React.createClass({
   getInitialState() {
     return {
-      race: null
+      race: null,
+      raceList: [],
     };
   },
 
@@ -18,19 +19,6 @@ let App = React.createClass({
 
   _reveal(activeState, raceProps) {
     this.setState({ activeRace: activeState ? raceProps : null });
-  },
-
-  _updateScore(score, parent, name, a, b) {
-    var [x,y] = parent.map(i => i - 1);
-    var activeCell = [];
-    var parent;
-    if (x > -1) {
-      var item = items[x][y];
-      score += item.score;
-      activeCell = [a,b];
-      parent = [x,y];
-    }
-    this.setState({ score, activeCell, parent });
   },
 
   updateChoice(data, selected=false) {
@@ -43,11 +31,15 @@ let App = React.createClass({
     }
   },
 
+  componentDidMount() {
+    getRaces(raceList => this.setState({ raceList }));
+  },
+
   render() {
     var choice = this.state.choice;
     return (
       <div className='primary-node'>
-        <RaceList updateChoice={this.updateChoice} />
+        <RaceList updateChoice={this.updateChoice} races={this.state.raceList} />
 
         <PlayerDashboard />
       </div>
