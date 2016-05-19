@@ -38,6 +38,7 @@ class SubRace(BaseRace):
     def __str__(self):
         return self.name + ' ' + self.parent.name
 
+
 class ParentRace(BaseRace):
     pass
 

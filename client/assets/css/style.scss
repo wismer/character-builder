@@ -2,13 +2,14 @@
 @import "neat/neat";
 @import "examples/nav-bar";
 @import "examples/breadcrumbs";
-// @import "race-select/style";
+@import "race-select/style";
 
 body {
   width: 1080px;
   margin: 0 auto;
   font-size: golden-ratio(14px,  1);
   font-family: sans-serif;
+  background-color: #5F6161;
 }
 
 .main-grid {
@@ -306,25 +307,46 @@ body {
 }
 
 .selected-race {
-  height: 100px;
+  height: 240px;
   display: flex;
   flex-flow: row nowrap;
 }
 
+.race-choice {
+  margin: 0 auto;
+}
+
 .race-list {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
+  flex-flow: row wrap;
+  color: white;
+  background-color: #142922;
 }
 
 .primary-race {
   text-align: center;
   min-width: 200px;
+
 }
 
 .subraces {
+  cursor: pointer;
   font-size: 14px;
   flex-flow: row nowrap;
   justify-content: space-around;
+  color: white;
+  background-color: #507D7D;
+
+  > div {
+    width: 100%;
+    border: 1px solid #507D7D;
+
+    &:hover {
+      background-color: #2D4444;
+      border: 1px solid white;
+    }
+  }
 }
 
 // #player-dashboard {

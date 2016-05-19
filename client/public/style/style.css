@@ -242,11 +242,51 @@ html {
         font-size: 1em;
         padding: 0 1.125em 0 1.5em; } }
 
+.tooltip-item {
+  background: white;
+  border: 1px solid gainsboro;
+  border-radius: 3px;
+  display: inline-block;
+  padding: 0.5em 1em;
+  position: relative;
+  text-align: center; }
+  .tooltip-item:focus, .tooltip-item:hover .tooltip {
+    opacity: 1;
+    visibility: visible; }
+  .tooltip-item .tooltip {
+    position: absolute;
+    right: -300px;
+    bottom: 3em;
+    left: 9em;
+    background-color: white;
+    background: #fff;
+    border-radius: 3px;
+    box-shadow: 0 2px 2px silver;
+    color: #333;
+    font-size: 0.9em;
+    line-height: 1.5em;
+    margin: 0 auto;
+    max-width: 16em;
+    opacity: 0;
+    padding: 1em;
+    text-align: center;
+    transition: all 0.2s ease-in-out;
+    visibility: hidden;
+    z-index: 10; }
+    .tooltip-item .tooltip p {
+      color: #333;
+      line-height: 1.5em;
+      margin: 0; }
+
+.trait-list {
+  display: flex; }
+
 body {
   width: 1080px;
   margin: 0 auto;
   font-size: 22.652px;
-  font-family: sans-serif; }
+  font-family: sans-serif;
+  background-color: #5F6161; }
 
 .main-grid {
   float: left;
@@ -497,22 +537,37 @@ body {
   color: white; }
 
 .selected-race {
-  height: 100px;
+  height: 240px;
   display: flex;
   flex-flow: row nowrap; }
 
+.race-choice {
+  margin: 0 auto; }
+
 .race-list {
   display: flex;
-  justify-content: space-around; }
+  justify-content: space-between;
+  flex-flow: row wrap;
+  color: white;
+  background-color: #142922; }
 
 .primary-race {
   text-align: center;
   min-width: 200px; }
 
 .subraces {
+  cursor: pointer;
   font-size: 14px;
   flex-flow: row nowrap;
-  justify-content: space-around; }
+  justify-content: space-around;
+  color: white;
+  background-color: #507D7D; }
+  .subraces > div {
+    width: 100%;
+    border: 1px solid #507D7D; }
+    .subraces > div:hover {
+      background-color: #2D4444;
+      border: 1px solid white; }
 
 .footer {
   background: #40526b;
