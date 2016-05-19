@@ -2,7 +2,7 @@
 /node_modules
 .eslint.json
 .babelrc
-app/public/
+/client/public/js/app.js
 .sass-cache/
 /fifth_ed_spells/fifth_ed_spells/fifth_ed_spells/
 /fifth_ed_spells/fifth_ed_spells/account/
