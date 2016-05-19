@@ -22,7 +22,8 @@ export default class PlayerRace {
 
   toPreview(subrace, characteristics=[]) {
     var { name, armor, weapons, languages, speed, traits } = this;
-    var abilityScores = readableAttributes(this.attributes);
+    var attributes = this.attributes.map((attr, i) => subrace.attributes[i] + attr);
+    var abilityScores = readableAttributes(attributes);
     // update fields by merging them together.
     subrace.armor.forEach(armor => this.armor.add(armor));
     subrace.weapons.forEach(weapon => this.weapons.add(weapon));
@@ -43,8 +44,6 @@ export default class PlayerRace {
       characteristics.push({ label: 'Vision', value: 'Darkvision', tooltip: `See low-lit areas up to ${ft}ft.` });
     }
 
-
-
-    return { name, abilityScores, characteristics };
+    return { name, abilityScores, characteristics, traits };
   }
 }

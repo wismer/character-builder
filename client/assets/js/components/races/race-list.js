@@ -15,7 +15,7 @@ import PlayerRace from '../../classes/race';
 
 export const RaceChoice = React.createClass({
   render() {
-    var race = this.props.race, name, attrs, details, perks;
+    var race = this.props.race, name, attrs, details, traits;
     if (race) {
       name = race.name;
       attrs = this.props.preview.abilityScores.map(attr => {
@@ -28,14 +28,35 @@ export const RaceChoice = React.createClass({
       details = this.props.preview.characteristics.map(field => {
         return <div className={field.label + '-list'} key={field.label}>{field.label}: {field.value}</div>
       });
+      traits = this.props.preview.traits.map(trait => {
+        return (
+          <div className='trait-item'>
+            <div className='tooltip-item' key={trait.name}>
+              {trait.name}
+              <div className='tooltip'>
+                <p>{trait.desc}</p>
+              </div>
+            </div>
+          </div>
+        );
+      });
     }
     return (
       <div className='race-choice'>
         <div>{name}</div>
         <div>{attrs}</div>
         <div>{details}</div>
+        <Traits>
+          {traits}
+        </Traits>
       </div>
     );
+  }
+});
+
+const Traits = React.createClass({
+  render() {
+    return <div className='trait-list'>{this.props.children}</div>
   }
 });
 
@@ -82,24 +103,22 @@ export const RaceList = React.createClass({
   },
 
   onEnter(race) {
-    if (this.state.selected) return;
-    this.setState({ highlighted: true, race });
+    this.props.updateSelection('enter', race);
   },
 
   onLeave(race) {
-    if (!this.state.selected) {
-      this.setState({ highlighted: false, race: null });
-    }
+    this.props.updateSelection('leave', race);
   },
 
   onSelect(race) {
-    if (!this.state.race || race.name !== this.state.race.name) {
-      this.setState({ race, selected: true });
-    } else if (race.name === this.state.race.name && this.state.selected) {
-      this.setState({ race: null, selected: false });
-    } else {
-      this.setState({ selected: true, race });
-    }
+    this.props.updateSelection('select', race);
+    // if (!this.props.race || race.name !== this.props.race.name) {
+    //   this.props.updateSelection(race, true);
+    // } else if (race.name === this.props.race.name && this.props.selected) {
+    //   this.props.updateSelection(null, false);
+    // } else {
+    //   this.props.updateSelection(race, true);
+    // }
   },
 
   toggleRace(activeRaceNode, idx) {

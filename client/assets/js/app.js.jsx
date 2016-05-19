@@ -2,8 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { RaceList, RaceChoice } from './components/races/race-list';
 import { readableAttributes } from './util/constants';
-import PlayerDashboard from './components/player-preview';
 import { getRaces } from './util/adapter';
+import Dashboard from './components/dashboard/dashboard';
 
 let App = React.createClass({
   getInitialState() {
@@ -13,6 +13,8 @@ let App = React.createClass({
     };
   },
 
+
+
   _selectRace(selectedRace) {
     this.setState({ selectedRace });
   },
@@ -21,14 +23,18 @@ let App = React.createClass({
     this.setState({ activeRace: activeState ? raceProps : null });
   },
 
-  updateChoice(data, selected=false) {
-    if (this.state.choice.selected && data.name === this.state.choice.data.name) {
-      this.setState({ choice: { selected: false, data: null }});
-    } else if (this.state.choice.selected) {
-      return;
+  updateSelection(evtName, race) {
+    if (evtName === 'enter') {
+      
+    } else if (evtName === 'leave') {
+
     } else {
-      this.setState({ choice: { selected, data } });
+
     }
+  },
+
+  onRaceSelect(race) {
+    this.setState({ race });
   },
 
   componentDidMount() {
@@ -36,12 +42,13 @@ let App = React.createClass({
   },
 
   render() {
-    var choice = this.state.choice;
+    var choice = this.state.choice,
+        abilityScores = this.state.race ? this.state.race.attributes : [];
     return (
       <div className='primary-node'>
-        <RaceList updateChoice={this.updateChoice} races={this.state.raceList} />
+        <RaceList onRaceSelect={this.onRaceSelect} updateSelection={this.updateSelection} races={this.state.raceList} />
 
-        <PlayerDashboard />
+        <Dashboard abilityScores={abilityScores} />
       </div>
     );
   }

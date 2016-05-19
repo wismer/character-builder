@@ -4,8 +4,8 @@ export const PRIMARY_STATS = [
 
 var attributeMap = [
   { short: 'str', long: 'Strength' },
-  { short: 'dex', long: 'Dexterity' },
   { short: 'con', long: 'Constitution' },
+  { short: 'dex', long: 'Dexterity' },
   { short: 'int', long: 'Intelligence' },
   { short: 'wis', long: 'Wisdom' },
   { short: 'cha', long: 'Charisma' },
