@@ -1,0 +1,69 @@
+{
+  "races": [
+    {
+      "name": "Dwarf",
+      "resists": ["poison"],
+      "advantage": ["poison"],
+      "vision": "Darkvision",
+      "attrs": [0,2,0,0,0,0,0],
+      "languages": ["Dwarven", "Common"],
+      "weapons": ["handaxe", "warhammer", "throwing hammer", "battleaxe"],
+      "abilities": ["Stonecutting", "Tool Proficiency"],
+      "speed": 25,
+      "subraces": [
+        {
+          "name": "Mountain Dwarf",
+          "attrs": [2, 2, 0, 0, 0, 0, 0],
+          "armor": ["light", "medium"],
+        },
+
+        {
+          "name": "Hill Dwarf",
+          "attrs": [0,2,0,0,1,0,0],
+          "abilities": ["Dwarven Toughness"]
+        }
+      ]
+    },
+    {
+      "name": "Tiefling",
+      "resists": ["fire"],
+      "vision": "Darkvision",
+      "languages": ["Common", "Infernal"],
+      "attrs": [0,0,0,2,0,1,0],
+      "abilities": ["That Tiefling Ability"],
+      "subraces": [],
+      "speed": 30
+    },
+    {
+      "name": "Elf",
+      "resists": ["charm", "sleep"],
+      "vision": "Darkvision",
+      "weapons": ["shortsword"],
+      "attrs": [0,0,2,0,0,0,0],
+      "speed": 30,
+      "abilities": ["Keen Senses"],
+      "subraces": [
+        {
+          "name": "Drow",
+          "weapons": ["rapier", "hand crossbow"],
+          "attrs": [0,0,2,0,0,1,0],
+          "abilities": ["Drow Magic", "Sunlight Sensitivity", "Superior Darkvision"]
+        },
+        {
+          "name": "High Elf",
+          "weapons": ["longsword", "longbow", "shortbow"],
+          "attrs": [0,0,2,1,0,0,0],
+          "spell": [1,0,0,0,0,0,0,0,0,0,0],
+          "abilities": ["One Extra Language"]
+        },
+        {
+          "name": "Wood Elf",
+          "weapons": ["longsword", "longbow", "shortbow"],
+          "attrs": [0,0,2,0,1,0,0],
+          "speed": 35,
+          "abilities": ["Mask of the Wild"]
+        }
+      ]
+    }
+  ]
+}
