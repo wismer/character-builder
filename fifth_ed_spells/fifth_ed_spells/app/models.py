@@ -108,7 +108,6 @@ class Item(models.Model):
 
 
 class Weapon(Item):
-    requires_ammo = models.BooleanField(default=False)
     damage = models.IntegerField(default=4, choices=DIE_CHOICES)
     dice_count = models.IntegerField(default=1, choices=DIE_COUNT)
     short_range = models.IntegerField(null=True, choices=SHORT_RANGE, blank=True)
