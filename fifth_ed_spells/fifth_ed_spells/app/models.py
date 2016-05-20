@@ -148,8 +148,8 @@ class Armor(Item):
 
 
 class TraitProperty(models.Model):
-    item = models.ForeignKey('Item', related_name='traits')
-    trait = models.ForeignKey('Trait', related_name='items')
+    item = models.ForeignKey('Item', related_name='items')
+    trait = models.ForeignKey('Trait', related_name='traits')
 
 
 class Trait(models.Model):
