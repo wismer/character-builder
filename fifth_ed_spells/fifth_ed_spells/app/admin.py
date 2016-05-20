@@ -11,12 +11,16 @@ from .models import (
 )
 
 
+class TraitInline(admin.TabularInline):
+    model = TraitProperty
+
+
 class TraitPropertyAdmin(admin.ModelAdmin):
     pass
 
 
 class ItemAdmin(admin.ModelAdmin):
-    pass
+    inlines = [TraitInline]
 
 
 class ArmorAdmin(admin.ModelAdmin):
@@ -24,7 +28,7 @@ class ArmorAdmin(admin.ModelAdmin):
 
 
 class WeaponAdmin(admin.ModelAdmin):
-    pass
+    inlines = [TraitInline]
 
 
 class RacialTraitAdminInline(admin.TabularInline):

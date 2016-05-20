@@ -108,11 +108,6 @@ class Item(models.Model):
 
 
 class Weapon(Item):
-    is_martial = models.BooleanField(default=False)
-    is_versatile = models.BooleanField(default=False)
-    is_ranged = models.BooleanField(default=False)
-    is_two_handed = models.BooleanField(default=False)
-    has_finesse = models.BooleanField(default=False)
     requires_ammo = models.BooleanField(default=False)
     damage = models.IntegerField(default=4, choices=DIE_CHOICES)
     dice_count = models.IntegerField(default=1, choices=DIE_COUNT)
