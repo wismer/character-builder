@@ -2,6 +2,15 @@ from django.db import models
 from django.contrib.postgres.fields import ArrayField
 from model_utils.models import TimeStampedModel
 
+from .constants import (
+    ARMOR_TYPES,
+    ARMOR_VALUES,
+    DIE_COUNT,
+    DIE_CHOICES,
+    SHORT_RANGE,
+    LONG_RANGE,
+    MUNDANE_DAMAGE_TYPES
+)
 
 related_fields = [
     ('skills', []),
@@ -87,6 +96,70 @@ class RacialTrait(models.Model):
 
     def __str__(self):
         return '{name} - {race}'.format(name=self.name, race=self.race)
+
+
+class Item(models.Model):
+    name = models.CharField(max_length=50)
+    traits = models.ManyToManyField('Trait', through='TraitProperty')
+    cost = models.DecimalField(max_digits=8, decimal_places=2)
+
+    def __str__(self):
+        return self.name
+
+
+class Weapon(Item):
+    is_martial = models.BooleanField(default=False)
+    is_versatile = models.BooleanField(default=False)
+    is_ranged = models.BooleanField(default=False)
+    is_two_handed = models.BooleanField(default=False)
+    has_finesse = models.BooleanField(default=False)
+    requires_ammo = models.BooleanField(default=False)
+    damage = models.IntegerField(default=4, choices=DIE_CHOICES)
+    dice_count = models.IntegerField(default=1, choices=DIE_COUNT)
+    short_range = models.IntegerField(null=True, choices=SHORT_RANGE)
+    long_range = models.IntegerField(null=True, choices=LONG_RANGE)
+    versatile_dmg = models.IntegerField(null=True, choices=DIE_CHOICES)
+    versatile_dice = models.IntegerField(null=True, choices=DIE_COUNT)
+    damage_type = models.CharField(max_length=30, choices=MUNDANE_DAMAGE_TYPES)
+    special = models.TextField(max_length=500, null=True)
+
+    def __str__(self):
+        return '{name} {n}d{dmg} weapon'.format(
+            name=self.item_ptr.name,
+            n=self.dice_count,
+            dmg=self.damage
+        )
+
+
+class Armor(Item):
+    armor_value = models.IntegerField(default=8, choices=ARMOR_VALUES)
+    armor_class = models.CharField(max_length=30, choices=ARMOR_TYPES)
+    stealth_disadvantage = models.BooleanField(default=False)
+    strength_requirement = models.IntegerField(null=True)
+    has_dex_modifier = models.BooleanField(default=False)
+    weight = models.IntegerField(default=1)
+
+    def __str__(self):
+        return '{name} - AC{ac} ({armor_type})'.format(
+            name=self.item_ptr.name,
+            ac=self.armor_value,
+            armor_type=self.armor_class
+        )
+
+
+class TraitProperty(models.Model):
+    item = models.ForeignKey('Item', related_name='items')
+    trait = models.ForeignKey('Trait', related_name='traits')
+
+
+class Trait(models.Model):
+    name = models.CharField(max_length=50)
+    desc = models.TextField(max_length=3000)
+    item_property = models.ForeignKey('TraitProperty', related_name='items')
+
+    def __str__(self):
+        return self.name
+
 
 
 # class CharacterClass(TimeStampedModel):
