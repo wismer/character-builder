@@ -2,8 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { RaceList, RaceChoice } from './components/races/race-list';
 import { readableAttributes } from './util/constants';
-import { getRaces } from './util/adapter';
+import { retrieve } from './util/adapter';
 import Dashboard from './components/dashboard/dashboard';
+import { Weapon, Armor, Item } from './classes/item';
 
 let App = React.createClass({
   getInitialState() {
@@ -25,7 +26,7 @@ let App = React.createClass({
 
   updateSelection(evtName, race) {
     if (evtName === 'enter') {
-      
+
     } else if (evtName === 'leave') {
 
     } else {
@@ -38,7 +39,12 @@ let App = React.createClass({
   },
 
   componentDidMount() {
-    getRaces(raceList => this.setState({ raceList }));
+    retrieve('items', items => {
+      var weapons = items.weapons.map(weapon => new Weapon(weapon, items.traits));
+      var armor = items.armor.map(armor => new Armor(armor, items.traits));
+      debugger
+    });
+    retrieve('races', raceList => this.setState({ raceList }));
   },
 
   render() {
