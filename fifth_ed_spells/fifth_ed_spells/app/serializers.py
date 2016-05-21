@@ -27,6 +27,10 @@ class RacialTraitSerializer(serializers.ModelSerializer):
 
 class SubRaceSerializer(serializers.ModelSerializer):
     racialtraits = RacialTraitSerializer(many=True)
+    weapons = serializers.SerializerMethodField()
+
+    def get_weapons(self, obj):
+        return [Weapon.objects.get(name__icontains=weapon).id for weapon in obj.weapons]
 
     class Meta:
         model = SubRace
