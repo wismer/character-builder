@@ -6,12 +6,8 @@ from .models import (
     RacialTrait,
     Weapon,
     Trait,
-    TraitProperty,
     Armor,
-    Item,
 )
-
-
 
 
 class WeaponSerializer(serializers.ModelSerializer):
@@ -22,19 +18,6 @@ class WeaponSerializer(serializers.ModelSerializer):
 class ArmorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Armor
-
-
-class ItemSerializer(serializers.ModelSerializer):
-    item_detail = serializers.SerializerMethodField()
-
-    def get_item_detail(self, obj):
-        if hasattr(obj, 'weapon'):
-            return WeaponSerializer(obj.weapon).data
-        else:
-            return ArmorSerializer(obj.armor).data
-
-    class Meta:
-        model = Item
 
 
 class RacialTraitSerializer(serializers.ModelSerializer):
@@ -60,9 +43,11 @@ class ParentRaceSerializer(serializers.ModelSerializer):
 
 class TraitSerializer(serializers.ModelSerializer):
     class Meta:
+        exclude = ('item_property',)
         model = Trait
 
 
 class BaseItemSerializer(serializers.Serializer):
-    items = ItemSerializer(many=True)
+    weapons = WeaponSerializer(many=True)
+    armor = ArmorSerializer(many=True)
     traits = TraitSerializer(many=True)

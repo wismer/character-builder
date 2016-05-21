@@ -1,26 +1,14 @@
-# Create your views here.
-from decimal import *
-
-from django.http import HttpResponse, Http404, HttpResponseRedirect, HttpResponseBadRequest
-from django.contrib.auth import authenticate, login, logout
-from django.conf import settings
-from rest_framework import views, viewsets
+from rest_framework import viewsets
 from rest_framework.response import Response
 
 from .models import (
     ParentRace,
-    SubRace,
-    RacialTrait,
     Trait,
-    Weapon,
     Item
 )
 from .serializers import (
-    SubRaceSerializer,
     ParentRaceSerializer,
-    RacialTraitSerializer,
     BaseItemSerializer,
-    ItemSerializer,
 )
 
 
@@ -29,11 +17,15 @@ class ParentRaceView(viewsets.ModelViewSet):
     serializer_class = ParentRaceSerializer
 
 
-class ItemView(viewsets.ViewSet):
-    def get_queryset(self):
-        return {'items': Item.objects.all(), 'traits': Trait.objects.all()}
+class ItemView(viewsets.ModelViewSet):
+    queryset = Item.objects.all()
+    serializer_class = BaseItemSerializer
 
     def list(self, request):
-        data = self.get_queryset()
-        data = BaseItemSerializer(data).data
-        return Response(data)
+        qs = self.get_queryset()
+        data = {
+            'weapons': [item.weapon for item in qs.filter(weapon__isnull=False)],
+            'armor': [item.armor for item in qs.filter(weapon__isnull=True)],
+            'traits': Trait.objects.all()
+        }
+        return Response(data=BaseItemSerializer(data).data)
