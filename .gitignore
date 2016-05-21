@@ -15,5 +15,5 @@
 /fifth_ed_spells/fifth_ed_spells/static_source/
 /fifth_ed_spells/backup
 *.pyc
-/client/assets/css/bourbon/
-/client/assets/css/neat/
+/client/assets/css/bourbon/**
+/client/assets/css/neat/**
