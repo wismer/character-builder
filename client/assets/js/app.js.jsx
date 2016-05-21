@@ -40,8 +40,8 @@ let App = React.createClass({
 
   componentDidMount() {
     retrieve('items', items => {
-      var weapons = items.weapons.map(weapon => new Weapon(weapon));
-      var armor = items.armor.map(armor => new Armor(armor));
+      var weapons = items.weapons.map(weapon => new Weapon(weapon, items.traits));
+      var armor = items.armor.map(armor => new Armor(armor, items.traits));
       debugger
     });
     retrieve('races', raceList => this.setState({ raceList }));
