@@ -108,20 +108,14 @@ class Item(models.Model):
 
 
 class Weapon(Item):
-    is_martial = models.BooleanField(default=False)
-    is_versatile = models.BooleanField(default=False)
-    is_ranged = models.BooleanField(default=False)
-    is_two_handed = models.BooleanField(default=False)
-    has_finesse = models.BooleanField(default=False)
-    requires_ammo = models.BooleanField(default=False)
     damage = models.IntegerField(default=4, choices=DIE_CHOICES)
     dice_count = models.IntegerField(default=1, choices=DIE_COUNT)
-    short_range = models.IntegerField(null=True, choices=SHORT_RANGE)
-    long_range = models.IntegerField(null=True, choices=LONG_RANGE)
-    versatile_dmg = models.IntegerField(null=True, choices=DIE_CHOICES)
-    versatile_dice = models.IntegerField(null=True, choices=DIE_COUNT)
+    short_range = models.IntegerField(null=True, choices=SHORT_RANGE, blank=True)
+    long_range = models.IntegerField(null=True, choices=LONG_RANGE, blank=True)
+    versatile_dmg = models.IntegerField(null=True, choices=DIE_CHOICES, blank=True)
+    versatile_dice = models.IntegerField(null=True, choices=DIE_COUNT, blank=True)
     damage_type = models.CharField(max_length=30, choices=MUNDANE_DAMAGE_TYPES)
-    special = models.TextField(max_length=500, null=True)
+    special = models.TextField(max_length=500, null=True, blank=True)
 
     def __str__(self):
         return '{name} {n}d{dmg} weapon'.format(
@@ -151,11 +145,14 @@ class TraitProperty(models.Model):
     item = models.ForeignKey('Item', related_name='items')
     trait = models.ForeignKey('Trait', related_name='traits')
 
+    def __str__(self):
+        return '{item} - {trait}'.format(item=self.item.name, trait=self.trait.name)
+
 
 class Trait(models.Model):
     name = models.CharField(max_length=50)
     desc = models.TextField(max_length=3000)
-    item_property = models.ForeignKey('TraitProperty', related_name='items')
+    item_property = models.ForeignKey('TraitProperty', related_name='items', null=True, blank=True)
 
     def __str__(self):
         return self.name
