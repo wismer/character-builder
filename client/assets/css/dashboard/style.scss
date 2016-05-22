@@ -1,0 +1,25 @@
+.ability-scores {
+  display: flex;
+  flex-flow: row nowrap;
+
+  .ability-score {
+    display: flex;
+    flex-flow: column nowrap;
+    font-size: 12px;
+    min-width: 7.5em;
+    margin: 10px;
+    border: 1px solid black;
+    padding: 7px;
+
+    .score {
+      align-self: flex-start;
+      font-size: 40px;
+    }
+
+    .ability-meta {
+      display: flex;
+      font-size: 12px;
+      justify-content: space-between;
+    }
+  }
+}

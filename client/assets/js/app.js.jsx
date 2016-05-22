@@ -34,16 +34,18 @@ let App = React.createClass({
       var { modifier, short, long } = convertScore(score, idx);
       return (
         <div key={short} className='ability-score'>
+          <div className='ability-meta'>
+            <div className='ability-name-short'>
+              {short.toUpperCase()}
+            </div>
+
+            <div className='ability-score-modifier'>
+              ({modifier > 0 ? `+${modifier}` : modifier})
+            </div>
+          </div>
+
           <div className='score'>
             {score}
-          </div>
-
-          <div className='ability-score-modifier'>
-            {modifier > 0 ? `+${modifier}` : modifier}
-          </div>
-
-          <div className='ability-name-short'>
-            {short.toUpperCase()}
           </div>
 
           <div className='ability-score-name'>
@@ -54,7 +56,6 @@ let App = React.createClass({
     });
     return (
       <div className='primary-node'>
-
         <Dashboard>
           <div className='ability-scores'>
             {abilityScores}
