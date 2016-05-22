@@ -17,3 +17,5 @@
 *.pyc
 /client/assets/css/bourbon/**
 /client/assets/css/neat/**
+/client/public/style/style.css
+/client/public/style/style.css.map

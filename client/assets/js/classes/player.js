@@ -1,15 +1,5 @@
-const readableAttributes = [
-  { key: 'wis', name: 'Wisdom' },
-  { key: 'int', name: 'Intelligence' },
-  { key: 'cha', name: 'Charisma' },
-  { key: 'str', name: 'Strength' },
-  { key: 'con', name: 'Constitution' },
-  { key: 'dex', name: 'Dexterity' }
-];
-
 export default class Player {
   constructor() {
-    debugger
     this.stats = {
       wis: 8,
       int: 8,

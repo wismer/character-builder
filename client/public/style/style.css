@@ -281,6 +281,29 @@ html {
 .trait-list {
   display: flex; }
 
+#dashboard {
+  position: absolute;
+  bottom: 0; }
+
+.ability-scores {
+  display: flex;
+  flex-flow: row nowrap; }
+  .ability-scores .ability-score {
+    display: flex;
+    flex-flow: column nowrap;
+    font-size: 12px;
+    min-width: 7.5em;
+    margin: 10px;
+    border: 1px solid black;
+    padding: 7px; }
+    .ability-scores .ability-score .score {
+      align-self: flex-start;
+      font-size: 40px; }
+    .ability-scores .ability-score .ability-meta {
+      display: flex;
+      font-size: 12px;
+      justify-content: space-between; }
+
 body {
   width: 1080px;
   margin: 0 auto;

@@ -1,70 +1,81 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { RaceList, RaceChoice } from './components/races/race-list';
-import { readableAttributes } from './util/constants';
+import { readableAttributes, convertScore } from './util/constants';
 import { retrieve } from './util/adapter';
 import Dashboard from './components/dashboard/dashboard';
-import { Weapon, Armor, Item } from './classes/item';
+import { Weapon, Armor, Item, Player } from './classes/main';
 
 let App = React.createClass({
   getInitialState() {
     return {
+      abilityScores: [8, 8, 8, 8, 8, 8, 8],
+      armor: [],
+      weapons: [],
+      languages: [],
+      speed: null,
+      racialtraits: [],
+      characterName: null,
+      playerName: null,
+      hasDarkvision: false,
+      proficiencyBonus: 0,
+      savingThrowAbilities: [],
+      hp: 0,
+      level: 1,
       race: null,
-      raceList: [],
+      charClass: null,
+      spellSlots: [],
+      knownSpells: [],
     };
   },
 
-
-
-  _selectRace(selectedRace) {
-    this.setState({ selectedRace });
-  },
-
-  _reveal(activeState, raceProps) {
-    this.setState({ activeRace: activeState ? raceProps : null });
-  },
-
-  updateSelection(evtName, race) {
-    if (evtName === 'enter') {
-
-    } else if (evtName === 'leave') {
-
-    } else {
-
-    }
-  },
-
-  onRaceSelect(race) {
-    this.setState({ race });
-  },
-
-  componentDidMount() {
-    retrieve('items', items => {
-      var weapons = items.weapons.map(weapon => new Weapon(weapon, items.traits));
-      var armor = items.armor.map(armor => new Armor(armor, items.traits));
-      debugger
-    });
-    retrieve('races', raceList => this.setState({ raceList }));
-  },
-
   render() {
-    var choice = this.state.choice,
-        abilityScores = this.state.race ? this.state.race.attributes : [];
+    var abilityScores = this.state.abilityScores.map((score, idx) => {
+      var { modifier, short, long } = convertScore(score, idx);
+      return (
+        <div key={short} className='ability-score'>
+          <div className='ability-meta'>
+            <div className='ability-name-short'>
+              {short.toUpperCase()}
+            </div>
+
+            <div className='ability-score-modifier'>
+              ({modifier > 0 ? `+${modifier}` : modifier})
+            </div>
+          </div>
+
+          <div className='score'>
+            {score}
+          </div>
+
+          <div className='ability-score-name'>
+            {long}
+          </div>
+        </div>
+      );
+    });
     return (
       <div className='primary-node'>
-        <RaceList onRaceSelect={this.onRaceSelect} updateSelection={this.updateSelection} races={this.state.raceList} />
-
-        <Dashboard abilityScores={abilityScores} />
+        <Dashboard>
+          <div className='ability-scores'>
+            {abilityScores}
+          </div>
+        </Dashboard>
       </div>
     );
   }
 });
 
 function showReact() {
-  ReactDOM.render(
-    <App />,
-    document.getElementById('render')
-  );
+  var state = {};
+  retrieve('items', items => {
+    retrieve('races', races => {
+      ReactDOM.render(
+        <App items={items} races={races} />,
+        document.getElementById('render')
+      );
+    })
+  });
 }
 
 window.onload = showReact;
