@@ -281,6 +281,10 @@ html {
 .trait-list {
   display: flex; }
 
+#dashboard {
+  position: absolute;
+  bottom: 0; }
+
 .ability-scores {
   display: flex;
   flex-flow: row nowrap; }
