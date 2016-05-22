@@ -6,5 +6,5 @@ export function retrieve(path, succ, fail) {
     mode: 'cors'
   }).then(response => {
     response.json().then(succ, fail);
-  })
+  });
 }
