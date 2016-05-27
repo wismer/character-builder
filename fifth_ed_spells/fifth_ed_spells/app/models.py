@@ -9,7 +9,8 @@ from .constants import (
     DIE_CHOICES,
     SHORT_RANGE,
     LONG_RANGE,
-    MUNDANE_DAMAGE_TYPES
+    MUNDANE_DAMAGE_TYPES,
+    SPELL_SHAPES
 )
 
 related_fields = [
@@ -158,55 +159,16 @@ class Trait(models.Model):
         return self.name
 
 
+class Spell(TimeStampedModel):
+    name = models.CharField(max_length=255)
+    desc = models.TextField()
+    level = models.SmallIntegerField(default=0)
+    requires_concentration = models.BooleanField(default=False)
+    casting_time = models.CharField(max_length=255)
+    components = ArrayField(models.CharField(max_length=10), default=list, blank=False)
+    spell_range = models.CharField(max_length=255)
+    spell_shape = models.CharField(max_length=30, choices=SPELL_SHAPES, null=True)
+    duration = models.CharField(max_length=255)
 
-# class CharacterClass(TimeStampedModel):
-#     name = models.CharField(max_length=500)
-#     skills = ArrayField(models.CharField(max_length=50), blank=False, default=list)
-#     skill_choices = models.IntegerField(default=0)
-#     armor = ArrayField(models.CharField(max_length=50), blank=False, default=list)
-#     weapons = ArrayField(models.CharField(max_length=50), blank=False, default=list)
-#     languages = ArrayField(models.CharField(max_length=50), blank=False, default=list)
-#     hp_die = models.IntegerField(default=0)
-#     parent_class = models.ForeignKey('self', null=True, blank=True, related_name='subclasses')
-#
-#     def __str__(self):
-#         if self.parent_class:
-#             return '{0} {1}'.format(self.name, self.parent_class.name)
-#
-#         return self.name
-
-
-# class Spell(TimeStampedModel):
-#     name = models.CharField(max_length=255)
-#     desc = models.CharField(max_length=5000)
-#     level = models.SmallIntegerField(default=0)
-#     requires_concentration = models.BooleanField(default=False)
-#     casting_time = models.CharField(max_length=255)
-#     components = ArrayField(models.CharField(max_length=10), default=list, blank=False)
-#     spell_range = models.CharField(max_length=255)
-#     duration = models.CharField(max_length=255)
-#
-#     def __str__(self):
-#         return self.name
-#
-#
-# class SpellSchool(TimeStampedModel):
-#     name = models.CharField(max_length=255)
-#
-#
-# class Skill(TimeStampedModel):
-#     name = models.CharField(max_length=50)
-#     desc = models.CharField(max_length=1000)
-#     attribute = models.CharField(max_length=50)
-#
-#
-# class SpellProperties(TimeStampedModel):
-#     subdomain = models.CharField(max_length=100)
-#     spell = models.ForeignKey(Spell)
-#     character_class = models.ForeignKey(CharacterClass)
-#
-#
-# class Ability(TimeStampedModel):
-#     name = models.CharField(max_length=100)
-#     desc = models.CharField(max_length=5000)
-#     requirement = models.CharField(max_length=100)
+    def __str__(self):
+        return self.name

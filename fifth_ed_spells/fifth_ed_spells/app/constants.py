@@ -26,3 +26,12 @@ SHORT_RANGE = [(None, 'Not Ranged')] + [range_formatter(rng, 1) for rng in range
 
 dmg_types = ['bludgeoning', 'piercing', 'slashing']
 MUNDANE_DAMAGE_TYPES = [(dmg, dmg.capitalize()) for dmg in dmg_types]
+
+SPELL_SHAPES = (
+    (None, 'None'),
+    ('cone', 'Cone'),
+    ('straight', 'Straight Line'),
+    ('wall', 'Wall'),
+    ('pb', 'Point Blank Area'),
+    ('square area', 'Area')
+)
