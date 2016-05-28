@@ -64,7 +64,7 @@ class PlayerClassManager(models.Manager):
         return super().create(**kwargs)
 
 
-class BasePlayerClass(TimeStampedModel):
+class BaseCharacterClass(models.Model):
     name = models.CharField(max_length=500)
     skills = ArrayField(models.CharField(max_length=50), blank=False, default=list)
     skill_choices = models.IntegerField(default=0)
@@ -77,15 +77,16 @@ class BasePlayerClass(TimeStampedModel):
     def is_subclass(self):
         return hasattr(self, 'subclass')
 
-
-class ParentClass(BasePlayerClass):
-    def add_subclass(self, **kwargs):
-        kwargs['parent_class'] = self
-        return SubClass.objects.create(**kwargs)
+    class Meta:
+        abstract = True
 
 
-class SubClass(BasePlayerClass):
-    parent_class = models.ForeignKey('ParentClass', null=True)
+class ParentCharacterClass(BaseCharacterClass):
+    pass
+
+
+class SubCharacterClass(BaseCharacterClass):
+    parent_class = models.ForeignKey('ParentCharacterClass', null=True)
     objects = PlayerClassManager()
 
 
@@ -179,9 +180,11 @@ class Spell(TimeStampedModel):
 
 class SpellProperty(models.Model):
     spell = models.ForeignKey('Spell')
+    # character = models.ForeignKey('CharacterClass')
     subdomain = models.CharField(max_length=50, null=True)
 
 
 class Player(TimeStampedModel):
     player = models.ForeignKey('account.User')
+    # character = models.ForeignKey('CharacterClass')
     character_name = models.CharField(max_length=300)

@@ -8,6 +8,8 @@ from .models import (
     TraitProperty,
     Weapon,
     Armor,
+    ParentCharacterClass,
+    SubCharacterClass
 )
 
 
@@ -51,6 +53,15 @@ class SubRaceAdmin(admin.ModelAdmin):
     inlines = [RacialTraitAdminInline]
 
 
+class SubClassAdmin(admin.ModelAdmin):
+    pass
+
+
+class ParentClassAdmin(admin.ModelAdmin):
+    pass
+
+admin.site.register(SubCharacterClass, SubClassAdmin)
+admin.site.register(ParentCharacterClass, ParentClassAdmin)
 admin.site.register(ParentRace, ParentRaceAdmin)
 admin.site.register(SubRace, SubRaceAdmin)
 admin.site.register(RacialTrait, RacialTraitAdmin)

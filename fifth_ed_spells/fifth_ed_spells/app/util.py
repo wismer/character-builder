@@ -8,11 +8,11 @@ def default_components():
 def parse_spell(row):
     spell = dict(
         name=row[3],
-        desc=row[4],
+        desc=row[4].replace('()', ''),
         requires_concentration=row[5] == 't',
         casting_time=row[6],
-        components=row[7],
-        components_desc=[x for x in default_components() if x in row[8]],
+        components=[x for x in ['V', 'S', 'M'] if x in row[7]],
+        components_desc=row[8],
         level=int(row[9]),
         spell_range=row[10],
         duration=row[12]
@@ -23,20 +23,23 @@ def parse_spell(row):
 
 def copy_spells(spell_cls):
     schools = get_schools()
-    with open('~/spell.csv') as p:
+    spells = []
+    with open('/Users/Matt/spells.csv') as p:
         for line in csv.reader(p):
             if line[0] == 'id':
                 continue
             spell, school_id = parse_spell(line)
             spell['school'] = schools[school_id]
-            spell_cls.objects.create(**spell)
+            spells.append(spell)
+            # spell_cls.objects.create(**spell)
+    return spells
 
 
 def get_schools():
     schools = {}
-    with open('~/spell-school.csv') as p:
+    with open('/Users/Matt/spells-school.csv') as p:
         for line in csv.reader(p):
-            if line[0] != '1':
+            if line[0] == 'id':
                 continue
             schools[line[0]] = line[3]
 
