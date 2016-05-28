@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.postgres.fields import ArrayField
 from model_utils.models import TimeStampedModel
 
+from .util import default_components
 from .constants import (
     ARMOR_TYPES,
     ARMOR_VALUES,
@@ -162,13 +163,25 @@ class Trait(models.Model):
 class Spell(TimeStampedModel):
     name = models.CharField(max_length=255)
     desc = models.TextField()
-    level = models.SmallIntegerField(default=0)
     requires_concentration = models.BooleanField(default=False)
     casting_time = models.CharField(max_length=255)
-    components = ArrayField(models.CharField(max_length=10), default=list, blank=False)
+    components = ArrayField(models.CharField(max_length=10), default=default_components, blank=False)
+    components_desc = models.CharField(max_length=300, null=True)
     spell_range = models.CharField(max_length=255)
     spell_shape = models.CharField(max_length=30, choices=SPELL_SHAPES, null=True)
+    level = models.SmallIntegerField(default=0)
     duration = models.CharField(max_length=255)
+    school = models.CharField(max_length=50, default='???')
 
     def __str__(self):
         return self.name
+
+
+class SpellProperty(models.Model):
+    spell = models.ForeignKey('Spell')
+    subdomain = models.CharField(max_length=50, null=True)
+
+
+class Player(TimeStampedModel):
+    player = models.ForeignKey('account.User')
+    character_name = models.CharField(max_length=300)
