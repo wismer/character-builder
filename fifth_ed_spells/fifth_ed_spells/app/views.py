@@ -4,7 +4,8 @@ from rest_framework.response import Response
 from .models import (
     ParentRace,
     Trait,
-    Item
+    Item,
+    Skill
 )
 from .serializers import (
     ParentRaceSerializer,
@@ -26,6 +27,7 @@ class ItemView(viewsets.ModelViewSet):
         data = {
             'weapons': [item.weapon for item in qs.filter(weapon__isnull=False)],
             'armor': [item.armor for item in qs.filter(weapon__isnull=True)],
-            'traits': Trait.objects.all()
+            'traits': Trait.objects.all(),
+            'skills': Skill.objects.all()
         }
         return Response(data=BaseItemSerializer(data).data)

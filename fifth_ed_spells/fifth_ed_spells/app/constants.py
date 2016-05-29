@@ -35,3 +35,12 @@ SPELL_SHAPES = (
     ('pb', 'Point Blank Area'),
     ('square area', 'Area')
 )
+
+ABILITIES = (
+    ('strength', 'Strength'),
+    ('constitution', 'Constitution'),
+    ('dexterity', 'Dexterity'),
+    ('intelligence', 'Intelligence'),
+    ('wisdom', 'Wisdom'),
+    ('charisma', 'Charisma'),
+)

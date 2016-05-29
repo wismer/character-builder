@@ -4,7 +4,22 @@ import { RaceList, RaceChoice } from './components/races/race-list';
 import { readableAttributes, convertScore } from './util/constants';
 import { retrieve } from './util/adapter';
 import Dashboard from './components/dashboard/dashboard';
+import PlayerPreview from './components/player-preview';
 import { Weapon, Armor, Item, Player } from './classes/main';
+
+const STEPS = [
+    { component: RaceList }
+]
+const sampleData = {
+  perks: [
+    {name: 'dwarven toughness', effect: '+1 hp per level'},
+    {name: 'dwarven resilience', effect: 'poison resist'}
+  ],
+
+  skills: [
+    { name: 'medicine', proficient: false }
+  ]
+}
 
 let App = React.createClass({
   getInitialState() {
@@ -26,7 +41,14 @@ let App = React.createClass({
       charClass: null,
       spellSlots: [],
       knownSpells: [],
+      _currentStep: 0,
     };
+  },
+
+  _renderCurrentStep() {
+    var step = STEPS[this.state._currentStep];
+    var races = this.props.races;
+    return React.createElement(step.component, {races});
   },
 
   render() {
@@ -54,11 +76,22 @@ let App = React.createClass({
         </div>
       );
     });
+    var perks = sampleData.perks.map(perk => {
+      return <div className='perk' key={perk.name}>{perk.name}</div>
+    });
     return (
       <div className='primary-node'>
         <Dashboard>
           <div className='ability-scores'>
             {abilityScores}
+          </div>
+          <div id='player-info'>
+            player dashboard goes here
+            <div id='perks'>
+              {perks}
+            </div>
+            <div id='skills'>skills</div>
+            <div id='traits'>traits</div>
           </div>
         </Dashboard>
       </div>
@@ -67,7 +100,6 @@ let App = React.createClass({
 });
 
 function showReact() {
-  var state = {};
   retrieve('items', items => {
     retrieve('races', races => {
       ReactDOM.render(

@@ -8,6 +8,7 @@ from .models import (
     Weapon,
     Trait,
     Armor,
+    Skill,
 )
 
 
@@ -62,7 +63,13 @@ class TraitSerializer(serializers.ModelSerializer):
         model = Trait
 
 
+class SkillSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Skill
+
+
 class BaseItemSerializer(serializers.Serializer):
     weapons = WeaponSerializer(many=True)
     armor = ArmorSerializer(many=True)
     traits = TraitSerializer(many=True)
+    skills = SkillSerializer(many=True)

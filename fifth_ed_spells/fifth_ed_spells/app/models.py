@@ -11,7 +11,8 @@ from .constants import (
     SHORT_RANGE,
     LONG_RANGE,
     MUNDANE_DAMAGE_TYPES,
-    SPELL_SHAPES
+    SPELL_SHAPES,
+    ABILITIES
 )
 
 related_fields = [
@@ -188,3 +189,12 @@ class Player(TimeStampedModel):
     player = models.ForeignKey('account.User')
     # character = models.ForeignKey('CharacterClass')
     character_name = models.CharField(max_length=300)
+
+
+class Skill(models.Model):
+    name = models.CharField(max_length=50)
+    ability = models.CharField(max_length=50, choices=ABILITIES)
+    desc = models.TextField()
+
+    def __str__(self):
+        return self.name
