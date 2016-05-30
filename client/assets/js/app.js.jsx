@@ -5,9 +5,26 @@ import { readableAttributes, convertScore } from './util/constants';
 import { retrieve } from './util/adapter';
 import Dashboard from './components/dashboard/dashboard';
 import { Weapon, Armor, Item, Player } from './classes/main';
+import SkillActions from './mixins/skill-actions';
+let renderCount = 0;
+const STEPS = [
+    { component: RaceList }
+]
+const sampleData = {
+  perks: [
+    {name: 'dwarven toughness', effect: '+1 hp per level'},
+    {name: 'dwarven resilience', effect: 'poison resist'}
+  ],
+
+  skills: [
+    { name: 'medicine', proficient: false },
+  ]
+}
 
 let App = React.createClass({
   getInitialState() {
+    var skills = this.props.items.skills;
+    skills.forEach(skill => skill.isActive = false);
     return {
       abilityScores: [8, 8, 8, 8, 8, 8, 8],
       armor: [],
@@ -20,54 +37,41 @@ let App = React.createClass({
       hasDarkvision: false,
       proficiencyBonus: 0,
       savingThrowAbilities: [],
+      trainedSkills: skills, // { name: string, isProficient: boolean }
       hp: 0,
       level: 1,
       race: null,
       charClass: null,
       spellSlots: [],
       knownSpells: [],
+      _currentStep: 0,
+      _skillChoices: 3,
     };
   },
 
+  _renderCurrentStep() {
+    var step = STEPS[this.state._currentStep];
+    var races = this.props.races;
+    return React.createElement(step.component, {races});
+  },
+
   render() {
-    var abilityScores = this.state.abilityScores.map((score, idx) => {
-      var { modifier, short, long } = convertScore(score, idx);
-      return (
-        <div key={short} className='ability-score'>
-          <div className='ability-meta'>
-            <div className='ability-name-short'>
-              {short.toUpperCase()}
-            </div>
+    var { weapons, armor, skills } = this.props.items;
+    var trainedSkills = this.state.trainedSkills;
+    var abilities = this.state.abilityScores.map(convertScore);
 
-            <div className='ability-score-modifier'>
-              ({modifier > 0 ? `+${modifier}` : modifier})
-            </div>
-          </div>
-
-          <div className='score'>
-            {score}
-          </div>
-
-          <div className='ability-score-name'>
-            {long}
-          </div>
-        </div>
-      );
-    });
     return (
       <div className='primary-node'>
-        <Dashboard>
-          <div className='ability-scores'>
-            {abilityScores}
-          </div>
-        </Dashboard>
+        <div id='current-view'>
+
+        </div>
+        <Dashboard skills={skills} abilities={abilities} />
       </div>
     );
   }
 });
 
 function showReact() {
-  var state = {};
   retrieve('items', items => {
     retrieve('races', races => {
       ReactDOM.render(

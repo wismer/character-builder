@@ -8,6 +8,7 @@ from .models import (
     Weapon,
     Trait,
     Armor,
+    Skill,
 )
 
 
@@ -62,7 +63,19 @@ class TraitSerializer(serializers.ModelSerializer):
         model = Trait
 
 
+class SkillSerializer(serializers.ModelSerializer):
+    is_proficient = serializers.SerializerMethodField()
+
+    def get_is_proficient(self, obj):
+        return False
+
+    class Meta:
+        fields = ('id', 'name', 'desc', 'ability', 'is_proficient')
+        model = Skill
+
+
 class BaseItemSerializer(serializers.Serializer):
     weapons = WeaponSerializer(many=True)
     armor = ArmorSerializer(many=True)
     traits = TraitSerializer(many=True)
+    skills = SkillSerializer(many=True)

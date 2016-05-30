@@ -44,3 +44,11 @@ def get_schools():
             schools[line[0]] = line[3]
 
     return schools
+
+
+def get_skills(skill_cls):
+    with open('/Users/Matt/skills.csv') as p:
+        for line in csv.reader(p):
+            skill_id, _, _, name, desc, ability = line
+            if skill_id != 'id':
+                skill_cls.objects.create(pk=skill_id, name=name, desc=desc, ability=ability)
