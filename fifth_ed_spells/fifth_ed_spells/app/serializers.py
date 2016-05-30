@@ -27,7 +27,7 @@ class RacialTraitSerializer(serializers.ModelSerializer):
         model = RacialTrait
 
 
-class SubRaceSerializer(serializers.ModelSerializer):
+class RaceSerializerMixin(object):
     racialtraits = RacialTraitSerializer(many=True)
     weapons = serializers.SerializerMethodField()
 
@@ -37,21 +37,14 @@ class SubRaceSerializer(serializers.ModelSerializer):
             q |= Q(name__iexact=weapon)
         return Weapon.objects.filter(q).values_list('id', flat=True)
 
+
+class SubRaceSerializer(RaceSerializerMixin, serializers.ModelSerializer):
     class Meta:
         model = SubRace
 
 
-class ParentRaceSerializer(serializers.ModelSerializer):
+class ParentRaceSerializer(RaceSerializerMixin, serializers.ModelSerializer):
     subraces = SubRaceSerializer(many=True)
-    # racialtraits = serializers.SerializerMethodField()
-    racialtraits = RacialTraitSerializer(many=True)
-    weapons = serializers.SerializerMethodField()
-
-    def get_weapons(self, obj):
-        q = Q()
-        for weapon in obj.weapons:
-            q |= Q(name__iexact=weapon)
-        return Weapon.objects.filter(q).values_list('id', flat=True)
 
     class Meta:
         model = ParentRace
