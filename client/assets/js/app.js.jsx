@@ -6,7 +6,7 @@ import { retrieve } from './util/adapter';
 import Dashboard from './components/dashboard/dashboard';
 import { Weapon, Armor, Item, Player } from './classes/main';
 import SkillActions from './mixins/skill-actions';
-
+let renderCount = 0;
 const STEPS = [
     { component: RaceList }
 ]
@@ -22,7 +22,6 @@ const sampleData = {
 }
 
 let App = React.createClass({
-  mixins: [SkillActions],
   getInitialState() {
     var skills = this.props.items.skills;
     skills.forEach(skill => skill.isActive = false);
@@ -60,14 +59,13 @@ let App = React.createClass({
     var { weapons, armor, skills } = this.props.items;
     var trainedSkills = this.state.trainedSkills;
     var abilities = this.state.abilityScores.map(convertScore);
+
     return (
       <div className='primary-node'>
-        <Dashboard skills={skills} abilities={abilities} skillHighlight={this._skillHighlight} skillClick={this._skillClick}>
-          <div id='player-info'>
-            player dashboard goes here
-            <div id='perks'></div>
-          </div>
-        </Dashboard>
+        <div id='current-view'>
+
+        </div>
+        <Dashboard skills={skills} abilities={abilities} />
       </div>
     );
   }

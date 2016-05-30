@@ -1,5 +1,5 @@
 #dashboard {
-  position: absolute;
+  position: relative;
   bottom: 0;
   width: 100%;
   display: flex;
@@ -11,18 +11,61 @@
 }
 
 #skills {
-  display: flex;
-  flex-flow: column wrap;
+  font-size: 0.6em;
+  cursor: pointer;
 
-  .skill {
-    display: flex;
+  .checked {
+    background-image: url(/img/check.png);
+    height: 18px;
+    width: 22px;
+    background-repeat: no-repeat;
+    padding-right: 5px;
   }
+
+  .unchecked {
+    background-image: url(/img/unchecked.png);
+    height: 18px;
+    width: 22px;
+    background-repeat: no-repeat;
+    padding-right: 5px;
+  }
+
+  .skill-list {
+    display: flex;
+    flex-flow: row wrap;
+
+    .skill {
+      display: flex;
+      padding-bottom: 5px;
+      width: 40%;
+    }
+
+    .skill-mod {
+      align-self: flex-start;
+      padding-right: 5px;
+    }
+  }
+
+  .skill-tooltip {
+    position: absolute;
+    top: -10em;
+  }
+
 }
 
 .ability-scores {
   display: flex;
   flex-flow: row nowrap;
   height: 110px;
+  background-repeat: no-repeat;
+
+  .alter-up {
+    background-image: url(/img/plus.png)
+  }
+
+  .alter-down {
+    background-image: url(/img/minus.png)
+  }
 
   .ability-score {
     display: flex;

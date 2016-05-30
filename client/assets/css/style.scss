@@ -6,11 +6,15 @@
 @import "dashboard/style";
 
 body {
-  width: 1080px;
+  width: 1230px;
   margin: 0 auto;
   font-size: golden-ratio(14px,  1);
   font-family: sans-serif;
   background-color: #5F6161;
+
+  #current-view {
+    min-height: 450px;
+  }
 }
 
 .main-grid {

@@ -1,47 +1,77 @@
 import React from 'react';
 import SkillActions from '../../mixins/skill-actions';
+import AbilityActions from '../../mixins/ability-actions';
+
+
+let Perks = React.createClass({
+  render() {
+    return (
+      <div id='perks'>
+        <div className='perk-title'>
+          Perks
+        </div>
+
+        <div className='perk-list'>
+        </div>
+      </div>
+    );
+  }
+});
 
 let Skills = React.createClass({
   mixins: [SkillActions],
+
+  getInitialState() {
+    return { _skillChoices: 3, highlightedSkill: -1 };
+  },
+
   render() {
     var modifiers = this.props.modifiers;
+    var tooltip = this.props.skills[this.state.highlightedSkill];
     var skills = this.props.skills.map((skill, i) => {
       var modifier = modifiers[skill.ability];
-      if (skill.isProficient) modifier += 3;
-      var style = {
-        display: skill.isActive ? 'inline-block' : 'none',
-      };
-      style.fontStyle = skill.isProficient ? 'italic' : 'normal';
+      var status;
+      if (skill.isProficient) {
+        modifier += 3;
+        status = <span className='checked' />;
+      } else {
+        status = <span className='unchecked' />
+      }
       return (
         <div className='skill' key={`${skill.name}-${i}`} onMouseEnter={this._skillHighlight} onMouseLeave={this._skillHighlight} onClick={this._skillClick}>
-          <div>{modifier}</div>
-          <div>{skill.name}</div>
-          <div style={style} className='skill-tooltip'>
-            {skill.desc}
+          <div className='skill-mod'>
+            ({modifier > 0 ? `+${modifier}` : modifier})
           </div>
+          {status}
+          <div>{skill.name}</div>
         </div>
       );
     });
 
-
     return (
       <div id='skills'>
-        {skills}
+        <div className='skill-tooltip'>
+          {tooltip ? tooltip.desc : ''}
+        </div>
+
+        <div className='skill-list'>
+          {skills}
+        </div>
       </div>
     )
   }
 });
 
 export default React.createClass({
-  mixins: [SkillActions],
+  mixins: [AbilityActions],
   render() {
     var modifiers = {};
-    var skills = this.props.skills;
+    var { skills, perks } = this.props;
     var abilityScoresDisplay = this.props.abilities.map((ability, idx) => {
       var { modifier, short, long, score } = ability;
       modifiers[long.toLowerCase()] = modifier;
       return (
-        <div key={short} className='ability-score'>
+        <div key={short} onMouseEnter={this._abilityHighlight} className='ability-score'>
           <div className='ability-meta'>
             <div className='ability-name-short'>
               {short.toUpperCase()}
@@ -70,7 +100,8 @@ export default React.createClass({
         </div>
 
         {this.props.children}
-        <Skills skills={skills} modifiers={modifiers} skillClick={this._skillClick} skillHighlight={this._skillHighlight} />
+        <Perks perks={perks} />
+        <Skills skills={skills} modifiers={modifiers} skillClick={this._skillClick}/>
       </div>
     );
   }
