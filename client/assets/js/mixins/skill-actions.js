@@ -4,7 +4,7 @@ export default {
       this.props.skillClick(...arguments);
     } else {
       var [idx] = key.match(/\d+$/);
-      var skill = this.state.trainedSkills[idx];
+      var skill = this.props.skills[idx];
       var _skillChoices = this.state._skillChoices;
       if (_skillChoices === 0 && !skill.isProficient) {
         return;
@@ -12,7 +12,7 @@ export default {
         skill.isProficient = !skill.isProficient;
         _skillChoices += skill.isProficient ? -1 : 1;
       }
-      this.setState({ trainedSkills: this.state.trainedSkills, _skillChoices });
+      this.setState({ _skillChoices });
     }
   },
 
