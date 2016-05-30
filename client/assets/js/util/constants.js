@@ -15,6 +15,7 @@ var attributeMap = [
 export function convertScore(score, idx) {
   var attr = attributeMap[idx];
   attr.modifier = Math.floor((score - 10) / 2);
+  attr.score = score;
   return attr;
 }
 

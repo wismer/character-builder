@@ -4,7 +4,6 @@ import { RaceList, RaceChoice } from './components/races/race-list';
 import { readableAttributes, convertScore } from './util/constants';
 import { retrieve } from './util/adapter';
 import Dashboard from './components/dashboard/dashboard';
-import PlayerPreview from './components/player-preview';
 import { Weapon, Armor, Item, Player } from './classes/main';
 
 const STEPS = [
@@ -17,12 +16,13 @@ const sampleData = {
   ],
 
   skills: [
-    { name: 'medicine', proficient: false }
+    { name: 'medicine', proficient: false },
   ]
 }
 
 let App = React.createClass({
   getInitialState() {
+    var skills = this.props.items.skills;
     return {
       abilityScores: [8, 8, 8, 8, 8, 8, 8],
       armor: [],
@@ -35,6 +35,7 @@ let App = React.createClass({
       hasDarkvision: false,
       proficiencyBonus: 0,
       savingThrowAbilities: [],
+      trainedSkills: skills, // { name: string, isProficient: boolean }
       hp: 0,
       level: 1,
       race: null,
@@ -42,6 +43,7 @@ let App = React.createClass({
       spellSlots: [],
       knownSpells: [],
       _currentStep: 0,
+      _skillChoices: 3,
     };
   },
 
@@ -52,46 +54,15 @@ let App = React.createClass({
   },
 
   render() {
-    var abilityScores = this.state.abilityScores.map((score, idx) => {
-      var { modifier, short, long } = convertScore(score, idx);
-      return (
-        <div key={short} className='ability-score'>
-          <div className='ability-meta'>
-            <div className='ability-name-short'>
-              {short.toUpperCase()}
-            </div>
-
-            <div className='ability-score-modifier'>
-              ({modifier > 0 ? `+${modifier}` : modifier})
-            </div>
-          </div>
-
-          <div className='score'>
-            {score}
-          </div>
-
-          <div className='ability-score-name'>
-            {long}
-          </div>
-        </div>
-      );
-    });
-    var perks = sampleData.perks.map(perk => {
-      return <div className='perk' key={perk.name}>{perk.name}</div>
-    });
+    var { weapons, armor, skills } = this.props.items;
+    var trainedSkills = this.state.trainedSkills;
+    var abilities = this.state.abilityScores.map(convertScore);
     return (
       <div className='primary-node'>
-        <Dashboard>
-          <div className='ability-scores'>
-            {abilityScores}
-          </div>
+        <Dashboard skills={skills} abilities={abilities}>
           <div id='player-info'>
             player dashboard goes here
-            <div id='perks'>
-              {perks}
-            </div>
-            <div id='skills'>skills</div>
-            <div id='traits'>traits</div>
+            <div id='perks'></div>
           </div>
         </Dashboard>
       </div>

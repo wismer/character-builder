@@ -64,7 +64,13 @@ class TraitSerializer(serializers.ModelSerializer):
 
 
 class SkillSerializer(serializers.ModelSerializer):
+    is_proficient = serializers.SerializerMethodField()
+
+    def get_is_proficient(self, obj):
+        return False
+
     class Meta:
+        fields = ('id', 'name', 'desc', 'ability', 'is_proficient')
         model = Skill
 
 
