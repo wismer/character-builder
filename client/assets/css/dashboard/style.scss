@@ -10,6 +10,15 @@
   display: flex;
 }
 
+#skills {
+  display: flex;
+  flex-flow: column wrap;
+
+  .skill {
+    display: flex;
+  }
+}
+
 .ability-scores {
   display: flex;
   flex-flow: row nowrap;

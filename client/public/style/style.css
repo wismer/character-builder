@@ -291,6 +291,12 @@ html {
 #player-info {
   display: flex; }
 
+#skills {
+  display: flex;
+  flex-flow: column wrap; }
+  #skills .skill {
+    display: flex; }
+
 .ability-scores {
   display: flex;
   flex-flow: row nowrap;
