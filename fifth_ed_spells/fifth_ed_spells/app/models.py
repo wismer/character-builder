@@ -28,7 +28,7 @@ related_fields = [
 
 class BaseRace(models.Model):
     name = models.CharField(max_length=30)
-    attributes = ArrayField(models.IntegerField(default=0), size=7, blank=False, default=list)
+    ability_scores = ArrayField(models.IntegerField(default=0), size=7, blank=False, default=list)
     has_darkvision = models.BooleanField(default=False)
     armor = ArrayField(models.CharField(max_length=50), blank=True, default=list)
     weapons = ArrayField(models.CharField(max_length=50), blank=True, default=list)
