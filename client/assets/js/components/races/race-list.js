@@ -67,9 +67,9 @@ const SubRace = React.createClass({
 
     return (
       <div
-        onClick={onSelect.bind(null, this.props)}
-        onMouseEnter={onEnter.bind(null, this.props)}
-        onMouseLeave={onLeave.bind(null, this.props)}
+        onClick={onSelect.bind(null, this.props.preview)}
+        onMouseEnter={onEnter.bind(null, this.props.preview)}
+        onMouseLeave={onLeave.bind(null, this.props.preview)}
         key={name}>{name}
       </div>
     );
@@ -142,12 +142,14 @@ export const RaceList = React.createClass({
     }
     var raceList = this.props.races.map((race, ridx)=> {
       var subraces = race.subraces.map((subrace, sidx) => {
+        var preview = new PlayerRace(subrace).toPreview(race);
         var sr = new PlayerRace(subrace, activeRaceNode === ridx, race);
         return <SubRace
           parentRace={ridx}
           onEnter={onEnter}
           onLeave={onLeave}
           onSelect={onSelect}
+          preview={preview}
           {...subrace}
           key={`subrace-${sidx}`}
         />

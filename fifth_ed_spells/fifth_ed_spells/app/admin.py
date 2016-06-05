@@ -9,7 +9,8 @@ from .models import (
     Weapon,
     Armor,
     ParentCharacterClass,
-    SubCharacterClass
+    SubCharacterClass,
+    Spell
 )
 
 
@@ -60,6 +61,26 @@ class SubClassAdmin(admin.ModelAdmin):
 class ParentClassAdmin(admin.ModelAdmin):
     pass
 
+
+class SpellAdmin(admin.ModelAdmin):
+    list_per_page = 500
+    list_filter = (
+        'level',
+        'school'
+    )
+    readonly_fields = [spell.name for spell in Spell._meta.fields]
+    list_display = (
+        'name',
+        'level',
+        'school',
+    )
+
+    search_fields = (
+        'name',
+    )
+
+
+admin.site.register(Spell, SpellAdmin)
 admin.site.register(SubCharacterClass, SubClassAdmin)
 admin.site.register(ParentCharacterClass, ParentClassAdmin)
 admin.site.register(ParentRace, ParentRaceAdmin)

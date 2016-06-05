@@ -39,6 +39,12 @@ class RaceSerializerMixin(object):
 
 
 class SubRaceSerializer(RaceSerializerMixin, serializers.ModelSerializer):
+    attributes = serializers.SerializerMethodField()
+
+    def get_attributes(self, obj):
+        # do this in the model data, not here but this is fine for now TODO
+        return [parentattr + childattr for parentattr, childattr in zip(obj.parent.attributes, obj.attributes)]
+
     class Meta:
         model = SubRace
 

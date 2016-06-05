@@ -9,8 +9,8 @@ import SkillActions from './mixins/skill-actions';
 
 
 const STEPS = [
-    { component: RaceList }
-]
+    { component: RaceList, updateFunc: '_updateRace' },
+];
 
 let App = React.createClass({
   getInitialState() {
@@ -28,7 +28,7 @@ let App = React.createClass({
       savingThrowAbilities: [],
       hp: 0,
       level: 1,
-      race: null,
+      race: null, // Race object needs to be destructured!!! TODO
       charClass: null,
       spellSlots: [],
       knownSpells: [],
@@ -37,25 +37,31 @@ let App = React.createClass({
     };
   },
 
-  updateSelection(evt, race) {
+  _updateRace(evt, race) {
+    var { abilityScores } = this.state;
     if (evt === 'select') {
-      this.setState({ race });
+      if (this.state.race) {
+        this.state.race.abilityScores.forEach((attr, i) => abilityScores[i] -= attr.score);
+      }
+
+      race.abilityScores.forEach((attr, i) => abilityScores[i] += attr);
+      this.setState({ abilityScores, race });
     }
   },
 
   _renderCurrentStep() {
     var step = STEPS[this.state._currentStep];
     var races = this.props.races;
-    var updateSelection = this.updateSelection;
+    var updateSelection = this[step.updateFunc];
     return React.createElement(step.component, {races, updateSelection});
   },
 
   render() {
     var { weapons, armor, skills } = this.props.items,
         abilities = this.state.abilityScores.map(convertScore),
-        race;
-    if (this.state.race) {
-      race = new
+        race = this.state.race;
+    if (race) {
+      race = new PlayerRace(race);
     }
 
     return (
