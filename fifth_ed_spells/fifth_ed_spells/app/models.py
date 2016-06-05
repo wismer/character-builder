@@ -201,3 +201,11 @@ class Skill(models.Model):
 
     class Meta:
         ordering = ['ability']
+
+
+# TODO
+# Models to eventually add:
+#   Creature
+#   Party
+#   User
+#   SpellVariant
