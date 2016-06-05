@@ -62,7 +62,7 @@ const Traits = React.createClass({
 
 const SubRace = React.createClass({
   render() {
-    var { name } = this.props;
+    var { name } = this.props.preview;
     var { onEnter, onLeave, onSelect } = this.props;
 
     return (
@@ -102,23 +102,16 @@ export const RaceList = React.createClass({
     };
   },
 
-  onEnter(race) {
-    this.props.updateSelection('enter', race);
+  onEnter(race, evt) {
+    this.props.updateSelection(...arguments);
   },
 
-  onLeave(race) {
-    this.props.updateSelection('leave', race);
+  onLeave(race, evt) {
+    this.props.updateSelection(...arguments);
   },
 
-  onSelect(race) {
-    this.props.updateSelection('select', race);
-    // if (!this.props.race || race.name !== this.props.race.name) {
-    //   this.props.updateSelection(race, true);
-    // } else if (race.name === this.props.race.name && this.props.selected) {
-    //   this.props.updateSelection(null, false);
-    // } else {
-    //   this.props.updateSelection(race, true);
-    // }
+  onSelect(race, evt) {
+    this.props.updateSelection(...arguments);
   },
 
   toggleRace(activeRaceNode, idx) {
@@ -142,15 +135,13 @@ export const RaceList = React.createClass({
     }
     var raceList = this.props.races.map((race, ridx)=> {
       var subraces = race.subraces.map((subrace, sidx) => {
-        var preview = new PlayerRace(subrace).toPreview(race);
-        var sr = new PlayerRace(subrace, activeRaceNode === ridx, race);
+        var preview = new PlayerRace(subrace);
         return <SubRace
           parentRace={ridx}
           onEnter={onEnter}
           onLeave={onLeave}
           onSelect={onSelect}
           preview={preview}
-          {...subrace}
           key={`subrace-${sidx}`}
         />
       });

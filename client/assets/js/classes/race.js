@@ -3,6 +3,7 @@ import { readableAttributes } from '../util/constants';
 export default class PlayerRace {
   constructor(race) {
     this.name          = race.name;
+    this.skills        = race.skills;
     this.subraces      = race.subraces || [];
     this.hasDarkvision = race.has_darkvision;
     this.armor         = new Set(race.armor)
@@ -10,7 +11,7 @@ export default class PlayerRace {
     this.languages     = new Set(race.languages);
     this.speed         = race.speed;
     this.traits        = race.racialtraits;
-    this.attributes    = race.attributes;
+    this.abilityScores = race.ability_scores;
   }
 
   isActive(selectedRace) {

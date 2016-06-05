@@ -32,21 +32,29 @@ let App = React.createClass({
       charClass: null,
       spellSlots: [],
       knownSpells: [],
+      trainedSkills: [],
       _currentStep: 0,
       _skillChoices: 3,
     };
   },
 
-  _updateRace(evt, race) {
-    var { abilityScores } = this.state;
-    if (evt === 'select') {
-      if (this.state.race) {
-        this.state.race.abilityScores.forEach((attr, i) => abilityScores[i] -= attr.score);
-      }
-
-      race.abilityScores.forEach((attr, i) => abilityScores[i] += attr);
-      this.setState({ abilityScores, race });
+  _updateRace(activeRace, evt) {
+    console.log(activeRace.name, evt.type, this.state.race);
+    var { race, abilityScores } = this.state;
+    if (evt.type === 'mouseenter') {
+      activeRace.abilityScores.forEach((score, i) => abilityScores[i] += score);
+      race = activeRace;
+      // copy highlighted race
+    } else if (evt.type === 'mouseleave') {
+      // erase any highlighted but not saved race; update abilityScores
+      activeRace.abilityScores.forEach((score, i) => abilityScores[i] -= score);
+      race = null;
+    } else {
+      // copy selected race
+      race = activeRace;
     }
+
+    this.setState({ abilityScores, race });
   },
 
   _renderCurrentStep() {

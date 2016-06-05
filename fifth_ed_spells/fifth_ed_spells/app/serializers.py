@@ -40,6 +40,10 @@ class RaceSerializerMixin(object):
 
 class SubRaceSerializer(RaceSerializerMixin, serializers.ModelSerializer):
     ability_scores = serializers.SerializerMethodField()
+    skills = serializers.SerializerMethodField()
+
+    def get_skills(self, obj):
+        return obj.parent.skills + obj.skills
 
     def get_ability_scores(self, obj):
         # do this in the model data, not here but this is fine for now TODO
