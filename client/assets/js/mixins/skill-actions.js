@@ -3,34 +3,25 @@ export default {
     if (this.props.skillClick) {
       this.props.skillClick(...arguments);
     } else {
-      var [idx] = key.match(/\d+$/);
-      var skill = this.props.skills[idx];
-      var _skillChoices = this.state._skillChoices;
-      if (_skillChoices === 0 && !skill.isProficient) {
-        return;
-      } else {
-        skill.isProficient = !skill.isProficient;
-        _skillChoices += skill.isProficient ? -1 : 1;
+      var trainedSkills = this.state.trainedSkills,
+          _skillChoices = this.state._skillChoices;
+
+      for (let [k, v] of this.props.skills) {
+        if (key.includes(v.key) && trainedSkills.has(k)) {
+          trainedSkills.delete(k);
+        } else if (key.includes(v.key)) {
+          trainedSkills.add(k);
+        }
       }
-      this.setState({ _skillChoices });
+      this.setState({ _skillChoices, trainedSkills });
     }
   },
 
-  _skillHighlight(e, key) {
+  _skillHighlight(skill, e, key) {
     if (this.props.skillHighlight) {
       this.props.skillHighlight(...arguments);
     } else {
-      var skill = this.props.skills[idx],
-          { clientX, clientY } = e,
-          [idx] = key.match(/\d+$/),
-          highlightedSkill;
-
-      if (e.type === 'mouseenter') {
-        highlightedSkill = parseInt(idx);
-      } else {
-        highlightedSkill = -1;
-      }
-
+      var highlightedSkill = e.type === 'mouseenter' ? skill : null;
       this.setState({ highlightedSkill });
     }
   }

@@ -13,6 +13,7 @@ const STEPS = [
 ];
 
 let App = React.createClass({
+  mixins: [SkillActions],
   getInitialState() {
     return {
       abilityScores: [8, 8, 8, 8, 8, 8, 8],
@@ -32,29 +33,36 @@ let App = React.createClass({
       charClass: null,
       spellSlots: [],
       knownSpells: [],
-      trainedSkills: [],
+      trainedSkills: new Set(),
       _currentStep: 0,
       _skillChoices: 3,
     };
   },
 
   _updateRace(activeRace, evt) {
-    console.log(activeRace.name, evt.type, this.state.race);
-    var { race, abilityScores } = this.state;
+    var { race, abilityScores, trainedSkills } = this.state;
+
     if (evt.type === 'mouseenter') {
       activeRace.abilityScores.forEach((score, i) => abilityScores[i] += score);
       race = activeRace;
+      race.skills.forEach(skill => trainedSkills.add(skill));
       // copy highlighted race
     } else if (evt.type === 'mouseleave') {
+      race.skills.forEach(skill => trainedSkills.delete(skill.toLowerCase()));
       // erase any highlighted but not saved race; update abilityScores
       activeRace.abilityScores.forEach((score, i) => abilityScores[i] -= score);
       race = null;
     } else {
-      // copy selected race
-      race = activeRace;
+      if (race.name === activeRace.name) {
+        race.skills.forEach(skill => trainedSkills.delete(skill.toLowerCase()));
+        race = null;
+      } else {
+        // copy selected race
+        race = activeRace;
+      }
     }
 
-    this.setState({ abilityScores, race });
+    this.setState({ abilityScores, race, trainedSkills });
   },
 
   _renderCurrentStep() {
@@ -65,19 +73,28 @@ let App = React.createClass({
   },
 
   render() {
-    var { weapons, armor, skills } = this.props.items,
+    var { weapons, armor, skills } = this.props,
+        { race, trainedSkills } = this.state,
         abilities = this.state.abilityScores.map(convertScore),
-        race = this.state.race;
+        dashboard = {};
     if (race) {
       race = new PlayerRace(race);
     }
+
+    // skills
+
+    for (let [k, v] of this.props.skills) {
+      v.is_proficient = trainedSkills.has(k);
+    }
+
+    // TODO: feats
 
     return (
       <div className='primary-node'>
         <div id='current-view'>
           {this._renderCurrentStep()}
         </div>
-        <Dashboard skills={skills} abilities={abilities} />
+        <Dashboard skills={skills} abilities={abilities} skillClick={this._skillClick} />
       </div>
     );
   }
@@ -85,9 +102,15 @@ let App = React.createClass({
 
 function showReact() {
   retrieve('items', items => {
+    var { weapons, armor, skills } = items;
+    var toSkillMap = (skill) => {
+      skill.key = skill.name.toLowerCase().replace(/\s/g, '-');
+      return [skill.name, skill];
+    };
+    skills = new Map(skills.map(toSkillMap));
     retrieve('races', races => {
       ReactDOM.render(
-        <App items={items} races={races} />,
+        <App skills={skills} armor={armor} weapons={weapons} races={races} />,
         document.getElementById('render')
       );
     })

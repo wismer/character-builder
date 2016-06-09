@@ -28,17 +28,20 @@ let Skills = React.createClass({
   render() {
     var modifiers = this.props.modifiers;
     var tooltip = this.props.skills[this.state.highlightedSkill];
-    var skills = this.props.skills.map((skill, i) => {
+    var skills = Array.from(this.props.skills.values()).map((skill, i) => {
       var modifier = modifiers[skill.ability];
+      var skillHighlight = this._skillHighlight.bind(null, skill),
+          skillClick = this._skillClick.bind(null, skill);
       var status;
-      if (skill.isProficient) {
+      if (skill.is_proficient) {
         modifier += 3;
         status = <span className='checked' />;
       } else {
         status = <span className='unchecked' />
       }
+
       return (
-        <div className='skill' key={`${skill.name}-${i}`} onMouseEnter={this._skillHighlight} onMouseLeave={this._skillHighlight} onClick={this._skillClick}>
+        <div className='skill' key={skill.key} onMouseEnter={skillHighlight} onMouseLeave={skillHighlight} onClick={this._skillClick}>
           <div className='skill-mod'>
             ({modifier > 0 ? `+${modifier}` : modifier})
           </div>
@@ -63,7 +66,7 @@ let Skills = React.createClass({
 });
 
 export default React.createClass({
-  mixins: [AbilityActions],
+  mixins: [AbilityActions, SkillActions],
   render() {
     var modifiers = {};
     var { skills, perks } = this.props;
@@ -101,7 +104,7 @@ export default React.createClass({
 
         {this.props.children}
         <Perks perks={perks} />
-        <Skills skills={skills} modifiers={modifiers} skillClick={this._skillClick}/>
+        <Skills skills={skills} modifiers={modifiers} skillClick={this._skillClick} />
       </div>
     );
   }
