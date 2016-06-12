@@ -40,26 +40,62 @@ let App = React.createClass({
   },
 
   _updateRace(activeRace, evt) {
-    var { race, abilityScores, trainedSkills } = this.state;
+    var { race, abilityScores, trainedSkills } = this.state,
+        increase = true,
+        racialAbilityScores = activeRace.abilityScores,
+        racialSkills = activeRace.skills;
 
-    if (evt.type === 'mouseenter') {
-      activeRace.abilityScores.forEach((score, i) => abilityScores[i] += score);
+
+    if (evt.type === 'mouseleave') {
+      race = race.selected ? race : null;
+      increase = false;
+    }
+
+    if (evt.type === 'mouseenter' && !race) {
       race = activeRace;
-      race.skills.forEach(skill => trainedSkills.add(skill));
-      // copy highlighted race
-    } else if (evt.type === 'mouseleave') {
-      race.skills.forEach(skill => trainedSkills.delete(skill.toLowerCase()));
-      // erase any highlighted but not saved race; update abilityScores
-      activeRace.abilityScores.forEach((score, i) => abilityScores[i] -= score);
-      race = null;
+      race.selected = false;
+    }
+
+    if (evt.type === 'click' && race.name === activeRace.name) {
+      debugger
+      race = activeRace;
+      race.selected = true;
+    }
+
+    /*
+      Different possible states
+      selected, but not highlighted
+      selected and highlighted
+      not selected and highlighted
+
+      Mouse Leave:
+        There _should_ be a race in state - (not null)
+        There *might*
+    */
+    //
+    // if (evt.type === 'mouseenter') {
+    //   increase = true;
+    //   race = activeRace;
+    //   // copy highlighted race
+    // } else if (evt.type === 'mouseleave' || (race.name && race.name === activeRace.name)) {
+    //   // erase any highlighted but not saved race; update abilityScores
+    //   race = null;
+    //   // if (race && race.name === activeRace.name) {
+    //   //   race = null;
+    //   // } else {
+    //   //   // copy selected race
+    //   //   race = activeRace;
+    //   // }
+    // } else {
+    //   race = activeRace;
+    // }
+
+    if (increase) {
+      racialAbilityScores.forEach((score, i) => abilityScores[i] += score);
+      racialSkills.forEach(skill => trainedSkills.add(skill.toLowerCase()));
     } else {
-      if (race.name === activeRace.name) {
-        race.skills.forEach(skill => trainedSkills.delete(skill.toLowerCase()));
-        race = null;
-      } else {
-        // copy selected race
-        race = activeRace;
-      }
+      racialAbilityScores.forEach((score, i) => abilityScores[i] -= score);
+      racialSkills.forEach(skill => trainedSkills.delete(skill.toLowerCase()));
     }
 
     this.setState({ abilityScores, race, trainedSkills });
@@ -109,6 +145,7 @@ function showReact() {
     };
     skills = new Map(skills.map(toSkillMap));
     retrieve('races', races => {
+      races.forEach(race => race.selected = false);
       ReactDOM.render(
         <App skills={skills} armor={armor} weapons={weapons} races={races} />,
         document.getElementById('render')
