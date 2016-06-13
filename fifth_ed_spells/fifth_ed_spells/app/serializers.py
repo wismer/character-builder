@@ -27,9 +27,13 @@ class RacialTraitSerializer(serializers.ModelSerializer):
         model = RacialTrait
 
 
-class RaceSerializerMixin(object):
+class RaceSerializerMixin(serializers.Serializer):
     racialtraits = RacialTraitSerializer(many=True)
     weapons = serializers.SerializerMethodField()
+    selected = serializers.SerializerMethodField()
+
+    def get_selected(self, obj):
+        return False
 
     def get_weapons(self, obj):
         q = Q()
@@ -42,8 +46,8 @@ class SubRaceSerializer(RaceSerializerMixin, serializers.ModelSerializer):
     ability_scores = serializers.SerializerMethodField()
     skills = serializers.SerializerMethodField()
 
-    def get_skills(self, obj):
-        return obj.parent.skills + obj.skills
+    def get_skills(self, subrace):
+        return subrace.parent.skills + subrace.skills
 
     def get_ability_scores(self, obj):
         # do this in the model data, not here but this is fine for now TODO
