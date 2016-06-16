@@ -286,33 +286,14 @@ html {
   bottom: 0;
   width: 100%;
   display: flex;
-  flex-flow: row wrap; }
+  height: 200px; }
 
-section {
-  display: flex;
-  flex-flow: column wrap; }
-
-.char-info {
-  display: flex;
-  flex-grow: 1;
-  justify-content: space-between;
-  flex-direction: row nowrap; }
-  .char-info div {
-    border: 1px solid #f7f7f7;
-    flex-grow: 1; }
-    .char-info div input {
-      display: none; }
-    .char-info div:hover {
-      -webkit-transition: background-color, 300ms, ease-in-out;
-      -moz-transition: background-color, 300ms, ease-in-out;
-      transition: background-color, 300ms, ease-in-out;
-      cursor: pointer;
-      background-color: #ababab; }
+#player-info {
+  display: flex; }
 
 #skills {
   font-size: 0.6em;
-  cursor: pointer;
-  margin: 10px; }
+  cursor: pointer; }
   #skills .checked {
     background-image: url(/img/check.png);
     height: 18px;
@@ -327,12 +308,11 @@ section {
     padding-right: 5px; }
   #skills .skill-list {
     display: flex;
-    flex-flow: row wrap;
-    max-width: 350px; }
+    flex-flow: row wrap; }
     #skills .skill-list .skill {
       display: flex;
       padding-bottom: 5px;
-      width: 50%; }
+      width: 40%; }
     #skills .skill-list .skill-mod {
       align-self: flex-start;
       padding-right: 5px; }

@@ -10,7 +10,7 @@ export default {
         if (key.includes(v.key) && trainedSkills.has(k)) {
           trainedSkills.delete(k);
         } else if (key.includes(v.key)) {
-          trainedSkills.add(k);
+          trainedSkills.set(k, v);
         }
       }
       this.setState({ _skillChoices, trainedSkills });

@@ -213,7 +213,7 @@ class Skill(models.Model):
         return self.name
 
     class Meta:
-        ordering = ['ability']
+        ordering = ['name']
 
 
 # TODO

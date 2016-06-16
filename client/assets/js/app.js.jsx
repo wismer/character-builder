@@ -25,6 +25,7 @@ let App = React.createClass({
       speed: null,
       racialtraits: [],
       characterName: null,
+      age: 0,
       playerName: null,
       hasDarkvision: false,
       proficiencyBonus: 0,
@@ -79,24 +80,44 @@ let App = React.createClass({
     return React.createElement(step.component, {races, updateSelection});
   },
 
+  _updateBasic(field) {
+    
+  },
+
   _prevStep() {
+    if (this.state._currentStep === 0) {
+      return;
+    }
     this.setState({ _currentStep: this.state._currentStep - 1 });
   },
 
   _nextStep() {
+    if (this.state._currentStep === STEPS.length - 1) {
+      return;
+    }
     this.setState({ _currentStep: this.state._currentStep + 1 });
   },
 
   render() {
-    var props = this.props,
-      { race, trainedSkills } = this.state,
-      abilities = this.state.abilityScores.map(convertScore);
+    var { race, trainedSkills, abilityScores, playerName, characterName, age } = this.state,
+      { skills, perks } = this.props;
 
+
+    var basicInfo = {
+      playerAge: age || 20,
+      playerName: playerName || '',
+      charName: characterName || '',
+      playerRace: race || '',
+    }
     // skills
 
-    for (let [k, v] of this.props.skills) {
-      v.is_proficient = trainedSkills.has(k);
+    for (let [k, v] of skills) {
+      v.isProficient = trainedSkills.has(k);
     }
+
+    // abilities
+
+    var abilities = abilityScores.map(convertScore);
 
     // TODO: feats
 
@@ -106,11 +127,18 @@ let App = React.createClass({
           {this._renderCurrentStep()}
         </div>
         <Dashboard
-          {...props}
-          nextStep={this._nextStep}
-          prevStep={this._prevStep}
+          updateBasic={this._updateBasic}
+          basicInfo={basicInfo}
+          skills={skills}
+          perks={perks}
+          abilities={abilities}
           skillClick={this._skillClick}
-        />
+        >
+          <div className='navigation'>
+            <input type='button' onClick={this._prevStep} defaultValue='Back' />
+            <input type='button' onClick={this._nextStep} defaultValue='Next' />
+          </div>
+        </Dashboard>
       </div>
     );
   }
@@ -123,10 +151,16 @@ function showReact() {
       skill.key = skill.name.toLowerCase().replace(/\s/g, '-');
       return [skill.name, skill];
     };
-    skills = new Map(skills.map(toSkillMap));
+    var props = {
+      skills: new Map(skills.map(toSkillMap)),
+      classes: character_classes,
+      armor, weapons
+    };
+
     retrieve('races', races => {
+      props.races = races;
       ReactDOM.render(
-        <App skills={skills} armor={armor} weapons={weapons} races={races} characterClasses={character_classes} />,
+        <App {...props}/>,
         document.getElementById('render')
       );
     })

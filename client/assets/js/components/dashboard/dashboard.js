@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { PropTypes as P } from 'react';
 import SkillActions from '../../mixins/skill-actions';
 import AbilityActions from '../../mixins/ability-actions';
-
 
 let Perks = React.createClass({
   render() {
@@ -18,6 +17,35 @@ let Perks = React.createClass({
   }
 });
 
+let BasicInfo = React.createClass({
+  propTypes: {
+    charName: P.string,
+    playerName: P.string,
+    playerRace: P.string,
+    playerAge: P.number,
+  },
+
+  render() {
+    var player = this.props;
+    return (
+      <div id='basic-char-info'>
+        <div className='character-name'>
+          {player.charName}
+        </div>
+        <div className='player-name'>
+          {player.playerName}
+        </div>
+        <div className='player-race'>
+          {player.playerRace}
+        </div>
+        <div className='player-age'>
+          {player.playerAge}
+        </div>
+      </div>
+    );
+  }
+});
+
 let Skills = React.createClass({
   mixins: [SkillActions],
 
@@ -28,20 +56,26 @@ let Skills = React.createClass({
   render() {
     var modifiers = this.props.modifiers;
     var tooltip = this.props.skills[this.state.highlightedSkill];
-    var skills = Array.from(this.props.skills.values()).map((skill, i) => {
+    var values = Array.from(this.props.skills.values());
+    var skills = values.map((skill, i) => {
       var modifier = modifiers[skill.ability];
       var skillHighlight = this._skillHighlight.bind(null, skill),
           skillClick = this._skillClick.bind(null, skill);
       var status;
-      if (skill.is_proficient) {
+      if (skill.isProficient) {
         modifier += 3;
         status = <span className='checked' />;
       } else {
         status = <span className='unchecked' />
       }
-
+      var subclass = 'skill';
+      if (i < 9) {
+        subclass += ' left';
+      } else {
+        subclass += ' right';
+      }
       return (
-        <div className='skill' key={skill.key} onMouseEnter={skillHighlight} onMouseLeave={skillHighlight} onClick={this._skillClick}>
+        <div className={subclass} key={skill.key} onMouseEnter={skillHighlight} onMouseLeave={skillHighlight} onClick={this._skillClick}>
           <div className='skill-mod'>
             ({modifier > 0 ? `+${modifier}` : modifier})
           </div>
@@ -68,8 +102,9 @@ let Skills = React.createClass({
 export default React.createClass({
   mixins: [AbilityActions, SkillActions],
   render() {
-    var modifiers = {};
-    var { skills, perks } = this.props;
+    var modifiers = {},
+      { skills, perks, basicInfo } = this.props;
+
     var abilityScoresDisplay = this.props.abilities.map((ability, idx) => {
       var { modifier, short, long, score } = ability;
       modifiers[long.toLowerCase()] = modifier;
@@ -98,18 +133,38 @@ export default React.createClass({
 
     return (
       <div id='dashboard'>
-        <div className='ability-scores'>
-          {abilityScoresDisplay}
-        </div>
+        <section>
+          <div className='ability-scores'>
+            {abilityScoresDisplay}
+          </div>
 
-        {this.props.children}
-        <Perks perks={perks} />
+          <div className='char-info'>
+            <div className='character-name'>
+              Hercules
+              {basicInfo.charName}
+              <input type='text'></input>
+            </div>
+            <div className='player-name'>
+              Zeus Smith
+              {basicInfo.playerName}
+              <input type='text'></input>
+            </div>
+            <div className='player-race'>
+              Hill Dwarf
+              {basicInfo.playerRace}
+              <input type='text'></input>
+            </div>
+            <div className='player-age'>
+              30
+              {basicInfo.playerAge}
+              <input type='text'></input>
+            </div>
+          </div>
+        </section>
+
         <Skills skills={skills} modifiers={modifiers} skillClick={this._skillClick} />
 
-        <div className='navigation'>
-          <input type='button' onClick={this.prevStep} defaultValue='Back' />
-          <input type='button' onClick={this.nextStep} defaultValue='Back' />
-        </div>
+        <BasicInfo {...basicInfo} />
       </div>
     );
   }
