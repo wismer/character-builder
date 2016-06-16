@@ -1,5 +1,5 @@
 import React from 'react';
-import characterClasses from '../character-classes/classes';
+const characterClasses = [];
 
 var component = React.createClass({
   getInitialState() {

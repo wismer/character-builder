@@ -5,11 +5,13 @@ from .models import (
     ParentRace,
     Trait,
     Item,
-    Skill
+    Skill,
+    CharacterClass
 )
+
 from .serializers import (
     ParentRaceSerializer,
-    BaseItemSerializer,
+    ResourceSerializer,
 )
 
 
@@ -20,7 +22,7 @@ class ParentRaceView(viewsets.ModelViewSet):
 
 class ItemView(viewsets.ModelViewSet):
     queryset = Item.objects.all()
-    serializer_class = BaseItemSerializer
+    serializer_class = ResourceSerializer
 
     def list(self, request):
         qs = self.get_queryset()
@@ -28,6 +30,7 @@ class ItemView(viewsets.ModelViewSet):
             'weapons': [item.weapon for item in qs.filter(weapon__isnull=False)],
             'armor': [item.armor for item in qs.filter(weapon__isnull=True)],
             'traits': Trait.objects.all(),
-            'skills': Skill.objects.all()
+            'skills': Skill.objects.all(),
+            'character_classes': CharacterClass.objects.all(),
         }
-        return Response(data=BaseItemSerializer(data).data)
+        return Response(data=ResourceSerializer(data).data)

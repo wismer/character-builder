@@ -67,26 +67,38 @@ class PlayerClassManager(models.Manager):
 
 class BaseCharacterClass(models.Model):
     name = models.CharField(max_length=500)
-    skills = ArrayField(models.CharField(max_length=50), blank=False, default=list)
     skill_choices = models.IntegerField(default=0)
-    armor = ArrayField(models.CharField(max_length=50), blank=False, default=list)
-    weapons = ArrayField(models.CharField(max_length=50), blank=False, default=list)
-    languages = ArrayField(models.CharField(max_length=50), blank=False, default=list)
+    languages = ArrayField(models.CharField(max_length=50), blank=True, default=list)
     hp_die = models.IntegerField(default=0)
-    saving_throws = ArrayField(models.CharField(max_length=3), blank=False, default=list)
+    saving_throws = ArrayField(models.CharField(max_length=3), blank=True, default=list)
 
     def is_subclass(self):
         return hasattr(self, 'subclass')
+
+    def __str__(self):
+        class_type = 'Parent'
+        if hasattr(self, 'parent_class'):
+            class_type = 'Sub-Class of {}'.format(self.parent_class.name)
+
+        return '{name} - ({class_type})'.format(
+            name=self.name,
+            class_type=class_type
+        )
 
     class Meta:
         abstract = True
 
 
-class ParentCharacterClass(BaseCharacterClass):
+class CharacterClass(BaseCharacterClass):
+    armor = ArrayField(models.CharField(max_length=20), blank=True, default=list)
+    weapons = ArrayField(models.CharField(max_length=50), blank=True, default=list)
+
+
+class ParentCharacterClass(CharacterClass):
     pass
 
 
-class SubCharacterClass(BaseCharacterClass):
+class SubCharacterClass(CharacterClass):
     parent_class = models.ForeignKey('ParentCharacterClass', null=True)
     objects = PlayerClassManager()
 
@@ -195,6 +207,7 @@ class Skill(models.Model):
     name = models.CharField(max_length=50)
     ability = models.CharField(max_length=50, choices=ABILITIES)
     desc = models.TextField()
+    character_class = models.ForeignKey('CharacterClass', null=True, related_name='skills')
 
     def __str__(self):
         return self.name

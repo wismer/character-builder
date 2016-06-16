@@ -105,6 +105,11 @@ export default React.createClass({
         {this.props.children}
         <Perks perks={perks} />
         <Skills skills={skills} modifiers={modifiers} skillClick={this._skillClick} />
+
+        <div className='navigation'>
+          <input type='button' onClick={this.prevStep} defaultValue='Back' />
+          <input type='button' onClick={this.nextStep} defaultValue='Back' />
+        </div>
       </div>
     );
   }

@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { RaceList, RaceChoice } from './components/races/race-list';
+import ClassList from './components/class-select';
 import { readableAttributes, convertScore } from './util/constants';
 import { retrieve } from './util/adapter';
 import Dashboard from './components/dashboard/dashboard';
@@ -10,6 +11,7 @@ import SkillActions from './mixins/skill-actions';
 
 const STEPS = [
     { component: RaceList, updateFunc: '_updateRace' },
+    { component: ClassList, updateFunc: '_updateClass' }
 ];
 
 let App = React.createClass({
@@ -37,6 +39,10 @@ let App = React.createClass({
       _currentStep: 0,
       _skillChoices: 3,
     };
+  },
+
+  _updateClass(activeClass, evt) {
+    debugger
   },
 
   _updateRace(activeRace, evt) {
@@ -73,14 +79,18 @@ let App = React.createClass({
     return React.createElement(step.component, {races, updateSelection});
   },
 
+  _prevStep() {
+    this.setState({ _currentStep: this.state._currentStep - 1 });
+  },
+
+  _nextStep() {
+    this.setState({ _currentStep: this.state._currentStep + 1 });
+  },
+
   render() {
-    var { weapons, armor, skills } = this.props,
-        { race, trainedSkills } = this.state,
-        abilities = this.state.abilityScores.map(convertScore),
-        dashboard = {};
-    if (race) {
-      race = new PlayerRace(race);
-    }
+    var props = this.props,
+      { race, trainedSkills } = this.state,
+      abilities = this.state.abilityScores.map(convertScore);
 
     // skills
 
@@ -95,7 +105,12 @@ let App = React.createClass({
         <div id='current-view'>
           {this._renderCurrentStep()}
         </div>
-        <Dashboard skills={skills} abilities={abilities} skillClick={this._skillClick} />
+        <Dashboard
+          {...props}
+          nextStep={this._nextStep}
+          prevStep={this._prevStep}
+          skillClick={this._skillClick}
+        />
       </div>
     );
   }
@@ -103,7 +118,7 @@ let App = React.createClass({
 
 function showReact() {
   retrieve('items', items => {
-    var { weapons, armor, skills } = items;
+    var { weapons, armor, skills, character_classes } = items;
     var toSkillMap = (skill) => {
       skill.key = skill.name.toLowerCase().replace(/\s/g, '-');
       return [skill.name, skill];
@@ -111,7 +126,7 @@ function showReact() {
     skills = new Map(skills.map(toSkillMap));
     retrieve('races', races => {
       ReactDOM.render(
-        <App skills={skills} armor={armor} weapons={weapons} races={races} />,
+        <App skills={skills} armor={armor} weapons={weapons} races={races} characterClasses={character_classes} />,
         document.getElementById('render')
       );
     })
