@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.db.models import Q
 
+from .constants import ABILITIES
 from .models import (
     SubRace,
     ParentRace,
@@ -58,7 +59,17 @@ class SubRaceSerializer(RaceSerializerMixin, serializers.ModelSerializer):
 
     def get_ability_scores(self, obj):
         # do this in the model data, not here but this is fine for now TODO
-        return [parentattr + childattr for parentattr, childattr in zip(obj.parent.ability_scores, obj.ability_scores)]
+        scores = [parentattr + childattr for parentattr, childattr in zip(obj.parent.ability_scores, obj.ability_scores)]
+        for index, ability in enumerate(ABILITIES):
+            key, name = ability
+            score = scores[index]
+            scores[index] = {
+                'long': name,
+                'short': key[0:3],
+                'score': score,
+            }
+
+        return scores
 
     class Meta:
         model = SubRace

@@ -2,49 +2,6 @@ import React, { PropTypes as P } from 'react';
 import SkillActions from '../../mixins/skill-actions';
 import AbilityActions from '../../mixins/ability-actions';
 
-let Perks = React.createClass({
-  render() {
-    return (
-      <div id='perks'>
-        <div className='perk-title'>
-          Perks
-        </div>
-
-        <div className='perk-list'>
-        </div>
-      </div>
-    );
-  }
-});
-
-let BasicInfo = React.createClass({
-  propTypes: {
-    charName: P.string,
-    playerName: P.string,
-    playerRace: P.string,
-    playerAge: P.number,
-  },
-
-  render() {
-    var player = this.props;
-    return (
-      <div id='basic-char-info'>
-        <div className='character-name'>
-          {player.charName}
-        </div>
-        <div className='player-name'>
-          {player.playerName}
-        </div>
-        <div className='player-race'>
-          {player.playerRace}
-        </div>
-        <div className='player-age'>
-          {player.playerAge}
-        </div>
-      </div>
-    );
-  }
-});
 
 let Skills = React.createClass({
   mixins: [SkillActions],
@@ -100,11 +57,9 @@ let Skills = React.createClass({
 });
 
 export default React.createClass({
-  mixins: [AbilityActions, SkillActions],
+  mixins: [AbilityActions],
   render() {
-    var modifiers = {},
-      { skills, perks, basicInfo } = this.props;
-
+    var modifiers = {};
     var abilityScoresDisplay = this.props.abilities.map((ability, idx) => {
       var { modifier, short, long, score } = ability;
       modifiers[long.toLowerCase()] = modifier;
@@ -137,34 +92,8 @@ export default React.createClass({
           <div className='ability-scores'>
             {abilityScoresDisplay}
           </div>
-
-          <div className='char-info'>
-            <div className='character-name'>
-              Hercules
-              {basicInfo.charName}
-              <input type='text'></input>
-            </div>
-            <div className='player-name'>
-              Zeus Smith
-              {basicInfo.playerName}
-              <input type='text'></input>
-            </div>
-            <div className='player-race'>
-              Hill Dwarf
-              {basicInfo.playerRace}
-              <input type='text'></input>
-            </div>
-            <div className='player-age'>
-              30
-              {basicInfo.playerAge}
-              <input type='text'></input>
-            </div>
-          </div>
+          {this.props.children}
         </section>
-
-        <Skills skills={skills} modifiers={modifiers} skillClick={this._skillClick} />
-
-        <BasicInfo {...basicInfo} />
       </div>
     );
   }

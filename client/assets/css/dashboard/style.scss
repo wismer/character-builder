@@ -17,10 +17,19 @@ section {
   display: flex;
   flex-grow: 1;
   justify-content: space-between;
-  flex-direction: row nowrap;
+  flex-flow: row nowrap;
+  min-height: 75px;
+
+  label {
+    display: flex;
+    flex-flow: column wrap;
+    flex-grow: 1;
+    input {
+      background-color: $char-background;
+    }
+  }
 
   div {
-    border: 1px solid #f7f7f7;
     flex-grow: 1;
 
     input {

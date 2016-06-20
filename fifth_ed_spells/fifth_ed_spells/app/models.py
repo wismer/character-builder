@@ -47,6 +47,11 @@ class BaseRace(models.Model):
 class SubRace(BaseRace):
     parent = models.ForeignKey('ParentRace', related_name='subraces')
 
+    def get_ability_scores(self):
+        import ipdb; ipdb.set_trace()
+        # do this in the model data, not here but this is fine for now TODO
+        return [parentattr + childattr for parentattr, childattr in zip(obj.parent.ability_scores, obj.ability_scores)]
+
     def __str__(self):
         return self.name + ' ' + self.parent.name
 

@@ -4,9 +4,51 @@ import { RaceList, RaceChoice } from './components/races/race-list';
 import ClassList from './components/class-select';
 import { readableAttributes, convertScore } from './util/constants';
 import { retrieve } from './util/adapter';
+import { CharBuilder } from './util/helper';
 import Dashboard from './components/dashboard/dashboard';
 import { Weapon, Armor, Item, Player, PlayerRace } from './classes/main';
 import SkillActions from './mixins/skill-actions';
+
+
+let Skills = React.createClass({
+  getInitialState() {
+    return { _skillChoices: 3, highlightedSkill: -1 };
+  },
+
+  render() {
+    var tooltip = this.props.skills[this.state.highlightedSkill];
+    var values = Array.from(this.props.skills.values());
+    var skills = values.map((skill, i) => {
+      var status;
+      if (skill.isProficient) {
+        status = <span className='checked' />;
+      } else {
+        status = <span className='unchecked' />
+      }
+      return (
+        <div className='skill' key={skill.key} onClick={this.props.skillClick.bind(null, skill)}>
+          <div className='skill-mod'>
+            ({skill.modifier > 0 ? `+${skill.modifier}` : skill.modifier})
+          </div>
+          {status}
+          <div>{skill.name}</div>
+        </div>
+      );
+    });
+
+    return (
+      <div id='skills'>
+        <div className='skill-tooltip'>
+          {tooltip ? tooltip.desc : ''}
+        </div>
+
+        <div className='skill-list'>
+          {skills}
+        </div>
+      </div>
+    )
+  }
+});
 
 
 const STEPS = [
@@ -15,7 +57,6 @@ const STEPS = [
 ];
 
 let App = React.createClass({
-  mixins: [SkillActions],
   getInitialState() {
     return {
       abilityScores: [8, 8, 8, 8, 8, 8, 8],
@@ -24,7 +65,7 @@ let App = React.createClass({
       languages: [],
       speed: null,
       racialtraits: [],
-      characterName: null,
+      charName: null,
       age: 0,
       playerName: null,
       hasDarkvision: false,
@@ -36,7 +77,7 @@ let App = React.createClass({
       charClass: null,
       spellSlots: [],
       knownSpells: [],
-      trainedSkills: new Map(),
+      trainedSkills: new Set(),
       _currentStep: 0,
       _skillChoices: 3,
     };
@@ -47,30 +88,24 @@ let App = React.createClass({
   },
 
   _updateRace(activeRace, evt) {
-    let { state, props } = this,
-      abilityScores = [0, 0, 0, 0, 0, 0, 0],
-      mod = 1;
+    let { race } = this,
+        mod = 1;
+
     if (evt.type !== 'click') {
       return;
     }
 
-    if (!state.race) {
-      state.race = activeRace;
-    } else if (activeRace.name === state.race.name) {
-      state.race = null;
+    if (!race) {
+      race = activeRace;
+    } else if (activeRace.name === race.name) {
+      race = null;
       mod = -1;
     } else {
-      abilityScores = state.race.abilityScores;
-      state.race = activeRace;
+      abilityScores = race.abilityScores;
+      race = activeRace;
     }
 
-    for (var [i, score] of abilityScores.entries()) {
-      state.abilityScores[i] += (activeRace.abilityScores[i] * mod) - score;
-    }
-
-    state.trainedSkills = new Map();
-    // TODO: Work on handling the skills changing state
-    this.setState(state);
+    this.setState({ race });
   },
 
   _renderCurrentStep() {
@@ -81,7 +116,7 @@ let App = React.createClass({
   },
 
   _updateBasic(field) {
-    
+
   },
 
   _prevStep() {
@@ -98,42 +133,55 @@ let App = React.createClass({
     this.setState({ _currentStep: this.state._currentStep + 1 });
   },
 
+  _skillClick(skill) {
+    var trainedSkills = this.state.trainedSkills;
+    if (trainedSkills.has(skill.name)) {
+      trainedSkills.delete(skill.name);
+    } else {
+      trainedSkills.add(skill.name);
+    }
+    this.setState({ trainedSkills })
+  },
+
+  interact(evt, key) {
+    var input = evt.currentTarget.getElementsByTagName('input')[0];
+    input.focus();
+  },
+
   render() {
-    var { race, trainedSkills, abilityScores, playerName, characterName, age } = this.state,
-      { skills, perks } = this.props;
+    var { race, trainedSkills, abilityScores } = this.state,
+      { skills, perks, basic } = this.props;
 
 
-    var basicInfo = {
-      playerAge: age || 20,
-      playerName: playerName || '',
-      charName: characterName || '',
-      playerRace: race || '',
-    }
-    // skills
+    var helper = new CharBuilder(skills);
+    var { playerInfo, skills, abilities } = helper.populateProps(this.state);
 
-    for (let [k, v] of skills) {
-      v.isProficient = trainedSkills.has(k);
-    }
+    var info = playerInfo.map(bit => {
+      return (
+        <label htmlFor={bit.key} key={bit.key} onClick={this.interact} className={bit.className}>
+          <div className='basic-info-label'>{bit.label}</div>
+          <input type='text' id={bit.key} defaultValue={bit.value}></input>
+        </label>
+      );
+    });
 
-    // abilities
-
-    var abilities = abilityScores.map(convertScore);
-
-    // TODO: feats
-
+    // order of evemts fpr basic info input click action...
+    // 1. after click, the input is cleared.
+    // 2. the user types it in.
+    // 3. pressing enter (which triggers WHAT event?!) returns control?
+    // 4. pressing escape or clicking out clears it???
     return (
       <div className='primary-node'>
         <div id='current-view'>
           {this._renderCurrentStep()}
         </div>
-        <Dashboard
-          updateBasic={this._updateBasic}
-          basicInfo={basicInfo}
-          skills={skills}
-          perks={perks}
-          abilities={abilities}
-          skillClick={this._skillClick}
-        >
+        <Dashboard abilities={abilities}>
+          <div className='char-info'>
+            {info}
+          </div>
+
+          <Skills skillClick={this._skillClick} skills={skills} />
+
           <div className='navigation'>
             <input type='button' onClick={this._prevStep} defaultValue='Back' />
             <input type='button' onClick={this._nextStep} defaultValue='Next' />
@@ -151,10 +199,12 @@ function showReact() {
       skill.key = skill.name.toLowerCase().replace(/\s/g, '-');
       return [skill.name, skill];
     };
+
     var props = {
       skills: new Map(skills.map(toSkillMap)),
       classes: character_classes,
-      armor, weapons
+      armor,
+      weapons
     };
 
     retrieve('races', races => {
