@@ -62,14 +62,14 @@ const Traits = React.createClass({
 
 const SubRace = React.createClass({
   render() {
-    var { name } = this.props;
+    var { name } = this.props.preview;
     var { onEnter, onLeave, onSelect } = this.props;
 
     return (
       <div
-        onClick={onSelect.bind(null, this.props)}
-        onMouseEnter={onEnter.bind(null, this.props)}
-        onMouseLeave={onLeave.bind(null, this.props)}
+        onClick={onSelect.bind(null, this.props.preview)}
+        onMouseEnter={onEnter.bind(null, this.props.preview)}
+        onMouseLeave={onLeave.bind(null, this.props.preview)}
         key={name}>{name}
       </div>
     );
@@ -102,23 +102,16 @@ export const RaceList = React.createClass({
     };
   },
 
-  onEnter(race) {
-    this.props.updateSelection('enter', race);
+  onEnter(race, evt) {
+    this.props.updateSelection(...arguments);
   },
 
-  onLeave(race) {
-    this.props.updateSelection('leave', race);
+  onLeave(race, evt) {
+    this.props.updateSelection(...arguments);
   },
 
-  onSelect(race) {
-    this.props.updateSelection('select', race);
-    // if (!this.props.race || race.name !== this.props.race.name) {
-    //   this.props.updateSelection(race, true);
-    // } else if (race.name === this.props.race.name && this.props.selected) {
-    //   this.props.updateSelection(null, false);
-    // } else {
-    //   this.props.updateSelection(race, true);
-    // }
+  onSelect(race, evt) {
+    this.props.updateSelection(...arguments);
   },
 
   toggleRace(activeRaceNode, idx) {
@@ -136,19 +129,19 @@ export const RaceList = React.createClass({
     var preview;
     if (selectedRace) {
       var parent = this.props.races[activeRaceNode];
-      var playerRace = new PlayerRace(selectedRace);
+      var playerRace = new PlayerRace(selectedRace, parent);
 
       preview = playerRace.toPreview(parent)
     }
     var raceList = this.props.races.map((race, ridx)=> {
       var subraces = race.subraces.map((subrace, sidx) => {
-        var sr = new PlayerRace(subrace, activeRaceNode === ridx, race);
+        var preview = new PlayerRace(subrace, race.name);
         return <SubRace
           parentRace={ridx}
           onEnter={onEnter}
           onLeave={onLeave}
           onSelect={onSelect}
-          {...subrace}
+          preview={preview}
           key={`subrace-${sidx}`}
         />
       });

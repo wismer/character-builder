@@ -24,7 +24,7 @@ def parse_spell(row):
 def copy_spells(spell_cls):
     schools = get_schools()
     spells = []
-    with open('/Users/Matt/spells.csv') as p:
+    with open('/Users/Matt/d-and-d/spells.csv') as p:
         for line in csv.reader(p):
             if line[0] == 'id':
                 continue
@@ -37,7 +37,7 @@ def copy_spells(spell_cls):
 
 def get_schools():
     schools = {}
-    with open('/Users/Matt/spells-school.csv') as p:
+    with open('/Users/Matt/d-and-d/spells-school.csv') as p:
         for line in csv.reader(p):
             if line[0] == 'id':
                 continue
@@ -47,7 +47,7 @@ def get_schools():
 
 
 def get_skills(skill_cls):
-    with open('/Users/Matt/skills.csv') as p:
+    with open('/Users/Matt/d-and-d/skills.csv') as p:
         for line in csv.reader(p):
             skill_id, _, _, name, desc, ability = line
             if skill_id != 'id':

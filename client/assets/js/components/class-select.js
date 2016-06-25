@@ -1,7 +1,6 @@
 import React from 'react';
-import characterClasses from '../character-classes/classes';
 
-var component = React.createClass({
+export default React.createClass({
   getInitialState() {
     return { showExtra: false };
   },
@@ -39,9 +38,3 @@ var CharacterClass = React.createClass({
     );
   }
 });
-
-export default {
-  type: 'list',
-  componentClass: CharacterClass,
-  component: characterClasses
-};

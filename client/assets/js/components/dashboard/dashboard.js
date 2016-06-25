@@ -1,22 +1,7 @@
-import React from 'react';
+import React, { PropTypes as P } from 'react';
 import SkillActions from '../../mixins/skill-actions';
 import AbilityActions from '../../mixins/ability-actions';
 
-
-let Perks = React.createClass({
-  render() {
-    return (
-      <div id='perks'>
-        <div className='perk-title'>
-          Perks
-        </div>
-
-        <div className='perk-list'>
-        </div>
-      </div>
-    );
-  }
-});
 
 let Skills = React.createClass({
   mixins: [SkillActions],
@@ -28,8 +13,11 @@ let Skills = React.createClass({
   render() {
     var modifiers = this.props.modifiers;
     var tooltip = this.props.skills[this.state.highlightedSkill];
-    var skills = this.props.skills.map((skill, i) => {
+    var values = Array.from(this.props.skills.values());
+    var skills = values.map((skill, i) => {
       var modifier = modifiers[skill.ability];
+      var skillHighlight = this._skillHighlight.bind(null, skill),
+          skillClick = this._skillClick.bind(null, skill);
       var status;
       if (skill.isProficient) {
         modifier += 3;
@@ -37,8 +25,14 @@ let Skills = React.createClass({
       } else {
         status = <span className='unchecked' />
       }
+      var subclass = 'skill';
+      if (i < 9) {
+        subclass += ' left';
+      } else {
+        subclass += ' right';
+      }
       return (
-        <div className='skill' key={`${skill.name}-${i}`} onMouseEnter={this._skillHighlight} onMouseLeave={this._skillHighlight} onClick={this._skillClick}>
+        <div className={subclass} key={skill.key} onMouseEnter={skillHighlight} onMouseLeave={skillHighlight} onClick={this._skillClick}>
           <div className='skill-mod'>
             ({modifier > 0 ? `+${modifier}` : modifier})
           </div>
@@ -66,7 +60,6 @@ export default React.createClass({
   mixins: [AbilityActions],
   render() {
     var modifiers = {};
-    var { skills, perks } = this.props;
     var abilityScoresDisplay = this.props.abilities.map((ability, idx) => {
       var { modifier, short, long, score } = ability;
       modifiers[long.toLowerCase()] = modifier;
@@ -95,13 +88,12 @@ export default React.createClass({
 
     return (
       <div id='dashboard'>
-        <div className='ability-scores'>
-          {abilityScoresDisplay}
-        </div>
-
-        {this.props.children}
-        <Perks perks={perks} />
-        <Skills skills={skills} modifiers={modifiers} skillClick={this._skillClick}/>
+        <section>
+          <div className='ability-scores'>
+            {abilityScoresDisplay}
+          </div>
+          {this.props.children}
+        </section>
       </div>
     );
   }

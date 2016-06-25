@@ -281,19 +281,106 @@ html {
 .trait-list {
   display: flex; }
 
+#race-select {
+  align-items: stretch;
+  clear: both;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  text-align: center; }
+  #race-select::after {
+    clear: both;
+    content: "";
+    display: table; }
+  #race-select .parent-race {
+    align-self: stretch;
+    background: #f7f7f7;
+    border-radius: 3px;
+    box-shadow: inset 0 0 1px #DDD, 0 2px 4px #e6e6e6;
+    display: block;
+    flex: 2 2 15em;
+    margin: 0.4em;
+    padding: 2em 2em 3em 2em;
+    text-decoration: none;
+    transition: all 0.2s ease-in-out; }
+    #race-select .parent-race:nth-child(1) {
+      border-top: 6px solid tomato; }
+      #race-select .parent-race:nth-child(1):focus, #race-select .parent-race:nth-child(1):hover {
+        background-color: rgba(255, 99, 71, 0.1); }
+    #race-select .parent-race:nth-child(2) {
+      border-top: 6px solid #72BFBF; }
+      #race-select .parent-race:nth-child(2):focus, #race-select .parent-race:nth-child(2):hover {
+        background-color: rgba(114, 191, 191, 0.1); }
+    #race-select .parent-race:nth-child(3) {
+      border-top: 6px solid #92B1E3; }
+      #race-select .parent-race:nth-child(3):focus, #race-select .parent-race:nth-child(3):hover {
+        background-color: rgba(146, 177, 227, 0.1); }
+    #race-select .parent-race:nth-child(4) {
+      border-top: 6px solid #E3D743; }
+      #race-select .parent-race:nth-child(4):focus, #race-select .parent-race:nth-child(4):hover {
+        background-color: rgba(227, 215, 67, 0.1); }
+    #race-select .parent-race:nth-child(5) {
+      border-top: 6px solid #CCC; }
+      #race-select .parent-race:nth-child(5):focus, #race-select .parent-race:nth-child(5):hover {
+        background-color: rgba(204, 204, 204, 0.1); }
+    #race-select .parent-race:nth-child(6) {
+      border-top: 6px solid #F6C05C; }
+      #race-select .parent-race:nth-child(6):focus, #race-select .parent-race:nth-child(6):hover {
+        background-color: rgba(246, 192, 92, 0.1); }
+    #race-select .parent-race img {
+      display: block;
+      height: 3em;
+      margin: 0 auto 1em;
+      opacity: 0.4; }
+    #race-select .parent-race .flex-title {
+      color: rgba(51, 51, 51, 0.7);
+      font-size: 1.2em;
+      margin-bottom: 0.5em; }
+    #race-select .parent-race p {
+      color: rgba(51, 51, 51, 0.6);
+      line-height: 1.5em;
+      margin: auto; }
+  #race-select .flex-box-big {
+    flex: 1 1 40em; }
+
 #dashboard {
   position: relative;
   bottom: 0;
   width: 100%;
   display: flex;
-  height: 200px; }
+  flex-flow: row wrap; }
 
-#player-info {
-  display: flex; }
+section {
+  display: flex;
+  flex-flow: column wrap; }
+
+.char-info {
+  display: flex;
+  flex-grow: 1;
+  justify-content: space-between;
+  flex-flow: row nowrap;
+  min-height: 75px; }
+  .char-info label {
+    display: flex;
+    flex-flow: column wrap;
+    flex-grow: 1; }
+    .char-info label input {
+      background-color: #f7f7f7; }
+  .char-info div {
+    flex-grow: 1; }
+    .char-info div input {
+      display: none; }
+    .char-info div:hover {
+      -webkit-transition: background-color, 300ms, ease-in-out;
+      -moz-transition: background-color, 300ms, ease-in-out;
+      transition: background-color, 300ms, ease-in-out;
+      cursor: pointer;
+      background-color: #ababab; }
 
 #skills {
   font-size: 0.6em;
-  cursor: pointer; }
+  cursor: pointer;
+  margin: 10px; }
   #skills .checked {
     background-image: url(/img/check.png);
     height: 18px;
@@ -308,11 +395,12 @@ html {
     padding-right: 5px; }
   #skills .skill-list {
     display: flex;
-    flex-flow: row wrap; }
+    flex-flow: row wrap;
+    max-width: 350px; }
     #skills .skill-list .skill {
       display: flex;
       padding-bottom: 5px;
-      width: 40%; }
+      width: 50%; }
     #skills .skill-list .skill-mod {
       align-self: flex-start;
       padding-right: 5px; }

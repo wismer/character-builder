@@ -28,7 +28,7 @@ related_fields = [
 
 class BaseRace(models.Model):
     name = models.CharField(max_length=30)
-    attributes = ArrayField(models.IntegerField(default=0), size=7, blank=False, default=list)
+    ability_scores = ArrayField(models.IntegerField(default=0), size=7, blank=False, default=list)
     has_darkvision = models.BooleanField(default=False)
     armor = ArrayField(models.CharField(max_length=50), blank=True, default=list)
     weapons = ArrayField(models.CharField(max_length=50), blank=True, default=list)
@@ -46,6 +46,11 @@ class BaseRace(models.Model):
 
 class SubRace(BaseRace):
     parent = models.ForeignKey('ParentRace', related_name='subraces')
+
+    def get_ability_scores(self):
+        import ipdb; ipdb.set_trace()
+        # do this in the model data, not here but this is fine for now TODO
+        return [parentattr + childattr for parentattr, childattr in zip(obj.parent.ability_scores, obj.ability_scores)]
 
     def __str__(self):
         return self.name + ' ' + self.parent.name
@@ -67,27 +72,39 @@ class PlayerClassManager(models.Manager):
 
 class BaseCharacterClass(models.Model):
     name = models.CharField(max_length=500)
-    skills = ArrayField(models.CharField(max_length=50), blank=False, default=list)
     skill_choices = models.IntegerField(default=0)
-    armor = ArrayField(models.CharField(max_length=50), blank=False, default=list)
-    weapons = ArrayField(models.CharField(max_length=50), blank=False, default=list)
-    languages = ArrayField(models.CharField(max_length=50), blank=False, default=list)
+    languages = ArrayField(models.CharField(max_length=50), blank=True, default=list)
     hp_die = models.IntegerField(default=0)
-    saving_throws = ArrayField(models.CharField(max_length=3), blank=False, default=list)
+    saving_throws = ArrayField(models.CharField(max_length=3), blank=True, default=list)
 
     def is_subclass(self):
         return hasattr(self, 'subclass')
+
+    def __str__(self):
+        class_type = 'Parent'
+        if hasattr(self, 'parent_class'):
+            class_type = 'Sub-Class of {}'.format(self.parent_class.name)
+
+        return '{name} - ({class_type})'.format(
+            name=self.name,
+            class_type=class_type
+        )
 
     class Meta:
         abstract = True
 
 
-class ParentCharacterClass(BaseCharacterClass):
+class CharacterClass(BaseCharacterClass):
+    armor = ArrayField(models.CharField(max_length=20), blank=True, default=list)
+    weapons = ArrayField(models.CharField(max_length=50), blank=True, default=list)
+
+
+class ParentCharacterClass(CharacterClass):
     pass
 
 
-class SubCharacterClass(BaseCharacterClass):
-    parent_class = models.ForeignKey('ParentCharacterClass', null=True)
+class SubCharacterClass(CharacterClass):
+    parent_class = models.ForeignKey('ParentCharacterClass', related_name='subclasses', null=True)
     objects = PlayerClassManager()
 
 
@@ -195,9 +212,18 @@ class Skill(models.Model):
     name = models.CharField(max_length=50)
     ability = models.CharField(max_length=50, choices=ABILITIES)
     desc = models.TextField()
+    character_class = models.ForeignKey('CharacterClass', null=True, related_name='skills')
 
     def __str__(self):
         return self.name
 
     class Meta:
-        ordering = ['ability']
+        ordering = ['name']
+
+
+# TODO
+# Models to eventually add:
+#   Creature
+#   Party
+#   User
+#   SpellVariant

@@ -1,5 +1,4 @@
-import { Item, Weapon, Armor } from './item';
 import Player from './player';
-
-
-export { Player, Item, Armor, Weapon };
+import Race from './race';
+import CharacterClass from './class';
+export { Player, Race, CharacterClass };
