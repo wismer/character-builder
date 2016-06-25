@@ -104,7 +104,7 @@ class ParentCharacterClass(CharacterClass):
 
 
 class SubCharacterClass(CharacterClass):
-    parent_class = models.ForeignKey('ParentCharacterClass', null=True)
+    parent_class = models.ForeignKey('ParentCharacterClass', related_name='subclasses', null=True)
     objects = PlayerClassManager()
 
 

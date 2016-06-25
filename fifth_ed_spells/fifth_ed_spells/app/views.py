@@ -6,7 +6,7 @@ from .models import (
     Trait,
     Item,
     Skill,
-    CharacterClass
+    ParentCharacterClass
 )
 
 from .serializers import (
@@ -31,6 +31,6 @@ class ItemView(viewsets.ModelViewSet):
             'armor': [item.armor for item in qs.filter(weapon__isnull=True)],
             'traits': Trait.objects.all(),
             'skills': Skill.objects.all(),
-            'character_classes': CharacterClass.objects.all(),
+            'character_classes': ParentCharacterClass.objects.all(),
         }
         return Response(data=ResourceSerializer(data).data)

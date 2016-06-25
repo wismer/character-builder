@@ -6,9 +6,66 @@ import { readableAttributes, convertScore } from './util/constants';
 import { retrieve } from './util/adapter';
 import { CharBuilder } from './util/helper';
 import Dashboard from './components/dashboard/dashboard';
-import { Weapon, Armor, Item, Player, PlayerRace } from './classes/main';
 import SkillActions from './mixins/skill-actions';
 
+import { Race, Player, CharacterClass } from './classes/main';
+
+let RaceSelection = React.createClass({
+  update(race) {
+    this.props.setRace(race);
+  },
+
+  render() {
+    var races = this.props.races.map(race => {
+      var subraces = race.subraces.map(subrace => {
+        return (
+          <li key={subrace.name} onClick={() => this.update(subrace)}>
+            {subrace.name}
+          </li>
+        );
+      })
+      return (
+        <ul key={race.name}>
+          {race.name}
+          {subraces}
+        </ul>
+      )
+    });
+    return (
+      <section id='race-select'>
+        {races}
+      </section>
+    );
+  }
+});
+
+
+let CharSelection = React.createClass({
+  update(subclass) {
+    this.props.setClass(subclass);
+  },
+
+  render() {
+    var classes = this.props.classes.map(charClass => {
+      var subclasses = charClass.subclasses.map(subclass => {
+        return (
+          <li key={subclass.name} onClick={() => this.update(subclass)}>
+            {subclass.name}
+          </li>
+        );
+      })
+      return (
+        <ul key={charClass.name}>
+          {charClass.name}
+          {subclasses}
+        </ul>
+      );
+    });
+    return (
+      <div>CLASSES: {classes}</div>
+    )
+  }
+});
 
 let Skills = React.createClass({
   getInitialState() {
@@ -51,10 +108,86 @@ let Skills = React.createClass({
 });
 
 
-const STEPS = [
-    { component: RaceList, updateFunc: '_updateRace' },
-    { component: ClassList, updateFunc: '_updateClass' }
-];
+class Application extends React.Component {
+  constructor() {
+    super()
+    this.state = {
+      player: new Player({
+        onchange: player => this.setState({ player })
+      }),
+      step: 0
+    };
+  }
+
+  _prevStep() {
+    if (this.state.step > 0) {
+      this.setState({ step: this.state.step - 1 });
+    }
+  }
+
+  _nextStep() {
+    if (this.state.step < 1) {
+      this.setState({ step: this.state.step + 1 });
+    }
+  }
+
+  render() {
+    var component, update;
+    switch (this.state.step) {
+      case 0:
+        update = (race) => this.state.player.setRace(race);
+        component = <RaceSelection races={this.props.races} setRace={update} />
+        break;
+      case 1:
+        update = (charClass) => this.state.player.setClass(charClass);
+        component = <CharSelection classes={this.props.classes} setClass={update} />
+        break;
+      default:
+        component = '';
+    }
+
+    var player = this.state.player;
+    var currentRace = player.fetchRace();
+    var abilities = player.abilities.map((ability, i) => {
+      var score = currentRace.abilities[i] + ability.value;
+      return (
+        <li key={ability.key}>{ability.name}: {score}</li>
+      );
+    });
+
+    var skills = [];
+    for (var skill of player.fetchSkills()) {
+      var el = <li key={skill}>{skill}</li>
+      skills.push(el);
+    }
+    var goto = step => this.setState({ step });
+    return (
+      <div>
+        <div id='current-step'>
+          {component}
+        </div>
+        <ul>
+          ABILITY SCORES
+          {abilities}
+        </ul>
+
+        <ul>
+          SKILLS
+          {skills}
+        </ul>
+        <div>
+          current race: {currentRace.name}
+        </div>
+
+        <div className='navigation'>
+          <input type='button' onClick={() => goto(this.state.step + 1)} defaultValue='Back' />
+          <input type='button' onClick={() => goto(this.state.step - 1)} defaultValue='Next' />
+        </div>
+      </div>
+    );
+  }
+}
+
 
 let App = React.createClass({
   getInitialState() {
@@ -88,31 +221,24 @@ let App = React.createClass({
   },
 
   _updateRace(activeRace, evt) {
-    let { race } = this,
-        mod = 1;
-
-    if (evt.type !== 'click') {
-      return;
-    }
-
-    if (!race) {
-      race = activeRace;
-    } else if (activeRace.name === race.name) {
-      race = null;
-      mod = -1;
-    } else {
-      abilityScores = race.abilityScores;
-      race = activeRace;
-    }
+    if (evt.type !== 'click') return;
+    var { race } = this.state;
 
     this.setState({ race });
   },
 
-  _renderCurrentStep() {
-    var step = STEPS[this.state._currentStep];
-    var races = this.props.races;
-    var updateSelection = this[step.updateFunc];
-    return React.createElement(step.component, {races, updateSelection});
+  _renderCurrentStep(p={}) {
+    var step = this.state._currentStep;
+    var { races } = this.props;
+    var component;
+
+    if (step === 0) {
+      component = <SelectRace selectRace={this._selectRace} races={races} />
+    } else if (step === 1) {
+      component = <Frame />
+    }
+
+    return component;
   },
 
   _updateBasic(field) {
@@ -130,6 +256,7 @@ let App = React.createClass({
     if (this.state._currentStep === STEPS.length - 1) {
       return;
     }
+
     this.setState({ _currentStep: this.state._currentStep + 1 });
   },
 
@@ -202,15 +329,16 @@ function showReact() {
 
     var props = {
       skills: new Map(skills.map(toSkillMap)),
-      classes: character_classes,
+      classes: character_classes.map(charClass => new CharacterClass(charClass)),
       armor,
       weapons
     };
 
     retrieve('races', races => {
-      props.races = races;
+      props.races = races.map(race => new Race(race));
+
       ReactDOM.render(
-        <App {...props}/>,
+        <Application {...props}/>,
         document.getElementById('render')
       );
     })

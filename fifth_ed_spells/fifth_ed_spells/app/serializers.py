@@ -10,14 +10,21 @@ from .models import (
     Trait,
     Armor,
     Skill,
-    CharacterClass,
+    ParentCharacterClass,
     SubCharacterClass
 )
 
 
-class CharacterClassSerializer(serializers.ModelSerializer):
+class SubClassSerializer(serializers.ModelSerializer):
     class Meta:
-        model = CharacterClass
+        model = SubCharacterClass
+
+
+class ParentCharacterClassSerializer(serializers.ModelSerializer):
+    subclasses = SubClassSerializer(many=True)
+
+    class Meta:
+        model = ParentCharacterClass
 
 
 class WeaponSerializer(serializers.ModelSerializer):
@@ -38,10 +45,6 @@ class RacialTraitSerializer(serializers.ModelSerializer):
 class RaceSerializerMixin(serializers.Serializer):
     racialtraits = RacialTraitSerializer(many=True)
     weapons = serializers.SerializerMethodField()
-    selected = serializers.SerializerMethodField()
-
-    def get_selected(self, obj):
-        return False
 
     def get_weapons(self, obj):
         q = Q()
@@ -59,17 +62,7 @@ class SubRaceSerializer(RaceSerializerMixin, serializers.ModelSerializer):
 
     def get_ability_scores(self, obj):
         # do this in the model data, not here but this is fine for now TODO
-        scores = [parentattr + childattr for parentattr, childattr in zip(obj.parent.ability_scores, obj.ability_scores)]
-        for index, ability in enumerate(ABILITIES):
-            key, name = ability
-            score = scores[index]
-            scores[index] = {
-                'long': name,
-                'short': key[0:3],
-                'score': score,
-            }
-
-        return scores
+        return [parentattr + childattr for parentattr, childattr in zip(obj.parent.ability_scores, obj.ability_scores)]
 
     class Meta:
         model = SubRace
@@ -104,4 +97,4 @@ class ResourceSerializer(serializers.Serializer):
     armor = ArmorSerializer(many=True)
     traits = TraitSerializer(many=True)
     skills = SkillSerializer(many=True)
-    character_classes = CharacterClassSerializer(many=True)
+    character_classes = ParentCharacterClassSerializer(many=True)

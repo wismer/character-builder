@@ -1,77 +1,49 @@
-export default class Player {
-  constructor() {
-    this.stats = {
-      wis: 8,
-      int: 8,
-      cha: 8,
-      dex: 8,
-      con: 8,
-      str: 8
-    };
+import PlayerBase from './base';
 
-    this.modifiers      = {};
-    this.perks          = new Set();
-    this.langs          = new Set(['common']);
-    this.armorProfs     = new Set();
-    this.weaponProfs    = new Set();
-    this.advantage      = new Set();
-    this.savingThrow    = new Set();
-    this.vision         = new Set();
-    this.hitPoints      = 0;
-    this.level          = 1;
-    this.race           = null;
-    this.characterClass = null;
-    this._ptsRemaining  = 27;
+export default class Player extends PlayerBase {
+  // Object -> onchange Function
+  constructor(updater) {
+    super()
+    for (var ability of this.abilities.values()) {
+      ability.value += 8;
+    }
+    this.race = null;
+    this.onchange = updater.onchange;
+    this.charClass = null;
   }
 
-  selectClass(klass) {
-    // TODO
-  }
-
-  getAttributes(savingThrowStats) {
-    return readableAttributes.map(attr => {
-      var isActive = savingThrowStats[attr.key] || false;
-      return { name: attr.name, value: this.stats[attr.key], isActive };
-    });
-  }
-
-  attributeModifier(trait) {
-    var val = Math.floor((this.stats[trait.attribute.substr(0, 3)] - 10) / 2);
-    console.log(val)
-    return val;
-  }
-
-  selectRace(race) {
-    var { stats, traits } = race.merge();
-    this.race = race.getName();
-
-    var updateStats = () => {
-      for (var stat in stats) {
-        this.stats[stat]    += stats[stat];
-        this.modifiers[stat] = Math.floor((this.stats[stat] - 10) / 2);
-      }
-    };
-
-    for (var trait in traits) {
-      var attr = traits[trait];
-      if (typeof attr === 'number') {
-        this[trait] = attr;
-      } else {
-        var set = this[trait];
-        attr.forEach(val => set.add(val));
-      }
+  setClass(charClass) {
+    if (this.charClass && this.charClass.name === charClass.name) {
+      this.charClass = null;
+    } else {
+      this.charClass = charClass;
     }
 
-    updateStats();
-
-    this.onAbilityScore = updateStats;
+    this.onchange(this);
   }
 
-  levelUp() {
-    this.level += 1;
-    var attributes = this.race.levelUp(this.level);
-    for (var attr in attributes) {
-      this.stats[attr] += attributes[attr];
+  setRace(race) {
+    if (this.race && this.race.name === race.name) {
+      this.race = null;
+    } else {
+      this.race = race;
     }
+
+    this.onchange(this);
+  }
+
+  fetchSkills() {
+    var playerSkills = super.fetchSkills();
+    var raceSkills = this.race ? this.race.fetchSkills() : [];
+    var skills = playerSkills.concat(raceSkills)
+    return new Set(skills);
+  }
+
+  fetchRace() {
+    if (this.race) {
+      return this.race;
+    }
+
+    return { name: 'None Selected', abilities: [0,0,0,0,0,0] };
   }
 }

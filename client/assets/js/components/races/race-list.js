@@ -129,13 +129,13 @@ export const RaceList = React.createClass({
     var preview;
     if (selectedRace) {
       var parent = this.props.races[activeRaceNode];
-      var playerRace = new PlayerRace(selectedRace);
+      var playerRace = new PlayerRace(selectedRace, parent);
 
       preview = playerRace.toPreview(parent)
     }
     var raceList = this.props.races.map((race, ridx)=> {
       var subraces = race.subraces.map((subrace, sidx) => {
-        var preview = new PlayerRace(subrace);
+        var preview = new PlayerRace(subrace, race.name);
         return <SubRace
           parentRace={ridx}
           onEnter={onEnter}
