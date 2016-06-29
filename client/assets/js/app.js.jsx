@@ -10,6 +10,15 @@ import SkillActions from './mixins/skill-actions';
 
 import { Race, Player, CharacterClass } from './classes/main';
 
+
+const justForNow = (n) => {
+  if (n < 11) {
+    return 1;
+  } else {
+    return Math.floor((n - 10) / 2);
+  }
+}
+
 let RaceSelection = React.createClass({
   update(race) {
     this.props.setRace(race);
@@ -56,7 +65,7 @@ let CharSelection = React.createClass({
       })
       return (
         <ul key={charClass.name}>
-          {charClass.name}
+          {charClass.names}
           {subclasses}
         </ul>
       );
@@ -107,6 +116,66 @@ let Skills = React.createClass({
   }
 });
 
+let AbilityScoreChange = React.createClass({
+  getInitialState() {
+    return {
+      abilities: [],
+      points: 27
+    };
+  },
+
+  componentWillMount() {
+    this.setState({ abilities: this.props.player.fetchAbilities() });
+  },
+
+  render() {
+    var { player } = this.props;
+    var { abilities, points } = this.state;
+    var finalAbilities = abilities.map(ability => {
+      var inc = () => {
+        var required = justForNow(ability.value);
+        if (ability.value <= 20 && points - required > 0) {
+          ability.value += 1;
+          points -= required;
+          this.setState({ abilities, points });
+        }
+      };
+
+      var dec = () => {
+        var refundPts;
+        if (ability.value < 12) {
+          refundPts = 1;
+        } else {
+          refundPts = Math.floor((ability.value - 10) / 2);
+        }
+        ability.value -= 1;
+        points += refundPts;
+        if (ability.value >= ability._base) {
+          this.setState({ abilities, points });
+        } else {
+          ability.value = ability._base;
+          this.setState({ abilities, points });
+        }
+      };
+      return (
+        <li key={ability.key}>
+          {ability.name}: {ability.value}
+          <div>
+            <input type='button' defaultValue='+' onClick={inc}></input>
+            <input type='button' defaultValue='-' onClick={dec}></input>
+          </div>
+        </li>
+      );
+    });
+    return (
+      <ul>
+        change abilities (points left: {points})
+        {finalAbilities}
+      </ul>
+    );
+  }
+});
+
 
 class Application extends React.Component {
   constructor() {
@@ -141,6 +210,10 @@ class Application extends React.Component {
       case 1:
         update = (charClass) => this.state.player.setClass(charClass);
         component = <CharSelection classes={this.props.classes} setClass={update} />
+        break;
+      case 2:
+        update = (ability) => this.state.player.setAbility(ability);
+        component = <AbilityScoreChange player={this.state.player} />
         break;
       default:
         component = '';

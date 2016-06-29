@@ -6,10 +6,12 @@ export default class Player extends PlayerBase {
     super()
     for (var ability of this.abilities.values()) {
       ability.value += 8;
+      ability._base = ability.value;
     }
     this.race = null;
     this.onchange = updater.onchange;
     this.charClass = null;
+    this._abilityPoints = 27;
   }
 
   setClass(charClass) {
@@ -45,5 +47,20 @@ export default class Player extends PlayerBase {
     }
 
     return { name: 'None Selected', abilities: [0,0,0,0,0,0] };
+  }
+
+  fetchAbilities() {
+    var racialAbilities = this.race ? this.race.abilities : [];
+    return this.abilities.map((ability, i) => {
+      var value = ability.value + racialAbilities[i];
+      return {
+        name: ability.name,
+        value: value,
+        key: ability.key,
+        _base: value,
+        _incCost:  1,
+        _decCost: -1
+      };
+    });
   }
 }
