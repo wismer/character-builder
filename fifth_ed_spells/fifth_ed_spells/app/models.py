@@ -87,7 +87,7 @@ class BaseCharacterClass(models.Model):
     skill_choices = models.IntegerField(default=0)
     languages = ArrayField(models.CharField(max_length=50), blank=True, default=list)
     hp_die = models.IntegerField(default=0)
-    saving_throws = ArrayField(models.CharField(max_length=3), blank=True, default=list)
+    saving_throws = ArrayField(models.CharField(max_length=20), blank=True, default=list)
 
     def is_subclass(self):
         return hasattr(self, 'subclass')

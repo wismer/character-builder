@@ -65,6 +65,9 @@ class Application extends React.Component {
 
   _nextStep() {
     var { step, player } = this.state;
+    if (!player.race) {
+      return alert('must select a race');
+    }
     if (step == 1) {
       player.saveRace(() => {
         this.setState({ step: step + 1, player });
@@ -72,10 +75,6 @@ class Application extends React.Component {
     } else {
       this.setState({ step: step + 1 });
     }
-  }
-
-  save(fields) {
-    debugger
   }
 
   render() {
@@ -115,8 +114,8 @@ class Application extends React.Component {
     return (
       <div>
         <div className='navigation'>
-          <input type='button' onClick={() => this._nextStep()} defaultValue='Back' />
-          <input type='button' onClick={() => goto(this.state.step - 1)} defaultValue='Next' />
+          <input type='button' onClick={() => this._prevStep()} defaultValue='Back' />
+          <input type='button' onClick={() => this._nextStep()} defaultValue='Next' />
         </div>
         <div id='current-step'>
           {component}
