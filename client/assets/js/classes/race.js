@@ -3,9 +3,10 @@ import PlayerBase from './base';
 export default class Race extends PlayerBase {
   // Array<Int>, Array<String>
   constructor(race, parent=null) {
-    super()
+    super();
     this.parent = parent;
     this.name = race.name;
+    this.id = race.id;
     this.skills = race.skills;
     if (race.subraces) {
       this.subraces = race.subraces.map(subrace => new Race(subrace, race));

@@ -330,9 +330,7 @@ body {
 }
 
 .primary-race {
-  text-align: center;
   min-width: 200px;
-
 }
 
 .subraces {
@@ -438,5 +436,43 @@ body {
     margin: auto;
     max-width: 35em;
     text-align: center;
+  }
+}
+
+.ability-select {
+  $active-ability-color: #2a2a2a;
+  display: flex;
+  flex-flow: row nowrap;
+  cursor: pointer;
+
+  .abilities {
+    display: flex;
+
+    .abilities-select {
+      width: 300px;
+
+      .ability {
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: space-between;
+      }
+    }
+  }
+
+  .ability-name {
+    width: 50%;
+  }
+
+  .ability-base {
+    flex-grow: 1;
+  }
+
+  .ability-total {
+    flex-grow: 1;
+  }
+
+  .abilities-options {
+    flex-flow: column;
+    justify-content: space-between;
   }
 }

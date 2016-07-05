@@ -285,9 +285,7 @@ html {
   align-items: stretch;
   clear: both;
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  text-align: center; }
+  flex-wrap: wrap; }
   #race-select::after {
     clear: both;
     content: "";
@@ -706,7 +704,6 @@ body {
   background-color: #142922; }
 
 .primary-race {
-  text-align: center;
   min-width: 200px; }
 
 .subraces {
@@ -766,5 +763,27 @@ body {
     margin: auto;
     max-width: 35em;
     text-align: center; }
+
+.ability-select {
+  display: flex;
+  flex-flow: row nowrap;
+  cursor: pointer; }
+  .ability-select .abilities {
+    display: flex; }
+    .ability-select .abilities .abilities-select {
+      width: 300px; }
+      .ability-select .abilities .abilities-select .ability {
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: space-between; }
+  .ability-select .ability-name {
+    width: 50%; }
+  .ability-select .ability-base {
+    flex-grow: 1; }
+  .ability-select .ability-total {
+    flex-grow: 1; }
+  .ability-select .abilities-options {
+    flex-flow: column;
+    justify-content: space-between; }
 
 /*# sourceMappingURL=style.css.map */

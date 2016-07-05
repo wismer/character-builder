@@ -98,3 +98,10 @@ class ResourceSerializer(serializers.Serializer):
     traits = TraitSerializer(many=True)
     skills = SkillSerializer(many=True)
     character_classes = ParentCharacterClassSerializer(many=True)
+
+
+class PlayerCharacterSerializer(serializers.Serializer):
+    abilities = serializers.SerializerMethodField()
+
+    def clean(self, obj, *args, **kwargs):
+        pass

@@ -26,6 +26,17 @@ related_fields = [
 ]
 
 
+def to_nth(n):
+    if n == 3:
+        return '3rd'
+    if n == 2:
+        return '2nd'
+    if n == 1:
+        return '1st'
+
+    return str(n) + 'th'
+
+
 class BaseRace(models.Model):
     name = models.CharField(max_length=30)
     ability_scores = ArrayField(models.IntegerField(default=0), size=7, blank=False, default=list)
@@ -57,7 +68,8 @@ class SubRace(BaseRace):
 
 
 class ParentRace(BaseRace):
-    pass
+    def __str__(self):
+        return self.name
 
 
 class PlayerClassManager(models.Manager):
@@ -203,9 +215,31 @@ class SpellProperty(models.Model):
 
 
 class Player(TimeStampedModel):
-    player = models.ForeignKey('account.User')
+    player = models.ForeignKey('account.User', null=True)
     # character = models.ForeignKey('CharacterClass')
-    character_name = models.CharField(max_length=300)
+    character_name = models.CharField(max_length=300, default='noname', null=True)
+    ability_scores = ArrayField(models.SmallIntegerField(), default=list, blank=True, null=True)
+    character_class = models.ForeignKey('CharacterClass', null=True)
+    race = models.ForeignKey('BaseRace', null=True)
+    level = models.SmallIntegerField(default=1)
+
+    def __str__(self):
+        if not self.race and not self.character_class:
+            return self.character_name
+
+        if not self.character_class:
+            return '{name}, a level {nth} {race}'.format(
+                name=self.character_name,
+                nth=to_nth(self.level),
+                race=str(self.race),
+            )
+
+        return '{name}, an {race} {klass} of the {nth} season'.format(
+            name=self.character_name,
+            race=str(self.race),
+            klass=self.character_class.name,
+            nth=to_nth(self.level)
+        )
 
 
 class Skill(models.Model):
