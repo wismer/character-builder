@@ -1,6 +1,7 @@
 export default class CharacterClass {
   constructor(charClass, parent=null) {
     this.parent = parent;
+    this.id = charClass.id;
     this.name = charClass.name;
     this.skillChoices = charClass.skill_choices;
     this.langs = charClass.languages;
