@@ -24,7 +24,7 @@ class ParentRaceView(viewsets.ModelViewSet):
     serializer_class = ParentRaceSerializer
 
 
-class ItemView(viewsets.ModelViewSet):
+class ResourceView(viewsets.ModelViewSet):
     queryset = Item.objects.all()
     serializer_class = ResourceSerializer
 

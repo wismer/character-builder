@@ -7,7 +7,7 @@ const jsonMapping = new Map([
   ['charClass', ['character_class', (klass) => klass ? klass.id : null]],
   ['abilities', ['ability_scores', (abs) => abs.map(a => a.base + a.racialBonus + a.value)]],
   ['id', ['id', (id) => id || null]]
-])
+]);
 
 export default class Player extends PlayerBase {
   // Object -> onchange Function
@@ -45,6 +45,18 @@ export default class Player extends PlayerBase {
     this.onchange(this);
   }
 
+  tooltip() {
+    var tooltips = [];
+    for (var field of arguments) {
+      tooltips.push(this[field].tooltip);
+    }
+    return tooltips;
+  }
+
+  get raceTooltip() {
+
+  }
+
   toJSON(json={}) {
     for (let [key, props] of jsonMapping.entries()) {
       var [jsonField, func] = props;
@@ -64,13 +76,15 @@ export default class Player extends PlayerBase {
     save('player/', this.toJSON(), (response) => {
       this.id = response.id;
       this.onchange(this);
-    }, () => {debugger});
+    }, () => {
+      // no op for now
+    });
   }
 
   fetchSkills() {
     var playerSkills = super.fetchSkills();
     var raceSkills = this.race ? this.race.fetchSkills() : [];
-    var skills = playerSkills.concat(raceSkills)
+    var skills = playerSkills.concat(raceSkills);
     return new Set(skills);
   }
 
@@ -87,7 +101,7 @@ export default class Player extends PlayerBase {
       return {
         name: ability.name,
         key: ability.key,
-        racialBonus: this.race.abilities[i],
+        racialBonus: this.race.abilities[i].value,
         base: 0,
         value: 0
       };

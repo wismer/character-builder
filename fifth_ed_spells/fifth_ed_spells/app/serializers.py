@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.db.models import Q
 
-from .constants import ABILITIES
+from .constants import ABILITIES, abilities_all
 from .models import (
     SubRace,
     ParentRace,
@@ -14,6 +14,22 @@ from .models import (
     SubCharacterClass
 )
 
+
+def abilities_tooltip(obj):
+    abilities = []
+    for idx, (lower, upper, desc) in abilities_all:
+        if obj.ability_scores[idx] > 0:
+            abilities.append(tuple(upper, desc))
+    return abilities
+
+
+def skills_tooltip(obj):
+    skills = []
+    for skill_name in obj.skills + obj.parent.skills:
+        skill = Skill.objects.get(name=skill_name)
+        skills.append(skill.tooltip)
+
+    return skills
 
 class SubClassSerializer(serializers.ModelSerializer):
     class Meta:
@@ -55,10 +71,6 @@ class RaceSerializerMixin(serializers.Serializer):
 
 class SubRaceSerializer(RaceSerializerMixin, serializers.ModelSerializer):
     ability_scores = serializers.SerializerMethodField()
-    skills = serializers.SerializerMethodField()
-
-    def get_skills(self, subrace):
-        return subrace.parent.skills + subrace.skills
 
     def get_ability_scores(self, obj):
         # do this in the model data, not here but this is fine for now TODO
@@ -84,7 +96,7 @@ class TraitSerializer(serializers.ModelSerializer):
 class SkillSerializer(serializers.ModelSerializer):
     is_proficient = serializers.SerializerMethodField()
 
-    def get_is_proficient(self, obj):
+    def get_is_proficient(self, skill):
         return False
 
     class Meta:
@@ -98,6 +110,10 @@ class ResourceSerializer(serializers.Serializer):
     traits = TraitSerializer(many=True)
     skills = SkillSerializer(many=True)
     character_classes = ParentCharacterClassSerializer(many=True)
+    abilities = serializers.SerializerMethodField()
+
+    def get_abilities(self, obj):
+        return abilities_all
 
 
 class PlayerCharacterSerializer(serializers.Serializer):

@@ -36,11 +36,13 @@ SPELL_SHAPES = (
     ('square area', 'Area')
 )
 
-ABILITIES = (
-    ('strength', 'Strength'),
-    ('constitution', 'Constitution'),
-    ('dexterity', 'Dexterity'),
-    ('intelligence', 'Intelligence'),
-    ('wisdom', 'Wisdom'),
-    ('charisma', 'Charisma'),
-)
+abilities_all = [
+    ('strength', 'Strength', 'measures bodily power, athletic training, and the extent to which you can exert raw physical force.'),
+    ('constitution', 'Constitution', 'measures health, stamina, and vital force.'),
+    ('dexterity', 'Dexterity', 'measures agility, reflexes, and balance.'),
+    ('intelligence', 'Intelligence', 'measures mental acuity, accuracy of recall, and the ability to reason.'),
+    ('wisdom', 'Wisdom', 'reflects how attuned you are to the world around you and represents perceptiveness and intuition.'),
+    ('charisma', 'Charisma', 'measures your ability to interact effectively with others. It includes such factors as confidence and eloquence, and it can represent a charming or commanding personality.'),
+]
+
+ABILITIES = [(lower, upper) for (lower, upper, desc) in abilities_all]
