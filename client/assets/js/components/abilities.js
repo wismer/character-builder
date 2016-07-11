@@ -6,11 +6,11 @@ const derivePointValue = (n) => {
   } else {
     return Math.ceil((n - 10) / 2);
   }
-}
+};
 
 class Ability extends React.Component {
   render() {
-    var { name, key, name, racialBonus, base, value, idx } = this.props;
+    var { name, key, racialBonus, base } = this.props;
     var total = racialBonus + base;
     return (
       <div className='ability' key={key} onClick={this.props.onClick}>
@@ -227,6 +227,6 @@ export default class AbilityAnchor extends React.Component {
           <input type='button' defaultValue="Save" onClick={() => this.save()}></input>
         </div>
       </div>
-    )
+    );
   }
 }

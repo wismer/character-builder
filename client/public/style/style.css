@@ -699,9 +699,11 @@ body {
 .race-list {
   display: flex;
   justify-content: space-between;
-  flex-flow: row wrap;
+  flex-flow: column wrap;
   color: white;
   background-color: #142922; }
+  .race-list ul {
+    max-width: 200px; }
 
 .primary-race {
   min-width: 200px; }

@@ -1,3 +1,5 @@
+var path = require('path');
+
 module.exports = {
     entry: "./client/assets/js/app.js.jsx",
     output: {
@@ -6,7 +8,7 @@ module.exports = {
     },
     module: {
       loaders: [
-        { test: /\.jsx$|\.js$|\.jsx\.js$/, exclude: /\.\/node_modules/, loader: "babel-loader"}
+        { test: /\.jsx$|\.js$|\.jsx\.js$/, loader: "babel-loader", include: [path.resolve(__dirname, 'client/assets/js')]}
       ]
     }
 };
