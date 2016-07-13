@@ -1,5 +1,5 @@
 import React from 'react';
-import { classes } from '../utils/helpers';
+import { classes } from '../util/helper';
 
 
 class Step extends React.Component {
@@ -19,41 +19,55 @@ class Step extends React.Component {
     return this.props.label;
   }
 
+  get handleClick() {
+    return this.props.handleClick;
+  }
+
   render() {
-    return <a className={classes(this.classNames)} href={this.href}>{this.label}</a>;
+    return <a onClick={this.handleClick} className={classes(this.classNames)} href={this.href}>{this.label}</a>;
   }
 }
 
 Step.propTypes = {
-  label: React.propTypes.string,
-  href: React.propTypes.string,
-  activeStep: React.propTypes.number,
-  stepNumber: React.propTypes.number
+  label: React.PropTypes.string,
+  href: React.PropTypes.string,
+  activeStep: React.PropTypes.number,
+  stepNumber: React.PropTypes.number,
+  handleClick: React.PropTypes.func
 };
 
 class CharacterCreationState extends React.Component {
+  get activeStep() { return this.props.activeStep; }
+
+  handleStepClick() {
+    return this.props.handleStepClick;
+  }
+
   render() {
-    var steps = this.props.steps.map(step => <Step step={step} />);
+    var steps = this.props.steps.map(step => <Step handleClick={this.handleStepClick} activeStep={this.activeStep} {...step} />);
     return (
-      <nav id='navigation'>
+      <footer id='navigation'>
         <ul>
           {steps}
         </ul>
-      </nav>
+      </footer>
     );
   }
 }
 
 CharacterCreationState.propTypes = {
-  step: React.propTypes.number.isRequired,
-  steps: React.propTypes.array
+  activeStep: React.PropTypes.number.isRequired,
+  handleStepClick: React.PropTypes.func,
+  steps: React.PropTypes.array
 };
 
 CharacterCreationState.defaultProps = {
   step: 0,
   steps: [
-    { label: 'Choose a Race', href: '/pick-race' },
-    { label: 'Adjust your Ability Scores', href: '/pick-scores' },
-    { label: 'Pick your Character Class', href: '/pick-class' }
+    { label: 'Choose a Race', href: '/pick-race', stepNumber: 0 },
+    { label: 'Adjust your Ability Scores', href: '/pick-scores', stepNumber: 1 },
+    { label: 'Pick your Character Class', href: '/pick-class', stepNumber: 2 }
   ]
 };
+
+export default CharacterCreationState;

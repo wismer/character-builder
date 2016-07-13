@@ -25,6 +25,30 @@ export default class Player extends PlayerBase {
     this._id = null;
   }
 
+  // GETTERS
+
+  get selectedRace() {
+    if (this.race) {
+      return this.race;
+    }
+
+    return { name: 'None Selected', abilities: [0,0,0,0,0,0] };
+  }
+
+  get abilityScores() {
+    return this.abilities;
+  }
+
+  set _race(race) {
+    this.abilities.forEach((ability, index) => {
+      ability.racialBonus = race ? race.abilities[index] : 0;
+    });
+
+    this.race = race;
+    return this.race;
+  }
+
+
   setClass(charClass) {
     if (this.charClass && this.charClass.name === charClass.name) {
       this.charClass = null;
@@ -53,11 +77,8 @@ export default class Player extends PlayerBase {
     return tooltips;
   }
 
-  get raceTooltip() {
-
-  }
-
-  toJSON(json={}) {
+  toJSON() {
+    let json = {};
     for (let [key, props] of jsonMapping.entries()) {
       var [jsonField, func] = props;
       var field = this[key];
@@ -86,14 +107,6 @@ export default class Player extends PlayerBase {
     var raceSkills = this.race ? this.race.fetchSkills() : [];
     var skills = playerSkills.concat(raceSkills);
     return new Set(skills);
-  }
-
-  fetchRace() {
-    if (this.race) {
-      return this.race;
-    }
-
-    return { name: 'None Selected', abilities: [0,0,0,0,0,0] };
   }
 
   displayAbilities() {

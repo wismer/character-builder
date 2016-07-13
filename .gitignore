@@ -7,3 +7,4 @@
 /fifth_ed_spells/.buildpacks
 /fifth_ed_spells/circle.yaml
 *.pyc
+.outdated

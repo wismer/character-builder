@@ -1,4 +1,4 @@
-import React, { PropTypes as P } from 'react';
+import React from 'react';
 import SkillActions from '../../mixins/skill-actions';
 import AbilityActions from '../../mixins/ability-actions';
 

@@ -42,8 +42,8 @@ let Skills = React.createClass({
 
 
 Skills.propTypes = {
-  skills: React.propTypes.array,
-  skillClick: React.propTypes.function
+  skills: React.PropTypes.array,
+  skillClick: React.PropTypes.func
 };
 
 export default Skills;

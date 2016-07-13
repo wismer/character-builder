@@ -1,7 +1,5 @@
 import React from 'react';
 
-const { propTypes } = React;
-
 class RaceTooltip extends React.Component {
   render() {
     return (
@@ -16,12 +14,12 @@ class RaceSelection extends React.Component {
     this.state = { highlightedRace: null };
   }
 
-  update(race) {
-    this.props.setRace(race);
-  }
-
   revealTooltip(race) {
     this.setState({ highlightedRace: race });
+  }
+
+  update(race) {
+    this.props.update('_race', race);
   }
 
   render() {
@@ -57,8 +55,8 @@ class RaceSelection extends React.Component {
 }
 
 RaceSelection.propTypes = {
-  races: propTypes.array,
-  setRace: propTypes.function
+  races: React.PropTypes.array,
+  update: React.PropTypes.func
 };
 
 export default RaceSelection;
