@@ -38,31 +38,43 @@ const abilityPropTypes = {
 class StandardArraySelect extends React.Component {
   constructor() {
     super();
-    this.state = {
-      standard: [
-        { score: 15, idx: -1 },
-        { score: 14, idx: -1 },
-        { score: 13, idx: -1 },
-        { score: 12, idx: -1 },
-        { score: 10, idx: -1 },
-        { score: 8,  idx: -1 }
-      ]
+
+    this.handleClick = (abilityScore, index, event) => {
+      event.preventDefault();
+      var currentAbility = this.state.standard[index];
+      if (currentAbility.idx > -1) {
+        // this ability was set on another ability.
+        var previousAbility = this.state.standard[currentAbility.idx];
+        previousAbility.idx = -1;
+      }
+      ability.idx = index;
+      this.props.handleClick(abilityScore, index);
+      this.setState({  })
     };
   }
 
   render() {
+    let handleClick = this.handleClick;
+
     return (
       <div>
         <h1>Standard</h1>
         <div className='abilities'>
           {this.props.children}
         </div>
+
+        <div className='panel'>
+          {standard}
+        </div>
       </div>
     );
   }
 }
 
-StandardArraySelect.propTypes = abilityPropTypes;
+StandardArraySelect.propTypes = {
+  handleClick: PT.func,
+  children: PT.array
+};
 
 class CustomAbilitySelect extends React.Component {
   constructor() {
@@ -91,7 +103,41 @@ class AbilityAnchor extends React.Component {
     super();
     this.state = {
       standardMode: false,
-      abilityScores: props.abilityScores
+      abilityScores: props.abilityScores,
+      standard: {
+        activeIdx: -1,
+        scores: [
+          { score: 15, idx: -1 },
+          { score: 14, idx: -1 },
+          { score: 13, idx: -1 },
+          { score: 12, idx: -1 },
+          { score: 10, idx: -1 },
+          { score: 8,  idx: -1 }
+        ]
+      },
+      customPtsRemaining: 27
+    };
+
+    this.handleCustomMode = (abilityScore, index) => {
+      var { abilityScores } = this.state;
+      var ability = abilityScores[index];
+      ability.base = abilityScore.score;
+    };
+
+    this.handleStandardMode = (index) => {
+      var { standard, abilityScores } = this.state,
+        activeIdx = standard.activeIdx,
+        deselect = activeIdx == index && index > -1,
+        currentAbility = abilityScores[activeIdx];
+
+      if (deselect) {
+        var standardChoice = standard.scores[index];
+        standardChoice.idx = -1;
+        currentAbility.base = 0;
+        activeIdx = -1;
+        return this.setState({ standard, abilityScores });
+      } else {
+      }
     };
   }
 
@@ -107,6 +153,18 @@ class AbilityAnchor extends React.Component {
     };
   }
 
+  get standard() {
+    // is this an anti-pattern?
+    let handleClick = this.handleClick;
+    return this.state.standard.scores.map((score, index) => {
+      return (
+        <div className='panel-option'>
+          <button value={score} onClick={handleClick.bind(null, index)}></button>
+        </div>
+      );
+    });
+  }
+
   render() {
     var mode = this.state.standardMode;
     var abilities = this.state.abilityScores.map(ability => <Ability {...ability} />);
@@ -116,7 +174,7 @@ class AbilityAnchor extends React.Component {
         {this.currentSelectModeName}
         <input type='button' defaultValue='toggle mode' onClick={() => this.setState({ standardMode: !mode  })}></input>
         <div className='ability-custom' style={this.inlineStyle.custom}>
-          <CustomAbilitySelect>
+          <CustomAbilitySelect handleClick={this.handleClick}>
             {abilities}
           </CustomAbilitySelect>
         </div>
@@ -124,6 +182,7 @@ class AbilityAnchor extends React.Component {
         <div className='ability-standard' style={this.inlineStyle.standard}>
           <StandardArraySelect>
             {abilities}
+            {this.standard}
           </StandardArraySelect>
         </div>
         <div>
@@ -135,7 +194,8 @@ class AbilityAnchor extends React.Component {
 }
 
 AbilityAnchor.propTypes = {
-  abilityScores: PT.array
+  abilityScores: PT.array,
+  handleClick: PT.func
 };
 
 export default AbilityAnchor;
