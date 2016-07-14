@@ -102,7 +102,7 @@ class AbilityAnchor extends React.Component {
   constructor(props) {
     super();
     this.state = {
-      standardMode: false,
+      standardMode: true,
       abilityScores: props.abilityScores,
       standard: {
         activeIdx: -1,

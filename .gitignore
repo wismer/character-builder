@@ -8,4 +8,4 @@
 /fifth_ed_spells/circle.yaml
 *.pyc
 .outdated
-/client/public/**/*
+/client/public/css/
