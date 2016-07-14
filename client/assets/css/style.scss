@@ -281,14 +281,55 @@ body {
   }
 }
 
-.ability-standard {
+
+.ability-select {
+  ul {
+    margin: 0;
+    padding: 0;
+  }
+
+  .ability {
+    height: 75px;
+
+    &.ability-active {
+      background-color: black;
+    }
+  }
+
   .panel-options {
     display: none;
   }
+}
 
+.ability-standard {
   .panel-options.panel-active {
     display: flex;
     flex-flow: column;
     justify-content: space-around;
+  }
+}
+
+.ability-custom {
+  .panel-options.panel-active {
+    display: flex;
+    justify-content: flex-start;
+    flex-flow: column;
+  }
+
+  .custom-input {
+    height: 75px;
+    width: 75px;
+    display: flex;
+    flex-flow: column;
+
+    > input {
+      flex-grow: 1;
+      text-align: center;
+      cursor: pointer;
+
+      &:focus {
+        background-color: yellow;
+      }
+    }
   }
 }

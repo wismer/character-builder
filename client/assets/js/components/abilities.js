@@ -17,11 +17,18 @@ class Ability extends React.Component {
     };
   }
 
+  get classNames() {
+    return classes({
+      'ability': true,
+      'ability-active': this.props.idx == this.props.activeIdx
+    });
+  }
+
   render() {
     var { name, key, racialBonus, base } = this.props;
     var total = racialBonus + base;
     return (
-      <div className='ability' key={key} onClick={this.handleClick}>
+      <div className={this.classNames} key={key} onClick={this.handleClick}>
         <div className='ability-name'>{name}</div>
         <div className='ability-base'>{racialBonus}</div>
         <div className='ability-total'>{total}</div>
@@ -37,7 +44,8 @@ Ability.propTypes = {
   base: PT.number,
   onClick: PT.func,
   handleClick: PT.func,
-  idx: PT.number
+  idx: PT.number,
+  activeIdx: PT.number
 };
 
 const abilityPropTypes = {
@@ -71,7 +79,7 @@ class AbilityAnchor extends React.Component {
   constructor(props) {
     super();
     this.state = {
-      standardMode: true,
+      standardMode: false,
       abilityScores: props.abilityScores,
       activeIdx: -1,
       standard: {
@@ -142,10 +150,10 @@ class AbilityAnchor extends React.Component {
   get standard() {
     // is this an anti-pattern?
     let handleClick = this.handleStandardMode;
-    return this.state.standard.scores.map((score, index) => {
+    return this.state.standard.scores.map((point, index) => {
       return (
         <div className='panel-option'>
-          <button onClick={handleClick.bind(null, index)}>{score.score}</button>
+          <button onClick={handleClick.bind(null, index)}>{point.score}</button>
         </div>
       );
     });
@@ -160,18 +168,31 @@ class AbilityAnchor extends React.Component {
   }
 
   get panelClassNames() {
-    return classes({ 'panel-options': true, 'panel-active': this.showPanel });
+    return classes({
+      'panel-options': true,
+      'panel-active': this.showPanel,
+      'custom-mode': !this.state.standardMode
+    });
   }
 
   get saveStatus() {
     return { display: this.isValid ? 'block' : 'none' };
   }
 
+  get custom() {
+    return [<input type='button' defaultValue='+'></input>, <input type='button' defaultValue='-'></input>];
+  }
+
+  get customGapStyle() {
+    return { flexGrow: this.state.activeIdx * 0.2 };
+  }
+
   render() {
     var mode = this.state.standardMode;
+    let activeIdx = this.state.activeIdx;
     let abilitySelect = this.handleAbilitySelect;
     var abilities = this.state.abilityScores.map((ability, idx) => {
-      return <Ability handleClick={abilitySelect} {...ability} idx={idx} />;
+      return <Ability handleClick={abilitySelect} {...ability} idx={idx} activeIdx={activeIdx} />;
     });
 
     return (
@@ -179,9 +200,16 @@ class AbilityAnchor extends React.Component {
         {this.currentSelectModeName}
         <input type='button' defaultValue='toggle mode' onClick={() => this.setState({ standardMode: !mode  })}></input>
         <div className='ability-custom' style={this.inlineStyle.custom}>
-          <CustomAbilitySelect handleClick={this.handleClick}>
+          <ul className='abilities'>
             {abilities}
-          </CustomAbilitySelect>
+          </ul>
+
+          <div className={this.panelClassNames}>
+            <div style={this.customGapStyle}></div>
+            <div className='custom-input'>
+              {this.custom}
+            </div>
+          </div>
         </div>
 
         <div className='ability-standard' style={this.inlineStyle.standard}>
