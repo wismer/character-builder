@@ -129,7 +129,7 @@ Application.propTypes = {
   armor: React.PropTypes.array,
   weapons: React.PropTypes.array,
   abilities: React.PropTypes.array,
-  races: React.PropTypes.array
+  races: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Race))
 };
 
 function showReact() {

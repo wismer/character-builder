@@ -666,4 +666,11 @@ body {
     right: 0;
     width: 4px; }
 
+.ability-standard .panel-options {
+  display: none; }
+.ability-standard .panel-options.panel-active {
+  display: flex;
+  flex-flow: column;
+  justify-content: space-around; }
+
 /*# sourceMappingURL=style.css.map */

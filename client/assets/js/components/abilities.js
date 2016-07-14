@@ -10,11 +10,18 @@ const derivePointValue = (n) => {
 };
 
 class Ability extends React.Component {
+  constructor(props) {
+    super();
+    this.handleClick = () => {
+      props.handleClick(this.props.idx);
+    };
+  }
+
   render() {
     var { name, key, racialBonus, base } = this.props;
     var total = racialBonus + base;
     return (
-      <div className='ability' key={key} onClick={this.props.onClick}>
+      <div className='ability' key={key} onClick={this.handleClick}>
         <div className='ability-name'>{name}</div>
         <div className='ability-base'>{racialBonus}</div>
         <div className='ability-total'>{total}</div>
@@ -28,53 +35,15 @@ Ability.propTypes = {
   key: PT.string,
   racialBonus: PT.number,
   base: PT.number,
-  onClick: PT.func
+  onClick: PT.func,
+  handleClick: PT.func,
+  idx: PT.number
 };
 
 const abilityPropTypes = {
   children: PT.array
 };
 
-class StandardArraySelect extends React.Component {
-  constructor() {
-    super();
-
-    this.handleClick = (abilityScore, index, event) => {
-      event.preventDefault();
-      var currentAbility = this.state.standard[index];
-      if (currentAbility.idx > -1) {
-        // this ability was set on another ability.
-        var previousAbility = this.state.standard[currentAbility.idx];
-        previousAbility.idx = -1;
-      }
-      ability.idx = index;
-      this.props.handleClick(abilityScore, index);
-      this.setState({  })
-    };
-  }
-
-  render() {
-    let handleClick = this.handleClick;
-
-    return (
-      <div>
-        <h1>Standard</h1>
-        <div className='abilities'>
-          {this.props.children}
-        </div>
-
-        <div className='panel'>
-          {standard}
-        </div>
-      </div>
-    );
-  }
-}
-
-StandardArraySelect.propTypes = {
-  handleClick: PT.func,
-  children: PT.array
-};
 
 class CustomAbilitySelect extends React.Component {
   constructor() {
@@ -104,8 +73,8 @@ class AbilityAnchor extends React.Component {
     this.state = {
       standardMode: true,
       abilityScores: props.abilityScores,
+      activeIdx: -1,
       standard: {
-        activeIdx: -1,
         scores: [
           { score: 15, idx: -1 },
           { score: 14, idx: -1 },
@@ -118,6 +87,11 @@ class AbilityAnchor extends React.Component {
       customPtsRemaining: 27
     };
 
+    this.handleAbilitySelect = (activeIdx) => {
+      activeIdx = this.state.activeIdx == activeIdx ? -1 : activeIdx;
+      this.setState({ activeIdx });
+    };
+
     this.handleCustomMode = (abilityScore, index) => {
       var { abilityScores } = this.state;
       var ability = abilityScores[index];
@@ -125,19 +99,23 @@ class AbilityAnchor extends React.Component {
     };
 
     this.handleStandardMode = (index) => {
-      var { standard, abilityScores } = this.state,
-        activeIdx = standard.activeIdx,
-        deselect = activeIdx == index && index > -1,
-        currentAbility = abilityScores[activeIdx];
+      var { standard, abilityScores, activeIdx } = this.state,
+        currentAbility = abilityScores[activeIdx],
+        point = standard.scores[index],
+        previousAbility = abilityScores[point.idx];
 
-      if (deselect) {
-        var standardChoice = standard.scores[index];
-        standardChoice.idx = -1;
-        currentAbility.base = 0;
-        activeIdx = -1;
-        return this.setState({ standard, abilityScores });
+      if (previousAbility) {
+        previousAbility.base = 0;
+        currentAbility.base = point.score;
       } else {
+        currentAbility.base = point.score;
       }
+      point.idx = activeIdx;
+      this.setState({ standard, abilityScores });
+    };
+
+    this.handleSave = () => {
+      this.props.update('_abilities', this.state.abilityScores);
     };
   }
 
@@ -153,24 +131,51 @@ class AbilityAnchor extends React.Component {
     };
   }
 
+  get isValid() {
+    if (this.state.standardMode) {
+      return !this.state.standard.scores.find(point => point.idx == -1);
+    } else {
+      return false;
+    }
+  }
+
   get standard() {
     // is this an anti-pattern?
-    let handleClick = this.handleClick;
+    let handleClick = this.handleStandardMode;
     return this.state.standard.scores.map((score, index) => {
       return (
         <div className='panel-option'>
-          <button value={score} onClick={handleClick.bind(null, index)}></button>
+          <button onClick={handleClick.bind(null, index)}>{score.score}</button>
         </div>
       );
     });
   }
 
+  get displayOptions() {
+    return { display: this.showPanel ? 'flex' : 'none' };
+  }
+
+  get showPanel() {
+    return this.state.activeIdx > -1;
+  }
+
+  get panelClassNames() {
+    return classes({ 'panel-options': true, 'panel-active': this.showPanel });
+  }
+
+  get saveStatus() {
+    return { display: this.isValid ? 'block' : 'none' };
+  }
+
   render() {
     var mode = this.state.standardMode;
-    var abilities = this.state.abilityScores.map(ability => <Ability {...ability} />);
+    let abilitySelect = this.handleAbilitySelect;
+    var abilities = this.state.abilityScores.map((ability, idx) => {
+      return <Ability handleClick={abilitySelect} {...ability} idx={idx} />;
+    });
 
     return (
-      <div className='ability-select'>
+      <aside className='ability-select'>
         {this.currentSelectModeName}
         <input type='button' defaultValue='toggle mode' onClick={() => this.setState({ standardMode: !mode  })}></input>
         <div className='ability-custom' style={this.inlineStyle.custom}>
@@ -180,22 +185,26 @@ class AbilityAnchor extends React.Component {
         </div>
 
         <div className='ability-standard' style={this.inlineStyle.standard}>
-          <StandardArraySelect>
+          <div className='abilities'>
             {abilities}
+          </div>
+
+          <div className={this.panelClassNames}>
             {this.standard}
-          </StandardArraySelect>
+          </div>
         </div>
         <div>
-          <input type='button' defaultValue="Save"></input>
+          <input type='button' style={this.saveStatus} defaultValue="Save" onClick={this.handleSave}></input>
         </div>
-      </div>
+      </aside>
     );
   }
 }
 
 AbilityAnchor.propTypes = {
   abilityScores: PT.array,
-  handleClick: PT.func
+  handleClick: PT.func,
+  update: PT.func
 };
 
 export default AbilityAnchor;

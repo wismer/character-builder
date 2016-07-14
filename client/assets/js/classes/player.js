@@ -48,6 +48,10 @@ export default class Player extends PlayerBase {
     return this.race;
   }
 
+  set _abilities(abilityScores) {
+    return this.abilities = abilityScores;
+  }
+
 
   setClass(charClass) {
     if (this.charClass && this.charClass.name === charClass.name) {

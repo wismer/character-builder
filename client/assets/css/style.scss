@@ -281,3 +281,14 @@ body {
   }
 }
 
+.ability-standard {
+  .panel-options {
+    display: none;
+  }
+
+  .panel-options.panel-active {
+    display: flex;
+    flex-flow: column;
+    justify-content: space-around;
+  }
+}
