@@ -9,20 +9,6 @@ import CharacterCreationState from './components/player-dashboard';
 
 
 class StepContainer extends React.Component {
-  // componentWillUpdate(nextProps) {
-  //   var activeStep = this.props.activeStep;
-  //   var selected;
-  //   if (activeStep == 1) {
-  //     selected = this.refs.raceSelect.state.selected;
-  //   } else if (activeStep == 2) {
-  //     selected = this.refs.charSelect.state.selected;
-  //   } else {
-  //     selected = this.refs.abilitySelect.state.selected;
-  //   }
-  //
-  //   nextProps.updatePlayer(selected);
-  // }
-
   render() {
     var { activeStep, abilityScores, characterClasses, races } = this.props,
       component;

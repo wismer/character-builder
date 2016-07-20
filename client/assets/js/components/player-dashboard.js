@@ -44,7 +44,7 @@ class CharacterCreationState extends React.Component {
   }
 
   render() {
-    var steps = this.props.steps.map(step => <Step handleClick={this.handleStepClick} activeStep={this.activeStep} {...step} />);
+    var steps = this.props.steps.map(step => <Step key={step.stepNumber} handleClick={this.handleStepClick} activeStep={this.activeStep} {...step} />);
     return (
       <footer id='navigation'>
         <ul>

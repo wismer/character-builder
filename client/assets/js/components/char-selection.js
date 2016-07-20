@@ -1,10 +1,6 @@
 import React from 'react';
 
-export default class CharSelection extends React.Component {
-  update(subclass) {
-    this.props.setClass(subclass);
-  }
-
+class CharSelection extends React.Component {
   render() {
     var classes = this.props.classes.map(charClass => {
       var subclasses = charClass.subclasses.map(subclass => {
@@ -13,7 +9,7 @@ export default class CharSelection extends React.Component {
             {subclass.name}
           </li>
         );
-      })
+      });
       return (
         <ul key={charClass.name}>
           {charClass.names}
@@ -23,6 +19,13 @@ export default class CharSelection extends React.Component {
     });
     return (
       <div>CLASSES: {classes}</div>
-    )
+    );
   }
 }
+
+
+CharSelection.propTypes = {
+  classes: React.PropTypes.array
+};
+
+export default CharSelection;

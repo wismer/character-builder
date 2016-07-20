@@ -672,7 +672,7 @@ body {
 .ability-select .ability {
   height: 75px; }
   .ability-select .ability.ability-active {
-    background-color: black; }
+    background-color: green; }
 .ability-select .panel-options {
   display: none; }
 

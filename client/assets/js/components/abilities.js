@@ -1,13 +1,5 @@
 import React, { PropTypes as PT } from 'react';
-import { classes } from '../util/helper';
-
-const derivePointValue = (n) => {
-  if (n < 11) {
-    return 1;
-  } else {
-    return Math.ceil((n - 10) / 2);
-  }
-};
+import { classes, derivePointCost } from '../util/helper';
 
 class Ability extends React.Component {
   constructor(props) {
@@ -22,6 +14,12 @@ class Ability extends React.Component {
       'ability': true,
       'ability-active': this.props.idx == this.props.activeIdx
     });
+  }
+
+  get total() {
+    return this.props.hideBaseScore
+      ? this.props.racialBonus + this.props.base
+      : this.props.racialBonus + this.props.base + 8;
   }
 
   render() {
@@ -42,10 +40,11 @@ Ability.propTypes = {
   key: PT.string,
   racialBonus: PT.number,
   base: PT.number,
-  onClick: PT.func,
   handleClick: PT.func,
   idx: PT.number,
-  activeIdx: PT.number
+  activeIdx: PT.number,
+  hideBaseScore: PT.bool,
+  value: PT.number
 };
 
 const abilityPropTypes = {
@@ -100,10 +99,18 @@ class AbilityAnchor extends React.Component {
       this.setState({ activeIdx });
     };
 
-    this.handleCustomMode = (abilityScore, index) => {
-      var { abilityScores } = this.state;
-      var ability = abilityScores[index];
-      ability.base = abilityScore.score;
+    this.handleCustomMode = (willIncrease) => {
+      var { abilityScores, activeIdx, customPtsRemaining } = this.state,
+        ability = abilityScores[activeIdx],
+        score = ability.base + ability.racialBonus,
+        pointValue = derivePointCost(score, willIncrease);
+
+      if (willIncrease && customPtsRemaining > pointValue) {
+        ability.base += 1;
+        customPtsRemaining -= pointValue;
+      }
+
+      this.setState({ abilityScores, customPtsRemaining });
     };
 
     this.handleStandardMode = (index) => {
@@ -152,7 +159,7 @@ class AbilityAnchor extends React.Component {
     let handleClick = this.handleStandardMode;
     return this.state.standard.scores.map((point, index) => {
       return (
-        <div className='panel-option'>
+        <div key={index} className='panel-option'>
           <button onClick={handleClick.bind(null, index)}>{point.score}</button>
         </div>
       );
@@ -190,9 +197,13 @@ class AbilityAnchor extends React.Component {
   render() {
     var mode = this.state.standardMode;
     let activeIdx = this.state.activeIdx;
+
+    let [customModeIncrease, customModeDecrease] =
+      [this.handleCustomMode.bind(null, true), this.handleCustomMode.bind(null, false)];
+
     let abilitySelect = this.handleAbilitySelect;
     var abilities = this.state.abilityScores.map((ability, idx) => {
-      return <Ability handleClick={abilitySelect} {...ability} idx={idx} activeIdx={activeIdx} />;
+      return <Ability handleClick={abilitySelect} {...ability} idx={idx} activeIdx={activeIdx} hideBaseScore={mode} />;
     });
 
     return (
@@ -200,6 +211,7 @@ class AbilityAnchor extends React.Component {
         {this.currentSelectModeName}
         <input type='button' defaultValue='toggle mode' onClick={() => this.setState({ standardMode: !mode  })}></input>
         <div className='ability-custom' style={this.inlineStyle.custom}>
+          <h3>{this.state.customPtsRemaining}</h3>
           <ul className='abilities'>
             {abilities}
           </ul>
@@ -207,7 +219,8 @@ class AbilityAnchor extends React.Component {
           <div className={this.panelClassNames}>
             <div style={this.customGapStyle}></div>
             <div className='custom-input'>
-              {this.custom}
+              <input type='button' defaultValue='+' onClick={customModeIncrease}></input>
+              <input type='button' defaultValue='-' onClick={customModeDecrease}></input>
             </div>
           </div>
         </div>
