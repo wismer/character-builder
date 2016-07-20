@@ -9,6 +9,5 @@ export function classes(classNames) {
 }
 
 export function derivePointCost(currentValue, willIncrease) {
-  var n = willIncrease ? 1 : -1;
-  return Math.floor(currentValue / 2) + n;
+  return willIncrease ? Math.floor(currentValue / 2) + 1 : Math.ceil(currentValue / 2);
 }

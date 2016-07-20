@@ -105,9 +105,13 @@ class AbilityAnchor extends React.Component {
         score = ability.base + ability.racialBonus,
         pointValue = derivePointCost(score, willIncrease);
 
+
       if (willIncrease && customPtsRemaining > pointValue) {
         ability.base += 1;
         customPtsRemaining -= pointValue;
+      } else if (!willIncrease && customPtsRemaining < 27) {
+        ability.base -= 1;
+        customPtsRemaining += pointValue;
       }
 
       this.setState({ abilityScores, customPtsRemaining });
@@ -187,7 +191,10 @@ class AbilityAnchor extends React.Component {
   }
 
   get custom() {
-    return [<input type='button' defaultValue='+'></input>, <input type='button' defaultValue='-'></input>];
+    return [
+      <input type='button' defaultValue='+'></input>,
+      <input type='button' defaultValue='-'></input>
+    ];
   }
 
   get customGapStyle() {
@@ -198,8 +205,10 @@ class AbilityAnchor extends React.Component {
     var mode = this.state.standardMode;
     let activeIdx = this.state.activeIdx;
 
-    let [customModeIncrease, customModeDecrease] =
-      [this.handleCustomMode.bind(null, true), this.handleCustomMode.bind(null, false)];
+    let [customModeIncrease, customModeDecrease] = [
+      this.handleCustomMode.bind(null, true),
+      this.handleCustomMode.bind(null, false)
+    ];
 
     let abilitySelect = this.handleAbilitySelect;
     var abilities = this.state.abilityScores.map((ability, idx) => {
