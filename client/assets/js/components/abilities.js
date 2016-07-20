@@ -117,6 +117,24 @@ class AbilityAnchor extends React.Component {
       this.setState({ abilityScores, customPtsRemaining });
     };
 
+    this.switchSelectionMode = () => {
+      let { standardMode, standard, abilityScores, customPtsRemaining } = this.state;
+      if (standardMode) {
+        standard.scores.forEach(n => n.idx = -1);
+      } else {
+        customPtsRemaining = 27;
+      }
+
+      abilityScores.forEach(score => score.base = 0);
+
+      this.setState({
+        standardMode: !standardMode,
+        abilityScores,
+        customPtsRemaining,
+        standard
+      });
+    };
+
     this.handleStandardMode = (index) => {
       var { standard, abilityScores, activeIdx } = this.state,
         currentAbility = abilityScores[activeIdx],
@@ -218,7 +236,7 @@ class AbilityAnchor extends React.Component {
     return (
       <aside className='ability-select'>
         {this.currentSelectModeName}
-        <input type='button' defaultValue='toggle mode' onClick={() => this.setState({ standardMode: !mode  })}></input>
+        <input type='button' defaultValue='toggle mode' onClick={this.switchSelectionMode}></input>
         <div className='ability-custom' style={this.inlineStyle.custom}>
           <h3>{this.state.customPtsRemaining}</h3>
           <ul className='abilities'>
