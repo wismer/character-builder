@@ -676,8 +676,6 @@ body {
     height: 75px; }
     .ability-select .ability.ability-active {
       background-color: green; }
-  .ability-select .panel-options {
-    display: none; }
 
 #ability-container {
   display: flex;
@@ -686,7 +684,7 @@ body {
   #ability-container section, #ability-container aside {
     flex-grow: 1; }
 
-.ability-custom .panel-options, .ability-standard .panel-options {
+.ability-custom .custom-input, .ability-standard .custom-input {
   display: none; }
 .ability-custom .panel-options.panel-active, .ability-standard .panel-options.panel-active {
   display: flex; }
@@ -704,21 +702,26 @@ body {
     .abilities .ability span {
       align-self: center; }
 
-.ability-standard .panel-options.panel-active {
+.ability-custom {
   display: flex;
-  flex-flow: column;
-  justify-content: space-around; }
-
-.ability-custom .custom-input {
-  height: 75px;
-  width: 75px;
-  display: flex;
-  flex-flow: column; }
-  .ability-custom .custom-input > input {
-    flex-grow: 1;
-    text-align: center;
-    cursor: pointer; }
-    .ability-custom .custom-input > input:focus {
-      background-color: yellow; }
+  flex-flow: row nowrap; }
+  .ability-custom .panel-active {
+    flex-flow: column; }
+  .ability-custom .abilities {
+    flex-grow: 1; }
+  .ability-custom aside {
+    display: flex;
+    flex-grow: 3; }
+  .ability-custom .custom-input {
+    height: 75px;
+    width: 75px;
+    display: flex;
+    flex-flow: column; }
+    .ability-custom .custom-input > input {
+      flex-grow: 1;
+      text-align: center;
+      cursor: pointer; }
+      .ability-custom .custom-input > input:focus {
+        background-color: yellow; }
 
 /*# sourceMappingURL=style.css.map */

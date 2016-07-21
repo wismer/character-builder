@@ -258,14 +258,16 @@ class AbilityAnchor extends React.Component {
               {abilities}
             </ul>
 
-            <div className={this.panelClassNames}>
-              <div style={this.customGapStyle}></div>
-              <div className='custom-input'>
-                <input type='button' defaultValue='+' onClick={customModeIncrease}></input>
-                <input type='button' defaultValue='-' onClick={customModeDecrease}></input>
+            <aside>
+              <div className={this.panelClassNames}>
+                <div style={this.customGapStyle}></div>
+                <div className='custom-input'>
+                  <input type='button' defaultValue='+' onClick={customModeIncrease}></input>
+                  <input type='button' defaultValue='-' onClick={customModeDecrease}></input>
+                </div>
               </div>
-            </div>
-            <h3>{this.state.customPtsRemaining}</h3>
+              <h3>{this.state.customPtsRemaining}</h3>
+            </aside>
           </section>
           <section className='ability-standard' style={this.inlineStyle.standard}>
             <div className='abilities'>

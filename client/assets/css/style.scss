@@ -298,10 +298,6 @@ body {
       background-color: green;
     }
   }
-
-  .panel-options {
-    display: none;
-  }
 }
 
 #ability-container {
@@ -315,7 +311,7 @@ body {
 }
 
 .ability-custom, .ability-standard {
-  .panel-options {
+  .custom-input {
     display: none;
   }
 
@@ -346,15 +342,23 @@ body {
   }
 }
 
-.ability-standard {
-  .panel-options.panel-active {
-    display: flex;
-    flex-flow: column;
-    justify-content: space-around;
-  }
-}
-
 .ability-custom {
+  display: flex;
+  flex-flow: row nowrap;
+
+  .panel-active {
+    flex-flow: column;
+  }
+
+  .abilities {
+    flex-grow: 1;
+  }
+
+  aside {
+    display: flex;
+    flex-grow: 3
+  }
+
   .custom-input {
     height: 75px;
     width: 75px;
