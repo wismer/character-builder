@@ -1,6 +1,6 @@
 import React from 'react';
 import { classes } from '../util/helper';
-
+import { Link } from 'react-router';
 
 class Step extends React.Component {
   get classNames() {
@@ -24,7 +24,7 @@ class Step extends React.Component {
   }
 
   render() {
-    return <a onClick={this.handleClick} className={classes(this.classNames)} href={this.href}>{this.label}</a>;
+    return <Link to={this.href}>{this.label}</Link>;
   }
 }
 

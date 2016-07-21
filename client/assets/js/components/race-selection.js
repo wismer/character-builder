@@ -59,4 +59,9 @@ RaceSelection.propTypes = {
   update: React.PropTypes.func
 };
 
+RaceSelection.defaultProps = {
+  races: [],
+  update: () => {}
+};
+
 export default RaceSelection;

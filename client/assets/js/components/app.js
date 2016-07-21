@@ -1,11 +1,11 @@
 import React, { PropTypes as PT } from 'react';
 import ReactDOM from 'react-dom';
-import { retrieve, save } from './util/adapter';
-import { Race, Player, CharacterClass, Skill } from './classes/main';
-import CharSelection from './components/char-selection';
-import AbilityAnchor from './components/abilities';
-import RaceSelection from './components/race-selection';
-import CharacterCreationState from './components/player-dashboard';
+import { retrieve, save } from '../util/adapter';
+import { Race, Player, CharacterClass, Skill } from '../classes/main';
+import CharSelection from './char-selection';
+import AbilityAnchor from './abilities';
+import RaceSelection from './race-selection';
+import CharacterCreationState from './player-dashboard';
 
 
 class StepContainer extends React.Component {
@@ -28,6 +28,20 @@ class StepContainer extends React.Component {
     }
 
     return component;
+  }
+}
+
+class RaceContainer extends React.Component {
+  componentWillMount() {
+    retrieve('race-selection/', response => {
+
+    }, () => {
+
+    });
+  }
+
+  render() {
+
   }
 }
 
@@ -94,6 +108,9 @@ class Application extends React.Component {
     var { step } = this.state;
     return (
       <div id='main-container'>
+        <div>
+          {this.props.children}
+        </div>
         <div id='current-step'>
           <StepContainer {...this.stepProperties} />
         </div>
@@ -118,30 +135,39 @@ Application.propTypes = {
   races: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Race))
 };
 
-function showReact() {
-  retrieve('resources', resources => {
-    var { weapons, armor, skills, character_classes, abilities } = resources;
-    var toSkillMap = (skill) => {
-      skill.key = skill.name.toLowerCase().replace(/\s/g, '-');
-      return [skill.name, skill];
-    };
+Application.defaultProps = {
+  skills: {},
+  characterClasses: [],
+  races: [],
+  weapons: [],
+  abilities: [],
+  armor: []
+};
 
-    var props = {
-      skills: new Skill(skills.map(toSkillMap)),
-      characterClasses: character_classes.map(charClass => new CharacterClass(charClass)),
-      armor,
-      weapons,
-      abilities
-    };
+// function showReact() {
+//   retrieve('resources', resources => {
+//     var { weapons, armor, skills, character_classes, abilities } = resources;
+//     var toSkillMap = (skill) => {
+//       skill.key = skill.name.toLowerCase().replace(/\s/g, '-');
+//       return [skill.name, skill];
+//     };
+//
+//     var props = {
+//       skills: new Skill(skills.map(toSkillMap)),
+//       characterClasses: character_classes.map(charClass => new CharacterClass(charClass)),
+//       armor,
+//       weapons,
+//       abilities
+//     };
+//
+//     retrieve('races', races => {
+//       props.races = races.map(race => new Race(race));
+//       ReactDOM.render(
+//         <Application {...props}/>,
+//         document.getElementById('render')
+//       );
+//     });
+//   });
+// }
 
-    retrieve('races', races => {
-      props.races = races.map(race => new Race(race));
-      ReactDOM.render(
-        <Application {...props}/>,
-        document.getElementById('render')
-      );
-    });
-  });
-}
-
-window.onload = showReact;
+export default Application;

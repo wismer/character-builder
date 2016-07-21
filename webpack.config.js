@@ -1,7 +1,7 @@
 var path = require('path');
 
 module.exports = {
-    entry: "./client/assets/js/app.js.jsx",
+    entry: "./client/assets/js/index.js",
     output: {
         path: __dirname,
         filename: "./client/public/js/app.js"
