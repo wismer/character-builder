@@ -301,6 +301,29 @@ body {
   }
 }
 
+.abilities {
+  width: 50%;
+  flex-flow: column nowrap;
+
+  .ability {
+    display: flex;
+    justify-content: space-around;
+
+    div {
+      display: flex;
+      justify-content: center;
+    }
+
+    .ability-name {
+      width: 30%;
+    }
+
+    span {
+      align-self: center;
+    }
+  }
+}
+
 .ability-standard {
   .panel-options.panel-active {
     display: flex;

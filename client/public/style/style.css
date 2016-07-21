@@ -676,6 +676,20 @@ body {
 .ability-select .panel-options {
   display: none; }
 
+.abilities {
+  width: 50%;
+  flex-flow: column nowrap; }
+  .abilities .ability {
+    display: flex;
+    justify-content: space-around; }
+    .abilities .ability div {
+      display: flex;
+      justify-content: center; }
+    .abilities .ability .ability-name {
+      width: 30%; }
+    .abilities .ability span {
+      align-self: center; }
+
 .ability-standard .panel-options.panel-active {
   display: flex;
   flex-flow: column;

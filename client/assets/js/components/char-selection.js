@@ -23,7 +23,6 @@ class CharSelection extends React.Component {
   }
 }
 
-
 CharSelection.propTypes = {
   classes: React.PropTypes.array
 };

@@ -27,9 +27,15 @@ class Ability extends React.Component {
     var total = racialBonus + base;
     return (
       <div className={this.classNames} key={key} onClick={this.handleClick}>
-        <div className='ability-name'>{name}</div>
-        <div className='ability-base'>{racialBonus}</div>
-        <div className='ability-total'>{total}</div>
+        <div className='ability-name'>
+          <span>{name}</span>
+        </div>
+        <div className='ability-base'>
+          <span>{racialBonus}</span>
+        </div>
+        <div className='ability-total'>
+          <span>{total}</span>
+        </div>
       </div>
     );
   }
@@ -172,7 +178,9 @@ class AbilityAnchor extends React.Component {
     if (this.state.standardMode) {
       return !this.state.standard.scores.find(point => point.idx == -1);
     } else {
-      return false;
+      // rarely players will have a few remaining points left. Leaving this
+      // in for now.
+      return true;
     }
   }
 
@@ -238,7 +246,6 @@ class AbilityAnchor extends React.Component {
         {this.currentSelectModeName}
         <input type='button' defaultValue='toggle mode' onClick={this.switchSelectionMode}></input>
         <div className='ability-custom' style={this.inlineStyle.custom}>
-          <h3>{this.state.customPtsRemaining}</h3>
           <ul className='abilities'>
             {abilities}
           </ul>
@@ -250,6 +257,7 @@ class AbilityAnchor extends React.Component {
               <input type='button' defaultValue='-' onClick={customModeDecrease}></input>
             </div>
           </div>
+          <h3>{this.state.customPtsRemaining}</h3>
         </div>
 
         <div className='ability-standard' style={this.inlineStyle.standard}>
