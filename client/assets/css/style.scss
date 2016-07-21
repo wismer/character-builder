@@ -283,6 +283,9 @@ body {
 
 
 .ability-select {
+  display: flex;
+  flex-flow: column nowrap;
+
   ul {
     margin: 0;
     padding: 0;
@@ -301,8 +304,27 @@ body {
   }
 }
 
+#ability-container {
+  display: flex;
+  justify-content: space-around;
+  flex-flow: row wrap;
+
+  section, aside {
+    flex-grow: 1;
+  }
+}
+
+.ability-custom, .ability-standard {
+  .panel-options {
+    display: none;
+  }
+
+  .panel-options.panel-active {
+    display: flex;
+  }
+}
+
 .abilities {
-  width: 50%;
   flex-flow: column nowrap;
 
   .ability {
@@ -333,12 +355,6 @@ body {
 }
 
 .ability-custom {
-  .panel-options.panel-active {
-    display: flex;
-    justify-content: flex-start;
-    flex-flow: column;
-  }
-
   .custom-input {
     height: 75px;
     width: 75px;

@@ -666,18 +666,32 @@ body {
     right: 0;
     width: 4px; }
 
-.ability-select ul {
-  margin: 0;
-  padding: 0; }
-.ability-select .ability {
-  height: 75px; }
-  .ability-select .ability.ability-active {
-    background-color: green; }
-.ability-select .panel-options {
+.ability-select {
+  display: flex;
+  flex-flow: column nowrap; }
+  .ability-select ul {
+    margin: 0;
+    padding: 0; }
+  .ability-select .ability {
+    height: 75px; }
+    .ability-select .ability.ability-active {
+      background-color: green; }
+  .ability-select .panel-options {
+    display: none; }
+
+#ability-container {
+  display: flex;
+  justify-content: space-around;
+  flex-flow: row wrap; }
+  #ability-container section, #ability-container aside {
+    flex-grow: 1; }
+
+.ability-custom .panel-options, .ability-standard .panel-options {
   display: none; }
+.ability-custom .panel-options.panel-active, .ability-standard .panel-options.panel-active {
+  display: flex; }
 
 .abilities {
-  width: 50%;
   flex-flow: column nowrap; }
   .abilities .ability {
     display: flex;
@@ -695,10 +709,6 @@ body {
   flex-flow: column;
   justify-content: space-around; }
 
-.ability-custom .panel-options.panel-active {
-  display: flex;
-  justify-content: flex-start;
-  flex-flow: column; }
 .ability-custom .custom-input {
   height: 75px;
   width: 75px;

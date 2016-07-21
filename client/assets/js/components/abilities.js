@@ -36,6 +36,7 @@ class Ability extends React.Component {
         <div className='ability-total'>
           <span>{total}</span>
         </div>
+        {this.props.children}
       </div>
     );
   }
@@ -50,7 +51,8 @@ Ability.propTypes = {
   idx: PT.number,
   activeIdx: PT.number,
   hideBaseScore: PT.bool,
-  value: PT.number
+  value: PT.number,
+  children: PT.element
 };
 
 const abilityPropTypes = {
@@ -238,41 +240,54 @@ class AbilityAnchor extends React.Component {
 
     let abilitySelect = this.handleAbilitySelect;
     var abilities = this.state.abilityScores.map((ability, idx) => {
-      return <Ability handleClick={abilitySelect} {...ability} idx={idx} activeIdx={activeIdx} hideBaseScore={mode} />;
+      return (
+        <Ability handleClick={abilitySelect} {...ability} idx={idx} activeIdx={activeIdx} hideBaseScore={mode}>
+          <div className={this.panelClassNames}></div>
+        </Ability>
+      );
     });
 
     return (
-      <aside className='ability-select'>
-        {this.currentSelectModeName}
-        <input type='button' defaultValue='toggle mode' onClick={this.switchSelectionMode}></input>
-        <div className='ability-custom' style={this.inlineStyle.custom}>
-          <ul className='abilities'>
-            {abilities}
-          </ul>
+      <article className='ability-select'>
+        <header>
+          <h2>{this.currentSelectModeName}</h2>
+        </header>
+        <div id='ability-container'>
+          <section className='ability-custom' style={this.inlineStyle.custom}>
+            <ul className='abilities'>
+              {abilities}
+            </ul>
 
-          <div className={this.panelClassNames}>
-            <div style={this.customGapStyle}></div>
-            <div className='custom-input'>
-              <input type='button' defaultValue='+' onClick={customModeIncrease}></input>
-              <input type='button' defaultValue='-' onClick={customModeDecrease}></input>
+            <div className={this.panelClassNames}>
+              <div style={this.customGapStyle}></div>
+              <div className='custom-input'>
+                <input type='button' defaultValue='+' onClick={customModeIncrease}></input>
+                <input type='button' defaultValue='-' onClick={customModeDecrease}></input>
+              </div>
             </div>
-          </div>
-          <h3>{this.state.customPtsRemaining}</h3>
-        </div>
+            <h3>{this.state.customPtsRemaining}</h3>
+          </section>
+          <section className='ability-standard' style={this.inlineStyle.standard}>
+            <div className='abilities'>
+              {abilities}
+            </div>
 
-        <div className='ability-standard' style={this.inlineStyle.standard}>
-          <div className='abilities'>
-            {abilities}
-          </div>
+            <div className={this.panelClassNames}>
+              {this.standard}
+            </div>
+          </section>
+          <aside className='ability-info'>
+            <section className='ability-descriptor'>
+              <h5>Ability Descriptions</h5>
 
-          <div className={this.panelClassNames}>
-            {this.standard}
-          </div>
+              <div className='ability-panel'>
+                <input type='button' defaultValue='toggle mode' onClick={this.switchSelectionMode}></input>
+                <input type='button' style={this.saveStatus} defaultValue="Save" onClick={this.handleSave}></input>
+              </div>
+            </section>
+          </aside>
         </div>
-        <div>
-          <input type='button' style={this.saveStatus} defaultValue="Save" onClick={this.handleSave}></input>
-        </div>
-      </aside>
+      </article>
     );
   }
 }
