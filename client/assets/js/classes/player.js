@@ -93,12 +93,12 @@ export default class Player extends PlayerBase {
   }
 
   saveRace(succ, fail) {
-    save('player/', this.toJSON(), succ, fail);
+    save('characters', this.toJSON(), succ, fail);
   }
 
   setAbilities(newAbilities) {
     this.abilities = newAbilities;
-    save('player/', this.toJSON(), (response) => {
+    save('characters', this.toJSON(), (response) => {
       this.id = response.id;
       this.onchange(this);
     }, () => {

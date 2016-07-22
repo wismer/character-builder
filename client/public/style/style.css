@@ -724,4 +724,39 @@ body {
       .ability-custom .custom-input > input:focus {
         background-color: yellow; }
 
+#home-container {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between; }
+  #home-container .character-card {
+    height: 100px;
+    width: 200px;
+    display: flex;
+    flex-flow: column nowrap;
+    border: 2px solid black;
+    flex-grow: 1;
+    margin: 0.5em;
+    justify-content: space-between;
+    cursor: pointer; }
+    #home-container .character-card:hover {
+      border: 2px solid yellow; }
+    #home-container .character-card .char-details {
+      display: flex;
+      justify-content: space-between; }
+    #home-container .character-card .char-name, #home-container .character-card .char-race, #home-container .character-card .name {
+      font-size: small; }
+    #home-container .character-card .miniscores {
+      display: flex;
+      flex-flow: row;
+      justify-content: space-around;
+      align-items: center;
+      flex-grow: 0.2; }
+      #home-container .character-card .miniscores .miniscore {
+        display: flex;
+        flex-flow: column;
+        justify-content: flex-end;
+        align-items: center; }
+        #home-container .character-card .miniscores .miniscore .score {
+          font-size: initial; }
+
 /*# sourceMappingURL=style.css.map */

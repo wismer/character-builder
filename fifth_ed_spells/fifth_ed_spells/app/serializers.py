@@ -3,6 +3,7 @@ from django.db.models import Q
 
 from .constants import ABILITIES, abilities_all
 from .models import (
+    Player,
     SubRace,
     ParentRace,
     RacialTrait,
@@ -104,6 +105,12 @@ class SkillSerializer(serializers.ModelSerializer):
         model = Skill
 
 
+class RaceSelectionSerializer(serializers.ModelSerializer):
+    races = ParentRaceSerializer(many=True)
+    weapons = WeaponSerializer(many=True)
+    armor = ArmorSerializer(many=True)
+
+
 class ResourceSerializer(serializers.Serializer):
     weapons = WeaponSerializer(many=True)
     armor = ArmorSerializer(many=True)
@@ -116,8 +123,14 @@ class ResourceSerializer(serializers.Serializer):
         return abilities_all
 
 
-class PlayerCharacterSerializer(serializers.Serializer):
-    abilities = serializers.SerializerMethodField()
+class PlayerCharacterSerializer(serializers.ModelSerializer):
+    race = serializers.SerializerMethodField()
 
-    def clean(self, obj, *args, **kwargs):
-        pass
+    # obviously this will change
+    def get_race(self, player):
+        if hasattr(player.race, 'subrace'):
+            return str(player.race.subrace)
+        return str(player.race)
+
+    class Meta:
+        model = Player

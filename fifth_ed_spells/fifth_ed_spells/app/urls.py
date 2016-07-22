@@ -6,5 +6,5 @@ from .views import ParentRaceView, ResourceView, CharacterView
 router = DefaultRouter()
 router.register(r'^races', ParentRaceView)
 router.register(r'^resources', ResourceView)
-router.register(r'^player', CharacterView)
+router.register(r'^characters', CharacterView)
 urlpatterns = router.urls

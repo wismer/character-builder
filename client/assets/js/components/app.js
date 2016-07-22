@@ -30,20 +30,28 @@ class StepContainer extends React.Component {
     return component;
   }
 }
-
-class RaceContainer extends React.Component {
-  componentWillMount() {
-    retrieve('race-selection/', response => {
-
-    }, () => {
-
-    });
-  }
-
-  render() {
-
-  }
-}
+//
+// class PlayerCreationStep extends React.Component {
+//   componentWillMount() {
+//     retrieve('registration/', response => {
+//
+//     });
+//   }
+// }
+//
+// class RaceContainer extends React.Component {
+//   componentWillMount() {
+//     retrieve('race-selection/', response => {
+//
+//     }, () => {
+//
+//     });
+//   }
+//
+//   render() {
+//
+//   }
+// }
 
 StepContainer.propTypes = {
   activeStep: PT.number,
@@ -71,7 +79,7 @@ class Application extends React.Component {
       let player = this.state.player.toJSON(),
         step = this.state.step;
 
-      save('player/', player).then(() => {
+      save('characters', player).then(() => {
         this.setState({ step: step + 1 });
       }, () => {
         // console.log('ERROR: ', error);
@@ -81,7 +89,7 @@ class Application extends React.Component {
     this.updatePlayer = (step, key, value) => {
       let player = this.state.player;
       player[key] = value;
-      save('player/', player.toJSON(), () => {
+      save('characters', player.toJSON(), () => {
         this.setState({ player, step: step + 1 });
       }, () => {
         player[key] = null;
@@ -110,9 +118,6 @@ class Application extends React.Component {
       <div id='main-container'>
         <div>
           {this.props.children}
-        </div>
-        <div id='current-step'>
-          <StepContainer {...this.stepProperties} />
         </div>
 
         <div>

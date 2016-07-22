@@ -376,3 +376,54 @@ body {
     }
   }
 }
+
+// styling for Home Component
+
+#home-container {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+
+  .character-card {
+    height: 100px;
+    width: 200px;
+    display: flex;
+    flex-flow: column nowrap;
+    border: 2px solid black;
+    flex-grow: 1;
+    margin: 0.5em;
+    justify-content: space-between;
+    cursor: pointer;
+
+    &:hover {
+      border: 2px solid yellow;
+    }
+
+    .char-details {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .char-name, .char-race, .name {
+      font-size: small;
+    }
+
+    .miniscores {
+      display: flex;
+      flex-flow: row;
+      justify-content: space-around;
+      align-items: center;
+      flex-grow: 0.2;
+      .miniscore {
+        display: flex;
+        flex-flow: column;
+        justify-content: flex-end;
+        align-items: center;
+
+        .score {
+          font-size: initial;
+        }
+      }
+    }
+  }
+}

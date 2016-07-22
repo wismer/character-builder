@@ -41,7 +41,7 @@ class ResourceView(viewsets.ModelViewSet):
 
 
 class CharacterView(viewsets.ModelViewSet):
-    queryset = Player.objects.all()
+    queryset = Player.objects.filter(pk__lt=30)
     serializer_class = PlayerCharacterSerializer
 
     @detail_route(methods=['POST'])
