@@ -37,12 +37,12 @@ SPELL_SHAPES = (
 )
 
 abilities_all = [
-    ('strength', 'Strength', 'measures bodily power, athletic training, and the extent to which you can exert raw physical force.'),
-    ('constitution', 'Constitution', 'measures health, stamina, and vital force.'),
-    ('dexterity', 'Dexterity', 'measures agility, reflexes, and balance.'),
-    ('intelligence', 'Intelligence', 'measures mental acuity, accuracy of recall, and the ability to reason.'),
-    ('wisdom', 'Wisdom', 'reflects how attuned you are to the world around you and represents perceptiveness and intuition.'),
-    ('charisma', 'Charisma', 'measures your ability to interact effectively with others. It includes such factors as confidence and eloquence, and it can represent a charming or commanding personality.'),
+    dict(name='Strength', desc='measures bodily power, athletic training, and the extent to which you can exert raw physical force.'),
+    dict(name='Constitution', desc='measures health, stamina, and vital force.'),
+    dict(name='Dexterity', desc='measures agility, reflexes, and balance.'),
+    dict(name='Intelligence', desc='measures mental acuity, accuracy of recall, and the ability to reason.'),
+    dict(name='Wisdom', desc='reflects how attuned you are to the world around you and represents perceptiveness and intuition.'),
+    dict(name='Charisma', desc='measures your ability to interact effectively with others. It includes such factors as confidence and eloquence, and it can represent a charming or commanding personality.'),
 ]
 
-ABILITIES = [(lower, upper) for (lower, upper, desc) in abilities_all]
+ABILITIES = [(ability['name'], ability['desc']) for ability in abilities_all]

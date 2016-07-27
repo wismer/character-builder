@@ -1,6 +1,54 @@
 import React, { PropTypes as PT } from 'react';
 import { classes, derivePointCost } from '../util/helper';
 
+class AbilityDescription extends React.Component {
+  get classes() {
+    return classes({
+      'ability-desc': true,
+      'ability-active': this.props.isActive
+    });
+  }
+  render() {
+    return (
+      <li className={this.classes}>
+        <aside>
+          {this.props.name}
+        </aside>
+
+        <section>
+          <p>
+            {this.props.desc}
+          </p>
+        </section>
+      </li>
+    );
+  }
+}
+
+AbilityDescription.propTypes = {
+  isActive: PT.bool,
+  name: PT.string,
+  desc: PT.string
+};
+
+class AbilityDescriptions extends React.Component {
+  render() {
+    var { activeIdx, abilityDescriptions } = this.props;
+    const abilities = abilityDescriptions.map((ability, index) => {
+      return <AbilityDescription isActive={activeIdx == index} {...ability} />;
+    });
+    return (
+      <section id='ability-descriptors'>
+        <h5>Abilities</h5>
+
+        <ul>
+          {abilities}
+        </ul>
+      </section>
+    );
+  }
+}
+
 class Ability extends React.Component {
   constructor(props) {
     super();
@@ -87,7 +135,7 @@ class AbilityAnchor extends React.Component {
     super();
     this.state = {
       standardMode: false,
-      abilityScores: props.abilityScores,
+      abilityScores: props.player.abilities,
       activeIdx: -1,
       standard: {
         scores: [
@@ -297,7 +345,8 @@ class AbilityAnchor extends React.Component {
 AbilityAnchor.propTypes = {
   abilityScores: PT.array,
   handleClick: PT.func,
-  update: PT.func
+  update: PT.func,
+  player: PT.object
 };
 
 export default AbilityAnchor;

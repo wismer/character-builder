@@ -39,9 +39,9 @@ class CharacterCreationWrapper extends React.Component {
     };
 
     this.update = (key, value) => {
-      const player = this.state.player;
+      const { player, step } = this.state;
       player[key] = value;
-      this.setState({ player });
+      this.setState({ player, step });
     };
   }
 
@@ -63,17 +63,21 @@ class CharacterCreationWrapper extends React.Component {
   }
 
   get current() {
-    if (this.props.children)
-      return React.cloneElement(this.props.children, {
-        races: this.state.races,
-        update: this.update,
-        player: this.state.player
-      });
+    if (!this.props.children) return;
+    const { step, player, abilities, races } = this.state;
+    const props = {
+      update: this.update,
+      player: player,
+      races: races,
+      abilityDescriptions: abilities
+    };
+
+    return React.cloneElement(this.props.children, props);
   }
 
   render() {
     return (
-      <CharacterCreation {...this.state} children={this.current}>
+      <CharacterCreation {...this.state}>
         {this.current}
       </CharacterCreation>
     );
