@@ -1,11 +1,11 @@
 import React, { PropTypes as PT } from 'react';
 import ReactDOM from 'react-dom';
+import { Link } from 'react-router';
 import { retrieve, save } from '../util/adapter';
 import { Race, Player, CharacterClass, Skill } from '../classes/main';
 import CharSelection from './char-selection';
 import AbilityAnchor from './abilities';
 import RaceSelection from './race-selection';
-import CharacterCreationState from './player-dashboard';
 
 
 class StepContainer extends React.Component {
@@ -121,10 +121,8 @@ class Application extends React.Component {
         </div>
 
         <div>
-          current race: {this.currentRaceName}
+          <Link to='/create'>Create a Character</Link>
         </div>
-
-        <CharacterCreationState activeStep={step} handleStepClick={this.handleStepClick} />
       </div>
     );
   }

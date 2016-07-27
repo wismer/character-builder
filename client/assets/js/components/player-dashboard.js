@@ -1,40 +1,46 @@
 import React from 'react';
-import { classes } from '../util/helper';
+import { retrieve } from '../util/adapter';
 import { Link } from 'react-router';
+import Player from '../classes/player';
 
-class Step extends React.Component {
-  get classNames() {
-    return { 'step': true, 'active-step': this.isCurrentStep };
+class CharacterCreation extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      skills: [],
+      abilities: [],
+      characterClasses: [],
+      races: [],
+      weapons: [],
+      items: [],
+      player: new Player({
+        onchange: (player) => this.setState({ player })
+      })
+    };
   }
 
-  get isCurrentStep() {
-    return this.props.activeStep == this.props.stepNumber;
+  componentWillMount() {
+    retrieve('resources', resources => {
+      this.setState({...resources});
+    }, () => {
+
+    });
   }
 
-  get href() {
-    return this.props.href;
-  }
-
-  get label() {
-    return this.props.label;
-  }
-
-  get handleClick() {
-    return this.props.handleClick;
+  get childNode() {
+    return this.props.children;
   }
 
   render() {
-    return <Link to={this.href}>{this.label}</Link>;
+    return (
+      <div id='character-creation'>
+        <div id='active-step'>
+          {this.childNode}
+        </div>
+      </div>
+    );
   }
 }
-
-Step.propTypes = {
-  label: React.PropTypes.string,
-  href: React.PropTypes.string,
-  activeStep: React.PropTypes.number,
-  stepNumber: React.PropTypes.number,
-  handleClick: React.PropTypes.func
-};
 
 class CharacterCreationState extends React.Component {
   get activeStep() { return this.props.activeStep; }
@@ -44,16 +50,13 @@ class CharacterCreationState extends React.Component {
   }
 
   render() {
-    var steps = this.props.steps.map(step => <Step key={step.stepNumber} handleClick={this.handleStepClick} activeStep={this.activeStep} {...step} />);
     return (
-      <footer id='navigation'>
-        <ul>
-          {steps}
-        </ul>
-      </footer>
+      <CharacterCreation></CharacterCreation>
     );
   }
 }
+
+
 
 CharacterCreationState.propTypes = {
   activeStep: React.PropTypes.number.isRequired,

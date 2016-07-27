@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import detail_route
 
 from .models import (
+    BaseRace,
     ParentRace,
     SubRace,
     Trait,
@@ -35,7 +36,9 @@ class ResourceView(viewsets.ModelViewSet):
             'armor': [item.armor for item in qs.filter(weapon__isnull=True)],
             'traits': Trait.objects.all(),
             'skills': Skill.objects.all(),
+            'races': ParentRace.objects.all(),
             'character_classes': ParentCharacterClass.objects.all(),
+            'id': Player.objects.create().id
         }
         return Response(data=ResourceSerializer(data).data)
 
@@ -44,9 +47,26 @@ class CharacterView(viewsets.ModelViewSet):
     queryset = Player.objects.filter(pk__lt=30)
     serializer_class = PlayerCharacterSerializer
 
-    @detail_route(methods=['POST'])
-    def change(self, request, pk=None):
-        pass
+    @detail_route(methods=['PUT'])
+    def race(self, request, pk=None):
+        player = Player.objects.get(pk=pk)
+        race = request.data.get('race')
+        race = BaseRace.objects.get(id=race)
+        player.race = race
+        return Response(status=200, data={'race_name': race.name})
+
+
+
+        # write in player race???
+
+
+
+
+    def update(self, request, pk=None):
+        if not pk:
+            return Response(status=404)
+        player = Player.objects.get(pk=pk)
+        return Response(status=200, data={'id': player.id})
 
     def create(self, request, *args, **kwargs):
         qs = self.get_queryset()

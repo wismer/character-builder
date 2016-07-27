@@ -13,7 +13,7 @@ export default class Player extends PlayerBase {
   // Object -> onchange Function
   constructor(updater) {
     super();
-    for (var ability of this.abilities.values()) {
+    for (var ability of this.abilities.entries()) {
       ability.value = 0;
       ability.base = ability.value;
       ability.racialBonus = 0;
@@ -22,7 +22,7 @@ export default class Player extends PlayerBase {
     this.languages = ['Common'];
     this.onchange = updater.onchange;
     this.charClass = null;
-    this._id = null;
+    this.id = null;
   }
 
   // GETTERS
@@ -39,6 +39,8 @@ export default class Player extends PlayerBase {
     return this.abilities;
   }
 
+  // setters
+
   set _race(race) {
     this.abilities.forEach((ability, index) => {
       ability.racialBonus = race ? race.abilities[index] : 0;
@@ -52,6 +54,9 @@ export default class Player extends PlayerBase {
     return this.abilities = abilityScores;
   }
 
+  set _step(step) {
+    // no-op for now
+  }
 
   setClass(charClass) {
     if (this.charClass && this.charClass.name === charClass.name) {

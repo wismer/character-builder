@@ -118,6 +118,8 @@ class ResourceSerializer(serializers.Serializer):
     skills = SkillSerializer(many=True)
     character_classes = ParentCharacterClassSerializer(many=True)
     abilities = serializers.SerializerMethodField()
+    races = ParentRaceSerializer(many=True)
+    id = serializers.IntegerField()
 
     def get_abilities(self, obj):
         return abilities_all

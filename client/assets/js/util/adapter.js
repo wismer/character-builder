@@ -15,15 +15,15 @@ export function retrieve(path, succ, fail) {
 }
 
 export function save(path, body, succ, fail) {
-  fetch(`${URL}/${path}`, {
+  fetch(`${URL}/${path}/`, {
     headers: {
       'Content-Type': 'application/json'
     },
-    method: 'POST',
+    method: 'PUT',
     mode: 'cors',
     body: body
   }).then(response => {
     // handle response
     response.json().then(succ, fail);
-  })
+  });
 }

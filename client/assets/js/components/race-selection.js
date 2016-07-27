@@ -1,4 +1,6 @@
 import React from 'react';
+import { save } from '../util/adapter';
+import { Link } from 'react-router';
 
 class RaceTooltip extends React.Component {
   render() {
@@ -20,6 +22,16 @@ class RaceSelection extends React.Component {
 
   update(race) {
     this.props.update('_race', race);
+  }
+
+  componentWillReceiveProps(prevProps) {
+    const { player, step } = this.props;
+    if (prevProps.location.pathname !== '/create/pick-abilities') return;
+    save(`characters/${player.id}/race`, player.toJSON(), () => {
+      // no-op for now
+    }, error => {
+      this.props.update('_race', null, { error });
+    });
   }
 
   render() {
@@ -49,6 +61,8 @@ class RaceSelection extends React.Component {
           {races}
           <RaceTooltip race={this.state.highlightedRace} />
         </div>
+
+        <Link to='/create/pick-abilities'>ABILITIES</Link>
       </section>
     );
   }
