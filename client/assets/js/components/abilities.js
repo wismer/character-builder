@@ -1,4 +1,6 @@
 import React, { PropTypes as PT } from 'react';
+import { Link } from 'react-router';
+
 import { classes, derivePointCost } from '../util/helper';
 
 class AbilityDescription extends React.Component {
@@ -48,6 +50,12 @@ class AbilityDescriptions extends React.Component {
     );
   }
 }
+
+AbilityDescriptions.propTypes = {
+  activeIdx: PT.number,
+  abilityDescriptions: PT.array,
+  children: PT.element
+};
 
 class Ability extends React.Component {
   constructor(props) {
@@ -336,6 +344,7 @@ class AbilityAnchor extends React.Component {
             </AbilityDescriptions>
           </aside>
         </div>
+        <Link to='/create/pick-class'>Pick Class</Link>
       </article>
     );
   }
@@ -345,7 +354,8 @@ AbilityAnchor.propTypes = {
   abilityScores: PT.array,
   handleClick: PT.func,
   update: PT.func,
-  player: PT.object
+  player: PT.object,
+  abilityDescriptions: PT.array
 };
 
 export default AbilityAnchor;
