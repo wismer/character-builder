@@ -702,6 +702,17 @@ body {
     .abilities .ability span {
       align-self: center; }
 
+#ability-descriptors {
+  display: flex;
+  flex-flow: column nowrap; }
+  #ability-descriptors ul {
+    display: flex;
+    flex-flow: column wrap; }
+    #ability-descriptors ul li {
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: space-around; }
+
 .ability-custom {
   display: flex;
   flex-flow: row nowrap; }

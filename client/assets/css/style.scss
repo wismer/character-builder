@@ -342,6 +342,22 @@ body {
   }
 }
 
+#ability-descriptors {
+  display: flex;
+  flex-flow: column nowrap;
+
+  ul {
+    display: flex;
+    flex-flow: column wrap;
+
+    li {
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: space-around;
+    }
+  }
+}
+
 .ability-custom {
   display: flex;
   flex-flow: row nowrap;

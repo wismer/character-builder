@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes as PT } from 'react';
 import { retrieve } from '../util/adapter';
 
 const scoreMappings = ['str', 'con', 'dex', 'int', 'wis', 'cha'];
@@ -41,6 +41,13 @@ class CharacterCard extends React.Component {
     );
   }
 }
+
+CharacterCard.propTypes = {
+  character_name: PT.string,
+  race: PT.string,
+  charClass: PT.string,
+  ability_scores: PT.array
+};
 
 class Home extends React.Component {
   constructor() {

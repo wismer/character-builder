@@ -54,10 +54,6 @@ export default class Player extends PlayerBase {
     return this.abilities = abilityScores;
   }
 
-  set _step(step) {
-    // no-op for now
-  }
-
   setClass(charClass) {
     if (this.charClass && this.charClass.name === charClass.name) {
       this.charClass = null;

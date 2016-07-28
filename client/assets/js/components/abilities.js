@@ -15,11 +15,9 @@ class AbilityDescription extends React.Component {
           {this.props.name}
         </aside>
 
-        <section>
-          <p>
-            {this.props.desc}
-          </p>
-        </section>
+        <p>
+          {this.props.desc}
+        </p>
       </li>
     );
   }
@@ -44,6 +42,8 @@ class AbilityDescriptions extends React.Component {
         <ul>
           {abilities}
         </ul>
+
+        {this.props.children}
       </section>
     );
   }
@@ -280,6 +280,7 @@ class AbilityAnchor extends React.Component {
   render() {
     var mode = this.state.standardMode;
     let activeIdx = this.state.activeIdx;
+    const abilityDescriptions = this.props.abilityDescriptions;
 
     let [customModeIncrease, customModeDecrease] = [
       this.handleCustomMode.bind(null, true),
@@ -327,14 +328,12 @@ class AbilityAnchor extends React.Component {
             </div>
           </section>
           <aside className='ability-info'>
-            <section className='ability-descriptor'>
-              <h5>Ability Descriptions</h5>
-
+            <AbilityDescriptions activeIdx={activeIdx} abilityDescriptions={abilityDescriptions}>
               <div className='ability-panel'>
                 <input type='button' defaultValue='toggle mode' onClick={this.switchSelectionMode}></input>
                 <input type='button' style={this.saveStatus} defaultValue="Save" onClick={this.handleSave}></input>
               </div>
-            </section>
+            </AbilityDescriptions>
           </aside>
         </div>
       </article>

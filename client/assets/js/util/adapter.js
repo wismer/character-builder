@@ -27,3 +27,4 @@ export function save(path, body, succ, fail) {
     response.json().then(succ, fail);
   });
 }
+

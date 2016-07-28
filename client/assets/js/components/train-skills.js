@@ -1,19 +1,22 @@
 import React from 'react';
 
-let Skills = React.createClass({
-  getInitialState() {
-    return { _skillChoices: 3, highlightedSkill: -1 };
-  },
+class Skills extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      highlightedSkill: -1
+    };
+  }
 
   render() {
     var tooltip = this.props.skills[this.state.highlightedSkill];
     var values = Array.from(this.props.skills.values());
-    var skills = values.map((skill, i) => {
+    var skills = values.map(skill => {
       var status;
       if (skill.isProficient) {
         status = <span className='checked' />;
       } else {
-        status = <span className='unchecked' />
+        status = <span className='unchecked' />;
       }
       return (
         <div className='skill' key={skill.key} onClick={this.props.skillClick.bind(null, skill)}>
@@ -38,7 +41,7 @@ let Skills = React.createClass({
       </div>
     );
   }
-});
+}
 
 
 Skills.propTypes = {

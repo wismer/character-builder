@@ -4,4 +4,4 @@ import * as adapter from './adapter';
 export {
   adapter,
   constants
-}
+};

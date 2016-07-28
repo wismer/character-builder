@@ -1,7 +1,7 @@
 import React, { PropTypes as PT } from 'react';
 import { withRouter, Link } from 'react-router';
 
-import { retrieve, save } from '../util/adapter';
+import * as adapter from '../util/adapter';
 import { CharacterClass, Player, Race } from '../classes/main';
 
 const STEPS = ['/create/pick-race', '/create/pick-abilities', '/create/pick-class'];
@@ -22,6 +22,11 @@ class CharacterCreation extends React.Component {
     );
   }
 }
+
+CharacterCreation.propTypes = {
+  children: PT.element,
+  step: PT.number
+};
 
 class CharacterCreationWrapper extends React.Component {
   constructor() {
@@ -47,7 +52,7 @@ class CharacterCreationWrapper extends React.Component {
 
   componentWillMount() {
     const player = this.state.player;
-    retrieve('resources', resources => {
+    adapter.retrieve('resources', resources => {
       player.id = resources.id;
       this.setState({
         characterClasses: resources.character_classes.map(klass => {
@@ -69,7 +74,8 @@ class CharacterCreationWrapper extends React.Component {
       update: this.update,
       player: player,
       races: races,
-      abilityDescriptions: abilities
+      abilityDescriptions: abilities,
+      step: step
     };
 
     return React.cloneElement(this.props.children, props);
@@ -83,5 +89,14 @@ class CharacterCreationWrapper extends React.Component {
     );
   }
 }
+
+CharacterCreationWrapper.propTypes = {
+  update: PT.func,
+  player: PT.instanceOf(Player),
+  races: PT.arrayOf(PT.instanceOf(Race)),
+  abilityDescriptions: PT.array,
+  step: PT.number,
+  children: PT.element
+};
 
 export default withRouter(CharacterCreationWrapper);
