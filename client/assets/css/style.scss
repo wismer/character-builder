@@ -1,445 +1,113 @@
 @import "bourbon/bourbon";
 @import "neat/neat";
-@import "examples/nav-bar";
-@import "examples/breadcrumbs";
-@import "race-select/style";
-@import "dashboard/style";
 
-body {
-  width: 1230px;
-  margin: 0 auto;
+
+$that-ugly-grey: #5F6161;
+
+html {
   font-size: golden-ratio(14px,  1);
   font-family: sans-serif;
+  background-color: black;
+}
+
+body {
   background-color: #5F6161;
-
-  #current-view {
-    min-height: 450px;
-  }
+  margin: 5px 0 5px 0;
 }
 
-.main-grid {
-  @include span-columns(12);
-  background: #DCDCDC;
-
-  .playable-races {
-    @include span-columns(3);
-  }
-
-  .preview-playable-race {
-    @include span-columns(9);
-    background-color: #F6F6F6;
-  }
+a, a:visited {
+  text-decoration: none;
+  color: white;
 }
 
-.accordion {
-  @include span-columns(3);
-  $base-border-color: gainsboro !default;
-  $base-line-height: 1.5em !default;
-  $base-spacing: 1.5em !default;
-  $dark-gray: #333 !default;
-  $base-font-color: $dark-gray !default;
-  $accordion-menu-border-color: $base-border-color;
-  $accordion-menu-color: $base-font-color;
-  $accordion-menu-border: 1px solid $accordion-menu-border-color;
-  $accordion-menu-background: lighten($accordion-menu-border-color, 10%);
-  $accordion-menu-hover: lighten($accordion-menu-background, 2%);
-  $accordion-menu-sub-background: darken($accordion-menu-background, 5%);
-  $accordion-menu-sub-inset: darken($accordion-menu-sub-background, 6%);
-  $accordion-menu-sub-hover: lighten($accordion-menu-sub-background, 10%);
-  $accordion-menu-list-padding: ($base-spacing / 2) $gutter;
-
-  background-color: $accordion-menu-background;
-  border: $accordion-menu-border;
-  margin: 0 0 $base-spacing 0;
-  padding: 0;
-
-  ul {
-    margin: 0;
-    padding: 0;
-  }
-
-  li {
-    border-bottom: $accordion-menu-border;
-    list-style: none;
-
-    > a {
-      color: $accordion-menu-color;
-      display: block;
-      padding: $accordion-menu-list-padding;
-      text-decoration: none;
-    }
-
-    &:last-child {
-      border: 0;
-    }
-
-    &:focus,
-    &:hover {
-      background-color: lighten(black, 50%);
-    }
-  }
-
-  ul.submenu {
-    li {
-      background-color: $accordion-menu-sub-background;
-
-      .active {
-        background-color: $accordion-menu-sub-hover;
-      }
-
-
-      &:first-child {
-        border-top: $accordion-menu-border;
-        box-shadow: inset 0 1px 1px $accordion-menu-sub-inset;
-      }
-
-      &:focus,
-      &:hover {
-        background-color: $accordion-menu-sub-hover;
-      }
-    }
-  }
-
-  .is-expanded {
-    display: block;
-    padding-bottom: 0;
-  }
-}
-
-
-.flex-boxes {
-  $base-border-radius: 3px !default;
-  $base-background-color: white !default;
-  $dark-gray: #333 !default;
-  $light-gray: #DDD !default;
-  $base-font-color: $dark-gray !default;
-  $flex-box-border-color: $light-gray;
-  $flex-box-border: 1px solid $flex-box-border-color;
-  $flex-box-background: lighten($light-gray, 10%);
-  $flex-box-gutter: 0.4em;
-  $flex-box-width: 18em;
-  $flex-box-color: transparentize($base-font-color, 0.3);
-  $flex-box-top-colors:
-    tomato,
-    #72BFBF,
-    #92B1E3,
-    #E3D743,
-    #CCC,
-    #F6C05C;
-
-    @include clearfix;
-    @include display(flex);
-    @include justify-content(center);
-    @include align-items(stretch);
-    @include flex-wrap(wrap);
-    clear: both;
-    text-align: center;
-
-  .flex-box {
-    @include flex(2 2 15em);
-    @include align-self(stretch);
-    background: $flex-box-background;
-    border-radius: $base-border-radius;
-    box-shadow: inset 0 0 1px $flex-box-border-color, 0 2px 4px darken($base-background-color, 10%);
-    display: block;
-    margin: $flex-box-gutter;
-    padding: 2em 2em 3em 2em;
-    text-decoration: none;
-    transition: all 0.2s ease-in-out;
-
-    @for $i from 1 to 7 { // assign colors from $flex-box-top-colors list
-      &:nth-child(#{$i}) {
-        $color-from-list: nth($flex-box-top-colors, $i);
-        border-top: 6px solid $color-from-list;
-
-        &:focus,
-        &:hover {
-          background-color: transparentize($color-from-list, 0.9);
-        }
-      }
-    }
-
-    img {
-      display: block;
-      height: 3em;
-      margin: 0 auto 1em;
-      opacity: 0.4;
-    }
-
-    .flex-title {
-      color: $flex-box-color;
-      font-size: 1.2em;
-      margin-bottom: 0.5em;
-    }
-
-    p {
-      color: transparentize($flex-box-color, 0.1);
-      line-height: 1.5em;
-      margin: auto;
-    }
-  }
-
-  .flex-box-big {
-    @include flex(1 1 40em);
-  }
-}
-
-@mixin grid-item-columns($columns) {
-  width: (100% / 12) * $columns;
-}
-
-.grid-items-lines {
-  $base-background-color: white !default;
-  $dark-gray: #333 !default;
-  $light-gray: #DDD !default;
-  $medium-screen: em(640) !default;
-  $large-screen: em(860) !default;
-  $base-font-color: $dark-gray !default;
-  $grid-items-background: $base-background-color;
-  $grid-item-background: $base-background-color;
-  $grid-item-border: 1px solid transparentize($base-font-color, 0.8);
-  $grid-item-columns: 4;
-  $grid-item-big-columns: 8;
-  $grid-item-color: $base-font-color;
-  $grid-item-height: 14em;
-
-  @include clearfix;
-  position: relative;
-
-  .grid-item {
-    background: $grid-item-background;
-    border-bottom: $grid-item-border;
-    border-right: $grid-item-border;
-    cursor: pointer;
-    float: left;
-    height: $grid-item-height;
-    outline: none;
-    overflow: hidden;
-    padding: 2em;
-    text-decoration: none;
-    transition: all 0.2s ease-in-out;
-    width: 100%;
-
-    @include media($large-screen) {
-      @include grid-item-columns($grid-item-columns);
-    }
-
-    &:focus,
-    &:hover {
-      background: transparentize($grid-item-color, 0.95);
-    }
-  }
-
-  .grid-item img {
-      display: block;
-      height: 2.5em;
-      margin-bottom: 1.2em;
-      opacity: 0.2;
-    }
-
-  .grid-item h1 {
-      color: $grid-item-color;
-      font-size: 1.3em;
-      margin-bottom: 0.4em;
-    }
-
-  .grid-item p {
-      color: transparentize($grid-item-color, 0.4);
-      line-height: 1.5em;
-
-      @include media($medium-screen) {
-        max-width: 70%;
-      }
-    }
-
-  .grid-item-big {
-    @include media($large-screen) {
-      @include grid-item-columns($grid-item-big-columns);
-    }
-    p {
-      @include media($medium-screen) {
-        max-width: 60%;
-      }
-    }
-  }
-
-  // this, below, might not be the most beautiful solution but it removes the outer borders by using the background color.
-  .bottom-cover {
-    background: $grid-items-background;
-    bottom: 0;
-    height: 3px;
-    position: absolute;
-    width: 100%;
-  }
-
-  .right-cover {
-    background: $grid-items-background;
-    height: 100%;
-    position: absolute;
-    right: 0;
-    width: 4px;
-  }
-}
-
-
-.ability-select {
+#home-container {
   display: flex;
-  flex-flow: column nowrap;
+  flex-flow: column;
+  height: 100%;
 
-  ul {
-    margin: 0;
-    padding: 0;
-  }
-
-  .ability {
-    height: 75px;
-
-    &.ability-active {
-      background-color: green;
-    }
-  }
-}
-
-#ability-container {
-  display: flex;
-  justify-content: space-around;
-  flex-flow: row wrap;
-
-  section, aside {
+  a {
+    margin: 30px;
+    display: flex;
     flex-grow: 1;
-  }
-}
+    text-align: center;
+    box-shadow: 1px 1px 1px black;
+    border: 1px solid #5F6161;
 
-.ability-custom, .ability-standard {
-  .custom-input {
-    display: none;
-  }
-
-  .panel-options.panel-active {
-    display: flex;
-  }
-}
-
-.abilities {
-  flex-flow: column nowrap;
-
-  .ability {
-    display: flex;
-    justify-content: space-around;
+    &:hover {
+      @include transition(background-color 1.0s ease-in-out);
+      @include transition(box-shadow 300ms ease-in-out);
+      background-color: #93BF88;
+      border: 1px solid yellow;
+      box-shadow: 4px 4px 4px black;
+      color: black;
+    }
 
     div {
-      display: flex;
-      justify-content: center;
-    }
-
-    .ability-name {
-      width: 30%;
-    }
-
-    span {
+      flex-grow: 1;
       align-self: center;
     }
   }
 }
 
-#ability-descriptors {
+
+#char-creation {
+  height: 100%;
+  width: 100%;
   display: flex;
-  flex-flow: column nowrap;
+  background-color: $that-ugly-grey;
 
-  ul {
-    display: flex;
-    flex-flow: column wrap;
+  #name-creation {
+    align-self: center;
+    margin: 0 auto;
 
-    li {
+    .name-wrapper {
+      width: 500px;
+      height: 100px;
       display: flex;
-      flex-flow: row nowrap;
-      justify-content: space-around;
-    }
-  }
-}
+      justify-content: center;
+      background-color: tint($that-ugly-grey, 20%);
+      border: 1px solid shade($that-ugly-grey, 20%);
+      box-shadow: 2px 2px 2px black;
 
-.ability-custom {
-  display: flex;
-  flex-flow: row nowrap;
-
-  .panel-active {
-    flex-flow: column;
-  }
-
-  .abilities {
-    flex-grow: 1;
-  }
-
-  aside {
-    display: flex;
-    flex-grow: 3
-  }
-
-  .custom-input {
-    height: 75px;
-    width: 75px;
-    display: flex;
-    flex-flow: column;
-
-    > input {
-      flex-grow: 1;
-      text-align: center;
-      cursor: pointer;
-
-      &:focus {
-        background-color: yellow;
-      }
-    }
-  }
-}
-
-// styling for Home Component
-
-#home-container {
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: space-between;
-
-  .character-card {
-    height: 100px;
-    width: 200px;
-    display: flex;
-    flex-flow: column nowrap;
-    border: 2px solid black;
-    flex-grow: 1;
-    margin: 0.5em;
-    justify-content: space-between;
-    cursor: pointer;
-
-    &:hover {
-      border: 2px solid yellow;
-    }
-
-    .char-details {
-      display: flex;
-      justify-content: space-between;
-    }
-
-    .char-name, .char-race, .name {
-      font-size: small;
-    }
-
-    .miniscores {
-      display: flex;
-      flex-flow: row;
-      justify-content: space-around;
-      align-items: center;
-      flex-grow: 0.2;
-      .miniscore {
+      .name-box {
         display: flex;
-        flex-flow: column;
-        justify-content: flex-end;
-        align-items: center;
-
-        .score {
-          font-size: initial;
-        }
+        justify-content: center;
+        align-self: center;
+        background-color: tint($that-ugly-grey, 40%);
+        width: 490px;
+        height: 90px;
+        border: 1px solid black;
       }
+    }
+
+    form {
+      align-self: center;
+      margin: 0;
+    }
+
+    input[name="name"] {
+      @include border-top-radius(15px);
+      @include border-bottom-radius(15px);
+      @include border-right-radius(30px);
+      @include border-left-radius(30px);
+      width: 300px;
+      height: 50px;
+      font-size: 20px;
+      border: 1px solid black;
+      color: white;
+      background-color: black;
+      padding: 0 30px;
+
+      @include placeholder {
+        text-align: center;
+        color: shade(white, 10%);
+        opacity: 0.4;
+      }
+    }
+    input[name="submit"] {
+      display: none;
     }
   }
 }
+
+

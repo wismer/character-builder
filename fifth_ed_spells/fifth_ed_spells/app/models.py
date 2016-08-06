@@ -77,12 +77,21 @@ class PlayerClassManager(models.Manager):
         return super().create(**kwargs)
 
 
+class CharacterManager(models.Manager):
+    def what(self):
+        qs = self.get_queryset()
+        for a in qs:
+            print(a)
+
+
 class BaseCharacterClass(models.Model):
     name = models.CharField(max_length=500)
     skill_choices = models.IntegerField(default=0)
     languages = ArrayField(models.CharField(max_length=50), blank=True, default=list)
     hp_die = models.IntegerField(default=0)
     saving_throws = ArrayField(models.CharField(max_length=20), blank=True, default=list)
+    objects = CharacterManager()
+    things = CharacterManager()
 
     def is_subclass(self):
         return hasattr(self, 'subclass')
@@ -105,15 +114,12 @@ class CharacterClass(BaseCharacterClass):
     armor = ArrayField(models.CharField(max_length=20), blank=True, default=list)
     weapons = ArrayField(models.CharField(max_length=50), blank=True, default=list)
 
-
 class ParentCharacterClass(CharacterClass):
     pass
-
 
 class SubCharacterClass(CharacterClass):
     parent_class = models.ForeignKey('ParentCharacterClass', related_name='subclasses', null=True)
     objects = PlayerClassManager()
-
 
 class RacialTrait(models.Model):
     name = models.CharField(max_length=30, blank=False)
@@ -199,6 +205,7 @@ class Spell(TimeStampedModel):
     duration = models.CharField(max_length=255)
     school = models.CharField(max_length=50, default='???')
 
+    what = "WTF"
     def __str__(self):
         return self.name
 

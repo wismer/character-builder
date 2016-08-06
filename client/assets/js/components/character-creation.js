@@ -7,16 +7,49 @@ import { CharacterClass, Player, Race } from '../classes/main';
 const STEPS = ['/create/pick-race', '/create/pick-abilities', '/create/pick-class'];
 
 class CharacterCreation extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      name: ''
+    };
+
+    this.onNameChange = (e) => {
+      this.setState({ name: e.currentTarget.value });
+    };
+
+    this.handleSubmit = (e) => {
+      e.preventDefault();
+      var player = this.props.player;
+      player.onchange(player, 'name', this.state.name);
+    };
+  }
+
   get next() {
     return STEPS[this.props.step];
   }
 
+  get isNameLongEnough() {
+    return this.state.name.length > 1;
+  }
+
   render() {
+    const nextStep = (
+      <div id='current-step'>
+        <Link to={this.next}>{this.next}</Link>
+      </div>
+    );
     return (
       <div id='char-creation'>
-        {this.props.children}
-        <div id='current-step'>
-          <Link to={this.next}>{this.next}</Link>
+        <div id='name-creation'>
+          <div className='name-wrapper'>
+            <div className='name-box'>
+              <form onSubmit={this.handleSubmit}>
+                <input name='name' type='text' onChange={this.onNameChange} placeholder='Adventurers Name' defaultValue={this.state.name} />
+                <input name='submit' type='submit' />
+              </form>
+            </div>
+          </div>
+          {this.isNameLongEnough ? nextStep : ''}
         </div>
       </div>
     );
@@ -38,7 +71,10 @@ class CharacterCreationWrapper extends React.Component {
       races: [],
       weapons: [],
       player: new Player({
-        onchange: player => this.setState({ player })
+        onchange: (player, field, value) => {
+          player[field] = value;
+          this.setState({ player });
+        }
       }),
       step: 0
     };
@@ -69,13 +105,13 @@ class CharacterCreationWrapper extends React.Component {
 
   get current() {
     if (!this.props.children) return;
-    const { step, player, abilities, races } = this.state;
+    const { step, player, abilities, races, characterClasses } = this.state;
     const props = {
-      update: this.update,
       player: player,
       races: races,
       abilityDescriptions: abilities,
-      step: step
+      step: step,
+      characterClasses: characterClasses
     };
 
     return React.cloneElement(this.props.children, props);

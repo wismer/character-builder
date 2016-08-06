@@ -8,12 +8,14 @@ import RaceSelection from './components/race-selection';
 import CharacterCreationWrapper from './components/character-creation';
 import AbilityAnchor from './components/abilities';
 import ClassSelection from './components/class-selection';
+import CharacterList from './components/character-list';
 
 window.onload = () => {
   render((
     <Router history={hashHistory}>
       <Route path="/" component={Application}>
         <IndexRoute component={Home} />
+        <Route path='view' component={CharacterList} />
         <Route path='create' component={CharacterCreationWrapper}>
           <Route path='pick-race' component={RaceSelection} />
           <Route path='pick-abilities' component={AbilityAnchor} />
