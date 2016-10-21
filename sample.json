@@ -1,0 +1,52 @@
+{
+  "Dwarf": {
+    "perks": {
+      "abilities": [
+        {
+          "name": "Stonecutting",
+          "desc": "This Is A Description",
+          "special": {
+            "effect": 2,
+            "characteristic": "skills",
+            "subcharacteristic": "history",
+            "event": "investigation?"
+          }
+        },
+      ],
+      "traits": [
+        {
+          "type": "advantage",
+          "value": "poison"
+        },
+        {
+          "type": "resistance",
+          "value": "poison"
+        },
+        {
+          "type": "vision",
+          "value": "Darkvision"
+        }
+      ]
+    },
+    "subraces": [
+      {
+        "name": "Mountain Dwarf",
+        "attributes": [2, 0, 2, 0, 0, 0],
+        "armor": ["light", "medium"]
+      },
+
+      {
+        "name": "Hill Dwarf",
+        "attributes": [0, 0, 2, 0, 1, 0],
+        "traits": [
+          {
+            "type": "racial",
+            "value": 1,
+            "characteristic": "hp",
+            "event": "onLevel"
+          }
+        ]
+      }
+    ]
+  }
+}
