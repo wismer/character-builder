@@ -18,7 +18,7 @@ export function selectSubClass(subclass) {
   return {
     type: 'SELECT_SUBCLASS',
     activeSubClass: subclass
-  }
+  };
 }
 
 export function previewSubClass(subclass) {
@@ -41,4 +41,8 @@ export function abilityChange(ability, modifier) {
     ability,
     modifier
   };
+}
+
+export function resetAbilities() {
+  return { type: 'RESET_ABILITIES' };
 }

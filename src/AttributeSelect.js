@@ -5,7 +5,7 @@ import { abilitySelectProps, abilitySelectDispatch } from './store/reducers';
 
 class Attributes extends React.Component {
   render() {
-    const abilities = this.props.abilities.map((ability, idx) => {
+    const abilities = this.props.abilities.map(ability => {
       const { name, value, desc } = ability;
       return (
         <div key={name} className='ability'>
@@ -22,8 +22,10 @@ class Attributes extends React.Component {
 
     return (
       <section id='ability-score-select'>
-        attributes
-        {abilities}
+        <button onClick={() => this.props.resetAbilities()}>RESET</button>
+        <div className='ability-choices'>
+          {abilities}
+        </div>
       </section>
     );
   }

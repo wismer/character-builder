@@ -70,6 +70,16 @@ function alterAbilityScore(prevState, {ability, modifier}) {
   });
 }
 
+function resetAbilities(prevState) {
+  let {abilityScoresById, abilityScores} = prevState;
+  abilityScores.forEach(score => {
+    let ability = abilityScoresById[score];
+    ability.value = ability.min;
+  });
+
+  return Object.assign({}, prevState, { abilityScoresById });
+}
+
 function splitFieldFromValue(state, field, values) {
   const byId = {};
   for (var value of values) {
@@ -143,6 +153,8 @@ export function characterCreation(state, action) {
       return addSkill(state, action.skill);
     case 'ABILITY_CHANGE':
       return alterAbilityScore(state, action);
+    case 'RESET_ABILITIES':
+      return resetAbilities(state);
     default: return state;
   }
 }
@@ -253,6 +265,10 @@ export function abilitySelectDispatch(dispatch) {
   return {
     onAbilitySelect: (ability, modifier) => {
       dispatch(actions.abilityChange(ability, modifier));
+    },
+
+    resetAbilities: () => {
+      dispatch(actions.resetAbilities());
     }
   };
 }
