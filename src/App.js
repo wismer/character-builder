@@ -1,20 +1,51 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
+import { playerEndpoint } from './adapters';
+import Login from './login';
+import { Link } from 'react-router';
 
 class App extends Component {
+  constructor() {
+    super();
+    this.state = {
+      isAuthenticated: false,
+      token: null,
+      players: []
+    };
+
+    this.didLogin = (payload) => {
+      payload.json().then(r => {
+        this.setState({ token: r.data.id, isAuthenticated: true });
+      });
+    };
+  }
+
   render() {
     return (
       <div className="App">
-        <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h2>Welcome to React</h2>
+      {/* dashboard here.... */}
+        <div className='dashboard'>
+          <article>
+            <header>DASHBOARD</header>
+            <section>
+              <Link to='/create/race'>Make a new Character</Link>
+            </section>
+          </article>
+
+          <article>
+            {this.props.children}
+          </article>
         </div>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+
+        {this.state.isAuthenticated ? "" : <Login didLogin={this.didLogin} />}
       </div>
     );
+  }
+
+  handleClick() {
+    playerEndpoint('GET').then(players => {
+      console.log(players);
+    });
   }
 }
 
