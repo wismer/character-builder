@@ -1,5 +1,5 @@
 import * as actions from './actions';
-import { calcAbilityCost, tallyRefund } from '../util';
+import { calcAbilityCost, tallyRefund, calcModifierBonus } from '../util';
 
 const initialState = {
   racesById: {},
@@ -70,10 +70,6 @@ function alterAbilityScore(prevState, {ability, modifier}) {
   });
 }
 
-function calc(from, to) {
-
-}
-
 function resetAbilities(prevState, ability) {
   let {abilityScoresById, abilityScores, abilityPointsRemaining} = prevState;
   let diff = 0;
@@ -121,7 +117,8 @@ function initialSetup(state, payload) {
   const abilities = activeRace.ability_scores.slice();
 
   abilities.forEach(a => {
-    a.name === 'Any' ? null : a.value += 8;
+    a.name = a.name.toLowerCase();
+    a.name === 'any' ? null : a.value += 8;
     a.min = a.value;
   });
 
@@ -268,15 +265,20 @@ export function slideSelectRaceDispatch(dispatch) {
 
 export function abilitySelectProps(characterCreation) {
   const {
-    trainedSkills,
     abilityPointsRemaining,
     abilityScores,
-    abilityScoresById
+    abilityScoresById,
+    skills,
+    skillsById
   } = characterCreation;
   return {
-    trainedSkills,
     abilityPointsRemaining,
-    abilities: abilityScores.map(name => abilityScoresById[name])
+    abilities: abilityScores.map(name => abilityScoresById[name]),
+    skills: skills.map(skill => {
+      skill = skillsById[skill];
+      skill.modifier = calcModifierBonus(abilityScoresById[skill.ability].value);
+      return skill;
+    })
   };
 }
 

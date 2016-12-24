@@ -16,3 +16,13 @@ export function tallyRefund(start, stop) {
   }
   return refundAmt;
 }
+
+export function calcModifierBonus(value, isProficient = false) {
+  let bonus = isProficient ? 2 : 0;
+  if (value === 10) {
+    return bonus;
+  }
+  // could probably refactor this with `calcAbilityCost` since there is some
+  // very similar logic going on. TODO
+  return Math.ceil((value - 10) / 2) + bonus;
+}
