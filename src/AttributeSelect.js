@@ -14,7 +14,7 @@ class Attributes extends React.Component {
           <div className='ability-name'>{name}</div>
           <div className='ability-desc'>{desc}</div>
           <div className='ability-value'>{value}</div>
-
+          <button onClick={() => this.props.resetAbilities(ability)}>Reset</button>
           <button onClick={() => this.props.onAbilitySelect(ability, -1)}>-</button>
         </div>
       );

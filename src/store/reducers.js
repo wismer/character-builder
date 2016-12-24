@@ -1,5 +1,5 @@
 import * as actions from './actions';
-import { calcAbilityCost } from '../util';
+import { calcAbilityCost, tallyRefund } from '../util';
 
 const initialState = {
   racesById: {},
@@ -70,14 +70,31 @@ function alterAbilityScore(prevState, {ability, modifier}) {
   });
 }
 
-function resetAbilities(prevState) {
-  let {abilityScoresById, abilityScores} = prevState;
-  abilityScores.forEach(score => {
-    let ability = abilityScoresById[score];
-    ability.value = ability.min;
-  });
+function calc(from, to) {
 
-  return Object.assign({}, prevState, { abilityScoresById });
+}
+
+function resetAbilities(prevState, ability) {
+  let {abilityScoresById, abilityScores, abilityPointsRemaining} = prevState;
+  let diff = 0;
+  if (ability) {
+    diff = tallyRefund(ability.value, ability.min);
+    ability.value = ability.min;
+    abilityScoresById[ability.name] = ability;
+  } else {
+    abilityScores.forEach(score => {
+      let ability = abilityScoresById[score];
+      diff += ability.value - ability.min;
+      ability.value = ability.min;
+    });
+  }
+
+  abilityPointsRemaining += diff;
+
+  return Object.assign({}, prevState, {
+    abilityScoresById,
+    abilityPointsRemaining
+  });
 }
 
 function splitFieldFromValue(state, field, values) {
@@ -102,10 +119,12 @@ function initialSetup(state, payload) {
   const activeClass = state.classesById[state.classes[0]];
   const activeSubClass = activeClass.subclasses[0];
   const abilities = activeRace.ability_scores.slice();
+
   abilities.forEach(a => {
     a.name === 'Any' ? null : a.value += 8;
     a.min = a.value;
   });
+
   state = splitFieldFromValue(state, 'abilityScores', abilities);
 
   return Object.assign({}, state, {
@@ -154,7 +173,7 @@ export function characterCreation(state, action) {
     case 'ABILITY_CHANGE':
       return alterAbilityScore(state, action);
     case 'RESET_ABILITIES':
-      return resetAbilities(state);
+      return resetAbilities(state, action.ability);
     default: return state;
   }
 }
@@ -267,8 +286,8 @@ export function abilitySelectDispatch(dispatch) {
       dispatch(actions.abilityChange(ability, modifier));
     },
 
-    resetAbilities: () => {
-      dispatch(actions.resetAbilities());
+    resetAbilities: ability => {
+      dispatch(actions.resetAbilities(ability));
     }
   };
 }

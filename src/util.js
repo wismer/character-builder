@@ -8,3 +8,11 @@ export function calcAbilityCost(value, modifier) {
 
   return n * modifier;
 }
+
+export function tallyRefund(start, stop) {
+  let refundAmt = 0;
+  for (let i = start; i > stop; i--) {
+    refundAmt += calcAbilityCost(i - 1, 1);
+  }
+  return refundAmt;
+}

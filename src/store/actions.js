@@ -43,6 +43,6 @@ export function abilityChange(ability, modifier) {
   };
 }
 
-export function resetAbilities() {
-  return { type: 'RESET_ABILITIES' };
+export function resetAbilities(ability) {
+  return { type: 'RESET_ABILITIES', ability };
 }
