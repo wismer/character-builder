@@ -150,6 +150,14 @@ function changeRace(prevState, action) {
   return Object.assign({}, prevState, newState);
 }
 
+function trainSkill(prevState, id) {
+  let { skillsById } = prevState;
+  let skill = skillsById[id];
+  skill.is_proficient = !skill.is_proficient;
+
+  return Object.assign({}, prevState, { skillsById });
+}
+
 export function characterCreation(state, action) {
 
   if (typeof state === 'undefined') {
@@ -171,6 +179,8 @@ export function characterCreation(state, action) {
       return alterAbilityScore(state, action);
     case 'RESET_ABILITIES':
       return resetAbilities(state, action.ability);
+    case 'TOGGLE_SKILL':
+      return trainSkill(state, action.id);
     default: return state;
   }
 }
@@ -276,7 +286,8 @@ export function abilitySelectProps(characterCreation) {
     abilities: abilityScores.map(name => abilityScoresById[name]),
     skills: skills.map(skill => {
       skill = skillsById[skill];
-      skill.modifier = calcModifierBonus(abilityScoresById[skill.ability].value);
+      let relatedAbility = abilityScoresById[skill.ability];
+      skill.modifier = calcModifierBonus(relatedAbility.value, skill.is_proficient);
       return skill;
     })
   };
@@ -290,6 +301,10 @@ export function abilitySelectDispatch(dispatch) {
 
     resetAbilities: ability => {
       dispatch(actions.resetAbilities(ability));
+    },
+
+    toggleSkillTraining: skill => {
+      dispatch(actions.toggleSkillTraining(skill));
     }
   };
 }

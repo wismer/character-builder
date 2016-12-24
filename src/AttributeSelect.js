@@ -24,11 +24,11 @@ class Attributes extends React.Component {
 
     const skills = this.props.skills.map(skill => {
       const { name, desc, is_proficient: isProficient } = skill;
-      const className = isProficient ? 'skill proficient' : 'skill';
+      const className = isProficient ? 'skill is-proficient' : 'skill';
       return (
-        <div key={skill.id} className={className}>
-          <div className='ability-name'>{name}</div>
-          <div className='ability-desc'>{desc}</div>
+        <div key={skill.id} onClick={() => this.props.toggleSkillTraining(skill.id)} className={className}>
+          <div className='skill-name'>{name}</div>
+          <div className='skill-desc'>{desc}</div>
           <h3>{skill.modifier}</h3>
         </div>
       );
