@@ -21,7 +21,11 @@ const initialState = {
   activeSubRace: null,
 
   weapons: [],
-  weaponsById: {}
+  weaponsById: {},
+
+  // array of skill id's that are permitted for the chosen class
+  allowedSkills: [],
+  skillChoiceLimit: 2
 };
 
 
@@ -116,6 +120,7 @@ function initialSetup(state, payload) {
   const activeSubClass = activeClass.subclasses[0];
   const abilities = activeRace.ability_scores.slice();
 
+
   abilities.forEach(a => {
     a.name = a.name.toLowerCase();
     a.name === 'any' ? null : a.value += 8;
@@ -129,7 +134,9 @@ function initialSetup(state, payload) {
     activeSubRace,
     activeClass,
     activeSubClass,
-    abilityPointsRemaining: 27
+    abilityPointsRemaining: 27,
+    skillChoiceLimit: activeClass.skill_count,
+    allowedSkills: activeClass.skill_choices
   });
 }
 
@@ -151,11 +158,17 @@ function changeRace(prevState, action) {
 }
 
 function trainSkill(prevState, id) {
-  let { skillsById } = prevState;
+  let { skillsById, skillChoiceLimit } = prevState;
   let skill = skillsById[id];
   skill.is_proficient = !skill.is_proficient;
 
-  return Object.assign({}, prevState, { skillsById });
+  if (skill.is_proficient) {
+    skillChoiceLimit -= 1;
+  } else {
+    skillChoiceLimit += 1;
+  }
+
+  return Object.assign({}, prevState, { skillsById, skillChoiceLimit });
 }
 
 export function characterCreation(state, action) {
@@ -279,7 +292,9 @@ export function abilitySelectProps(characterCreation) {
     abilityScores,
     abilityScoresById,
     skills,
-    skillsById
+    skillsById,
+    allowedSkills,
+    skillChoiceLimit
   } = characterCreation;
   return {
     abilityPointsRemaining,
@@ -287,9 +302,11 @@ export function abilitySelectProps(characterCreation) {
     skills: skills.map(skill => {
       skill = skillsById[skill];
       let relatedAbility = abilityScoresById[skill.ability];
+      skill.isAllowed = !!allowedSkills.find(id => skill.id === id);
       skill.modifier = calcModifierBonus(relatedAbility.value, skill.is_proficient);
       return skill;
-    })
+    }),
+    skillChoiceLimit
   };
 }
 
@@ -303,8 +320,11 @@ export function abilitySelectDispatch(dispatch) {
       dispatch(actions.resetAbilities(ability));
     },
 
-    toggleSkillTraining: skill => {
-      dispatch(actions.toggleSkillTraining(skill));
+    toggleSkillTraining: (id, isAllowed, limit) => {
+      // maybe need an error message to flash?
+      if (isAllowed && limit > 0) {
+        dispatch(actions.toggleSkillTraining(id));
+      }
     }
   };
 }

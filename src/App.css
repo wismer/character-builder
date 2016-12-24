@@ -238,11 +238,20 @@
 
 .skill {
   align-self: center;
+  border: 1px solid white;
 }
 
 .skill-selected {
   background-color: black;
   color: white;
+}
+
+.skill-unselectable {
+  opacity: 0.5;
+}
+
+.is-proficient {
+  border: 1px solid black;
 }
 
 .skill-label {

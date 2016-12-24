@@ -7,6 +7,7 @@ import { abilitySelectProps, abilitySelectDispatch } from './store/reducers';
 
 class Attributes extends React.Component {
   render() {
+    const { skillChoiceLimit } = this.props;
     const abilities = this.props.abilities.map(ability => {
       const { name, value, desc } = ability;
       return (
@@ -23,12 +24,24 @@ class Attributes extends React.Component {
     });
 
     const skills = this.props.skills.map(skill => {
-      const { name, desc, is_proficient: isProficient } = skill;
-      const className = isProficient ? 'skill is-proficient' : 'skill';
+      const { id, name, desc, is_proficient: isProficient, isAllowed } = skill;
+      let className = isProficient ? 'skill is-proficient' : 'skill';
+      if (!isAllowed) {
+        className += ' skill-unselectable';
+      }
       return (
-        <div key={skill.id} onClick={() => this.props.toggleSkillTraining(skill.id)} className={className}>
-          <div className='skill-name'>{name}</div>
-          <div className='skill-desc'>{desc}</div>
+        <div
+          key={skill.id}
+          onClick={() => this.props.toggleSkillTraining(id, isAllowed, skillChoiceLimit)}
+          className={className}
+        >
+          <div className='skill-name'>
+            {name}
+          </div>
+          <div className='skill-desc'>
+            {desc}
+          </div>
+
           <h3>{skill.modifier}</h3>
         </div>
       );
