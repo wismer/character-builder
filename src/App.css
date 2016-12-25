@@ -237,7 +237,7 @@
 }
 
 .skill {
-  align-self: center;
+  text-align: left;
   border: 1px solid white;
 }
 
@@ -259,4 +259,17 @@
   width: 300px;
   display: flex;
   flex-flow: row nowrap;
+}
+
+#ability-score-select {
+  display: flex;
+}
+
+.ability {
+  display: flex;
+  flex-flow: column;
+}
+
+.ability-desc {
+  padding: 0 10px 0 10px;
 }

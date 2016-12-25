@@ -14,9 +14,18 @@ class Attributes extends React.Component {
         <div key={name} className='ability'>
           <button onClick={() => this.props.onAbilitySelect(ability, 1)}>+</button>
 
-          <div className='ability-name'>{name}</div>
-          <div className='ability-desc'>{desc}</div>
-          <div className='ability-value'>{value}</div>
+          <div className='ability-name'>
+            {name}
+          </div>
+
+          <div className='ability-desc'>
+            {desc}
+          </div>
+
+          <div className='ability-value'>
+            {value}
+          </div>
+
           <button onClick={() => this.props.resetAbilities(ability)}>Reset</button>
           <button onClick={() => this.props.onAbilitySelect(ability, -1)}>-</button>
         </div>
@@ -24,7 +33,7 @@ class Attributes extends React.Component {
     });
 
     const skills = this.props.skills.map(skill => {
-      const { name, desc, is_proficient: isProficient, isAllowed } = skill;
+      const { ability, name, modifier, desc, is_proficient: isProficient, isAllowed } = skill;
       let className = isProficient ? 'skill is-proficient' : 'skill';
       if (!isAllowed || skillChoiceLimit === 0) {
         className += ' skill-unselectable';
@@ -38,11 +47,14 @@ class Attributes extends React.Component {
           <div className='skill-name'>
             {name}
           </div>
+          <div className='skill-ability'>
+            Ability: {ability}
+          </div>
           <div className='skill-desc'>
             {desc}
           </div>
 
-          <h3>{skill.modifier}</h3>
+          <h3>{modifier >= 0 ? `+${modifier}` : modifier}</h3>
         </div>
       );
     });
