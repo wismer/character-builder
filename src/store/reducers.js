@@ -1,6 +1,18 @@
 import * as actions from './actions';
 import { calcAbilityCost, tallyRefund, calcModifierBonus } from '../util';
 
+
+
+/*
+
+List of things to do and/or keep note of...
+
+1. racial traits may include bonus proficiency in a skill. Unimplemented.
+2. Applying "free points" for ability scores that Humans and Half-Elves get. Unimplemented.
+3. Some sub-classes have bonus proficiencies in other skills. Unimplemented.
+4. Spell list. Unimplemented.
+
+*/
 const initialState = {
   racesById: {},
   races: [],
