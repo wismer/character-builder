@@ -24,15 +24,15 @@ class Attributes extends React.Component {
     });
 
     const skills = this.props.skills.map(skill => {
-      const { id, name, desc, is_proficient: isProficient, isAllowed } = skill;
+      const { name, desc, is_proficient: isProficient, isAllowed } = skill;
       let className = isProficient ? 'skill is-proficient' : 'skill';
-      if (!isAllowed) {
+      if (!isAllowed || skillChoiceLimit === 0) {
         className += ' skill-unselectable';
       }
       return (
         <div
           key={skill.id}
-          onClick={() => this.props.toggleSkillTraining(id, isAllowed, skillChoiceLimit)}
+          onClick={() => this.props.toggleSkillTraining(skill)}
           className={className}
         >
           <div className='skill-name'>

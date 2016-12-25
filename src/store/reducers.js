@@ -157,17 +157,21 @@ function changeRace(prevState, action) {
   return Object.assign({}, prevState, newState);
 }
 
-function trainSkill(prevState, id) {
-  let { skillsById, skillChoiceLimit } = prevState;
-  let skill = skillsById[id];
-  skill.is_proficient = !skill.is_proficient;
-
-  if (skill.is_proficient) {
-    skillChoiceLimit -= 1;
-  } else {
-    skillChoiceLimit += 1;
+function trainSkill(prevState, skill) {
+  if (!skill.isAllowed) {
+    return prevState;
   }
 
+  let { skillsById, skillChoiceLimit } = prevState;
+  if (skillChoiceLimit >= 0 && skill.is_proficient) {
+    skillChoiceLimit += 1;
+  } else if (skillChoiceLimit > 0) {
+    skillChoiceLimit -= 1;
+  } else {
+    return prevState;
+  }
+
+  skill.is_proficient = !skill.is_proficient;
   return Object.assign({}, prevState, { skillsById, skillChoiceLimit });
 }
 
@@ -193,7 +197,7 @@ export function characterCreation(state, action) {
     case 'RESET_ABILITIES':
       return resetAbilities(state, action.ability);
     case 'TOGGLE_SKILL':
-      return trainSkill(state, action.id);
+      return trainSkill(state, action.skill);
     default: return state;
   }
 }
@@ -320,11 +324,8 @@ export function abilitySelectDispatch(dispatch) {
       dispatch(actions.resetAbilities(ability));
     },
 
-    toggleSkillTraining: (id, isAllowed, limit) => {
-      // maybe need an error message to flash?
-      if (isAllowed && limit > 0) {
-        dispatch(actions.toggleSkillTraining(id));
-      }
+    toggleSkillTraining: skill => {
+      dispatch(actions.toggleSkillTraining(skill));
     }
   };
 }

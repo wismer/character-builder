@@ -47,6 +47,6 @@ export function resetAbilities(ability) {
   return { type: 'RESET_ABILITIES', ability };
 }
 
-export function toggleSkillTraining(id) {
-  return { type: 'TOGGLE_SKILL', id };
+export function toggleSkillTraining(skill) {
+  return { type: 'TOGGLE_SKILL', skill };
 }
