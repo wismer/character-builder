@@ -3,27 +3,22 @@ from .models import (
     ParentRace,
     SubRace,
     RacialTrait,
-    Item,
-    Trait,
-    TraitProperty,
     Weapon,
     Armor,
     ParentCharacterClass,
     SubCharacterClass,
-    Spell
+    Spell,
+    Class,
+    SubClass
 )
 
 
-class TraitInline(admin.TabularInline):
-    model = TraitProperty
+class SubClassAdminInline(admin.TabularInline):
+    model = SubClass
 
 
-class TraitPropertyAdmin(admin.ModelAdmin):
-    pass
-
-
-class ItemAdmin(admin.ModelAdmin):
-    inlines = [TraitInline]
+class ClassAdmin(admin.ModelAdmin):
+    inlines = [SubClassAdminInline]
 
 
 class ArmorAdmin(admin.ModelAdmin):
@@ -31,7 +26,11 @@ class ArmorAdmin(admin.ModelAdmin):
 
 
 class WeaponAdmin(admin.ModelAdmin):
-    inlines = [TraitInline]
+    list_display = (
+        'name',
+        'damage_type',
+        'damage'
+    )
 
 
 class RacialTraitAdminInline(admin.TabularInline):
@@ -43,10 +42,6 @@ class ParentRaceAdmin(admin.ModelAdmin):
 
 
 class RacialTraitAdmin(admin.ModelAdmin):
-    pass
-
-
-class TraitAdmin(admin.ModelAdmin):
     pass
 
 
@@ -86,8 +81,6 @@ admin.site.register(ParentCharacterClass, ParentClassAdmin)
 admin.site.register(ParentRace, ParentRaceAdmin)
 admin.site.register(SubRace, SubRaceAdmin)
 admin.site.register(RacialTrait, RacialTraitAdmin)
-admin.site.register(Item, ItemAdmin)
 admin.site.register(Armor, ArmorAdmin)
 admin.site.register(Weapon, WeaponAdmin)
-admin.site.register(Trait, TraitAdmin)
-admin.site.register(TraitProperty, TraitPropertyAdmin)
+admin.site.register(Class, ClassAdmin)

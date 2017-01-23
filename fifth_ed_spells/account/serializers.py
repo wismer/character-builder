@@ -3,8 +3,7 @@ from djoser.serializers import (
     LoginSerializer as DjoserLoginSerializer
 )
 from rest_framework_json_api import serializers
-from rest_framework.authtoken.models import Token
-
+from .models import User
 
 
 class UserRegistrationSerializer(DjoserUserRegistrationSerializer):
@@ -13,3 +12,9 @@ class UserRegistrationSerializer(DjoserUserRegistrationSerializer):
 
 class LoginSerializer(DjoserLoginSerializer):
     pass
+
+
+class PlayerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('player_set',)

@@ -1,11 +1,12 @@
 from django.db import models
-from django.contrib.postgres.fields import ArrayField
+from django.contrib.postgres.fields import ArrayField, JSONField
 from model_utils.models import TimeStampedModel
 
 from .util import default_components
 from .constants import (
     ARMOR_TYPES,
     ARMOR_VALUES,
+    ITEM_CATEGORIES,
     DIE_COUNT,
     DIE_CHOICES,
     SHORT_RANGE,
@@ -35,6 +36,39 @@ def to_nth(n):
         return '1st'
 
     return str(n) + 'th'
+
+
+class Class(models.Model):
+    name = models.CharField(max_length=500)
+    languages = ArrayField(models.CharField(max_length=50), blank=True, default=list)
+    hp_die = models.IntegerField(default=0)
+    hp_lvl = JSONField(default={'die': 4, 'count': 1})
+    saving_throws = ArrayField(models.CharField(max_length=20), blank=True, default=list)
+    subclass_name = models.CharField(max_length=50)
+    skill_count = models.IntegerField(default=0)
+    skill_choices = models.ManyToManyField('Skill')
+    spells = models.ManyToManyField('Spell')
+
+    def __str__(self):
+        return '{name} - {modifiers} based'.format(
+            name=self.name,
+            modifiers='/'.join(self.saving_throws)
+        )
+
+# class SkillChoices(models.Model):
+#     subclass = models.ForeignKey('SubClass')
+#     skill = models.ForeignKey('Skill')
+
+
+class SubClass(models.Model):
+    parent_class = models.ForeignKey('Class', related_name='subclasses')
+    name = models.CharField(max_length=50)
+    armor = ArrayField(models.CharField(max_length=20), blank=True, default=list)
+    weapons = ArrayField(models.CharField(max_length=50), blank=True, default=list)
+    spells = models.ManyToManyField(
+        'Spell',
+        through='ClassSpell',
+    )
 
 
 class BaseRace(models.Model):
@@ -114,18 +148,29 @@ class CharacterClass(BaseCharacterClass):
     armor = ArrayField(models.CharField(max_length=20), blank=True, default=list)
     weapons = ArrayField(models.CharField(max_length=50), blank=True, default=list)
 
+
 class ParentCharacterClass(CharacterClass):
     pass
 
+
 class SubCharacterClass(CharacterClass):
-    parent_class = models.ForeignKey('ParentCharacterClass', related_name='subclasses', null=True)
+    parent_class = models.ForeignKey(
+        'ParentCharacterClass',
+        related_name='subclasses',
+        null=True
+    )
     objects = PlayerClassManager()
+
 
 class RacialTrait(models.Model):
     name = models.CharField(max_length=30, blank=False)
     desc = models.TextField(max_length=500)
     race = models.ForeignKey('BaseRace', related_name='racialtraits')
-    trait_type = ArrayField(models.CharField(max_length=30, blank=True), blank=True, default=list)
+    trait_type = ArrayField(
+        models.CharField(max_length=30, blank=True),
+        blank=True,
+        default=list
+    )
     trait_value = models.CharField(max_length=30, blank=True)
 
     def __str__(self):
@@ -134,8 +179,22 @@ class RacialTrait(models.Model):
 
 class Item(models.Model):
     name = models.CharField(max_length=50)
-    traits = models.ManyToManyField('Trait', through='TraitProperty')
-    cost = models.DecimalField(max_digits=8, decimal_places=2)
+    category = models.CharField(
+        max_length=50,
+        choices=ITEM_CATEGORIES,
+        default='weapon'
+    )
+    subcategory = models.CharField(
+        max_length=50,
+        null=True,
+        blank=True,
+        default='simple'
+    )
+    cost = models.DecimalField(
+        max_digits=8,
+        decimal_places=2,
+        default='0'
+    )
 
     def __str__(self):
         return self.name
@@ -144,11 +203,30 @@ class Item(models.Model):
 class Weapon(Item):
     damage = models.IntegerField(default=4, choices=DIE_CHOICES)
     dice_count = models.IntegerField(default=1, choices=DIE_COUNT)
-    short_range = models.IntegerField(null=True, choices=SHORT_RANGE, blank=True)
-    long_range = models.IntegerField(null=True, choices=LONG_RANGE, blank=True)
-    versatile_dmg = models.IntegerField(null=True, choices=DIE_CHOICES, blank=True)
-    versatile_dice = models.IntegerField(null=True, choices=DIE_COUNT, blank=True)
-    damage_type = models.CharField(max_length=30, choices=MUNDANE_DAMAGE_TYPES)
+    short_range = models.IntegerField(
+        null=True,
+        choices=SHORT_RANGE,
+        blank=True
+    )
+    long_range = models.IntegerField(
+        null=True,
+        choices=LONG_RANGE,
+        blank=True
+    )
+    versatile_dmg = models.IntegerField(
+        null=True,
+        choices=DIE_CHOICES,
+        blank=True
+    )
+    versatile_dice = models.IntegerField(
+        null=True,
+        choices=DIE_COUNT,
+        blank=True
+    )
+    damage_type = models.CharField(
+        max_length=30,
+        choices=MUNDANE_DAMAGE_TYPES
+    )
     special = models.TextField(max_length=500, null=True, blank=True)
 
     def __str__(self):
@@ -157,6 +235,17 @@ class Weapon(Item):
             n=self.dice_count,
             dmg=self.damage
         )
+
+    def to_preview(self):
+        return '{name} {n}d{dmg} {dmg_type} damage'.format(
+            name=self.name,
+            n=self.dice_count,
+            dmg=self.damage,
+            dmg_type=self.damage_type
+        )
+
+    class Meta:
+        ordering = ['name']
 
 
 class Armor(Item):
@@ -175,23 +264,6 @@ class Armor(Item):
         )
 
 
-class TraitProperty(models.Model):
-    item = models.ForeignKey('Item', related_name='items')
-    trait = models.ForeignKey('Trait', related_name='traits')
-
-    def __str__(self):
-        return '{item} - {trait}'.format(item=self.item.name, trait=self.trait.name)
-
-
-class Trait(models.Model):
-    name = models.CharField(max_length=50)
-    desc = models.TextField(max_length=3000)
-    item_property = models.ForeignKey('TraitProperty', related_name='items', null=True, blank=True)
-
-    def __str__(self):
-        return self.name
-
-
 class Spell(TimeStampedModel):
     name = models.CharField(max_length=255)
     desc = models.TextField()
@@ -205,9 +277,17 @@ class Spell(TimeStampedModel):
     duration = models.CharField(max_length=255)
     school = models.CharField(max_length=50, default='???')
 
-    what = "WTF"
     def __str__(self):
         return self.name
+
+    class Meta:
+        ordering = ['level', 'name']
+
+
+class ClassSpell(models.Model):
+    level_restriction = models.SmallIntegerField(default=1)
+    spell = models.ForeignKey('Spell', related_name='classes')
+    subclass = models.ForeignKey('SubClass', related_name='available_spells')
 
 
 class SpellProperty(models.Model):
@@ -259,6 +339,26 @@ class Skill(models.Model):
 
     class Meta:
         ordering = ['name']
+
+
+class Character(TimeStampedModel):
+    player_name = models.CharField(max_length=50)
+    character_name = models.CharField(max_length=50)
+    armor_class = models.IntegerField(default=8)
+    is_npc = models.BooleanField(default=False)
+    passive_wisdom = models.IntegerField(default=8)
+    initiative = models.IntegerField(default=8)
+    conditions = ArrayField(
+        models.CharField(max_length=30), default=list, blank=True, null=True)
+    current_hit_points = models.IntegerField(default=8)
+    max_hit_points = models.IntegerField(default=8)
+
+
+class Encounter(TimeStampedModel):
+    name = models.CharField(max_length=50)
+    characters = models.ManyToManyField('Character')
+    current_turn = models.IntegerField(default=1)
+    turn_order = ArrayField(models.IntegerField(default=1), default=list, null=True)
 
 
 # TODO

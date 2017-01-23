@@ -1,6 +1,13 @@
 number_range = [i for i in range(0, 30)]
 
-
+ITEM_CATEGORIES = [
+    ('martial', 'Martial Weapon'),
+    ('simple', 'Simple Weapon'),
+    ('light', 'Light Armor'),
+    ('medium', 'Medium Armor'),
+    ('heavy', 'Heavy Armor'),
+    ('shield', 'Shield')
+]
 ARMOR_VALUES = [(i, '{ac}AC'.format(ac=i)) for i in number_range]
 
 armor = ['light', 'medium', 'heavy', 'shield']
@@ -37,12 +44,13 @@ SPELL_SHAPES = (
 )
 
 abilities_all = [
-    dict(name='Strength', desc='measures bodily power, athletic training, and the extent to which you can exert raw physical force.'),
-    dict(name='Constitution', desc='measures health, stamina, and vital force.'),
-    dict(name='Dexterity', desc='measures agility, reflexes, and balance.'),
-    dict(name='Intelligence', desc='measures mental acuity, accuracy of recall, and the ability to reason.'),
-    dict(name='Wisdom', desc='reflects how attuned you are to the world around you and represents perceptiveness and intuition.'),
-    dict(name='Charisma', desc='measures your ability to interact effectively with others. It includes such factors as confidence and eloquence, and it can represent a charming or commanding personality.'),
+    dict(short='str', name='Strength', desc='Measures bodily power, athletic training, and the extent to which you can exert raw physical force.'),
+    dict(short='dex', name='Dexterity', desc='Measures agility, reflexes, and balance.'),
+    dict(short='con', name='Constitution', desc='Measures health, stamina, and vital force.'),
+    dict(short='int', name='Intelligence', desc='Measures mental acuity, accuracy of recall, and the ability to reason.'),
+    dict(short='wis', name='Wisdom', desc='reflects how attuned you are to the world around you and represents perceptiveness and intuition.'),
+    dict(short='cha', name='Charisma', desc='Measures your ability to interact effectively with others. It includes such factors as confidence and eloquence, and it can represent a charming or commanding personality.'),
+    dict(short='any', name='Any', desc='May increase any other ability score')
 ]
 
 ABILITIES = [(ability['name'], ability['desc']) for ability in abilities_all]

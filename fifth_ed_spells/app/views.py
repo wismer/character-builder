@@ -2,39 +2,54 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework import viewsets, views
 from rest_framework.response import Response
 from rest_framework.decorators import detail_route
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.authentication import (
+    SessionAuthentication,
+    BasicAuthentication
+)
+
 from fifth_ed_spells.account.models import User
-from .models import (
+from fifth_ed_spells.app.models import (
     BaseRace,
     ParentRace,
     SubRace,
-    Trait,
-    Item,
-    Skill,
     ParentCharacterClass,
-    Player
+    Player,
+    Class,
+    Skill,
+    Armor,
+    Weapon,
+    Spell,
+    Character,
+    Encounter,
 )
 
 from .serializers import (
     ParentRaceSerializer,
+    PlayerCharacterSerializer,
+    ClassSerializer,
     ResourceSerializer,
-    PlayerCharacterSerializer
+    SpellSerializer,
+    CharacterSerializer
 )
+
+
+class GameInformationView(viewsets.ViewSet):
+    # races, items, classes, traits
+    def list(self, request):
+        data = {
+            'races': ParentRace.objects.all(),
+            'classes': Class.objects.all(),
+            'weapons': Weapon.objects.all(),
+            'armor': Armor.objects.all(),
+            'skills': Skill.objects.all()
+        }
+        serialized_data = ResourceSerializer(data).data
+        return Response(data=serialized_data)
 
 
 class ParentRaceView(viewsets.ModelViewSet):
     queryset = ParentRace.objects.all()
     serializer_class = ParentRaceSerializer
-
-
-class ResourceView(viewsets.ModelViewSet):
-    queryset = Item.objects.all()
-    serializer_class = ResourceSerializer
-
-    def list(self, request):
-        qs = self.get_queryset()
-        serializer = self.get_serializer(qs, many=True)
-        return Response(data=serializer.data)
 
 
 class CharacterView(viewsets.ModelViewSet):
@@ -71,3 +86,30 @@ class LoginView(views.APIView):
     @csrf_exempt
     def post(self, request):
         import ipdb; ipdb.set_trace()
+
+
+class ClassView(viewsets.ModelViewSet):
+    queryset = ParentCharacterClass.objects.all()
+    serializer_class = ClassSerializer
+
+
+class SpellView(viewsets.ModelViewSet):
+    queryset = Spell.objects.all()
+    serializer_class = SpellSerializer
+
+    def get_queryset(self):
+        qs = Spell.objects.all()
+        query = self.request.query_params.get('name', None)
+        if not query:
+            return qs
+
+        return qs.filter(name__icontains=query)
+
+
+class EncounterView(viewsets.ViewSet):
+    def create(self, request, *args, **kwargs):
+        serializer = CharacterSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(data=serializer.data)
+        return Response(status=400)

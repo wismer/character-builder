@@ -1,20 +1,37 @@
 from rest_framework_json_api import serializers
 from django.db.models import Q
 
-from .constants import ABILITIES, abilities_all
+from .constants import abilities_all
 from .models import (
     Player,
     SubRace,
     ParentRace,
     RacialTrait,
     Weapon,
-    Trait,
-    Item,
     Armor,
+    Class,
+    ClassSpell,
+    SubClass,
+    Spell,
     Skill,
+    Character,
     ParentCharacterClass,
     SubCharacterClass
 )
+
+
+def merge_ability_scores(parent, child=None):
+    if not child:
+        scores = parent.ability_scores
+    else:
+        scores = [p + c for p, c in zip(parent.ability_scores, child.ability_scores)]
+
+    abilities = []
+    for idx, val in enumerate(scores):
+        score = abilities_all[idx]
+        score['value'] = val
+        abilities.append(score)
+    return abilities
 
 
 def abilities_tooltip(obj):
@@ -33,27 +50,6 @@ def skills_tooltip(obj):
 
     return skills
 
-class SubClassSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = SubCharacterClass
-
-
-class ParentCharacterClassSerializer(serializers.ModelSerializer):
-    subclasses = SubClassSerializer(many=True)
-
-    class Meta:
-        model = ParentCharacterClass
-
-
-class WeaponSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Weapon
-
-
-class ArmorSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Armor
-
 
 class RacialTraitSerializer(serializers.ModelSerializer):
     class Meta:
@@ -63,36 +59,42 @@ class RacialTraitSerializer(serializers.ModelSerializer):
 class RaceSerializerMixin(serializers.Serializer):
     racialtraits = RacialTraitSerializer(many=True)
     weapons = serializers.SerializerMethodField()
-
-    def get_weapons(self, obj):
-        q = Q()
-        for weapon in obj.weapons:
-            q |= Q(name__iexact=weapon)
-        return Weapon.objects.filter(q).values_list('id', flat=True)
-
-
-class SubRaceSerializer(RaceSerializerMixin, serializers.ModelSerializer):
     ability_scores = serializers.SerializerMethodField()
 
     def get_ability_scores(self, obj):
-        # do this in the model data, not here but this is fine for now TODO
-        return [parentattr + childattr for parentattr, childattr in zip(obj.parent.ability_scores, obj.ability_scores)]
+        abilities = []
+        for idx, val in enumerate(obj.ability_scores):
+            score = abilities_all[idx].copy()
+            score['value'] = val
+            abilities.append(score)
+        return abilities
+
+    def get_weapons(self, obj):
+        if not obj.weapons:
+            return obj.weapons
+        query = Q()
+        for weapon in obj.weapons:
+            query |= Q(name__iexact=weapon)
+        weapons = Weapon.objects.filter(query)
+        return map(lambda w: w.to_preview(), weapons)
+
+
+class SubClassSpellSerializer(serializers.ModelSerializer):
+    spell = serializers.SerializerMethodField()
+
+    def get_spell(self, obj):
+        return obj.spell.name
 
     class Meta:
-        model = SubRace
+        fields = ('id', 'spell', 'level_restriction')
+        model = ClassSpell
 
 
-class ParentRaceSerializer(RaceSerializerMixin, serializers.ModelSerializer):
-    subraces = SubRaceSerializer(many=True)
+class SubClassSerializer(serializers.ModelSerializer):
+    available_spells = SubClassSpellSerializer(many=True)
 
     class Meta:
-        model = ParentRace
-
-
-class TraitSerializer(serializers.ModelSerializer):
-    class Meta:
-        exclude = ('item_property',)
-        model = Trait
+        model = SubClass
 
 
 class SkillSerializer(serializers.ModelSerializer):
@@ -106,15 +108,85 @@ class SkillSerializer(serializers.ModelSerializer):
         model = Skill
 
 
-class RaceSelectionSerializer(serializers.ModelSerializer):
+class ClassSerializer(serializers.ModelSerializer):
+    subclasses = SubClassSerializer(many=True)
+    skill_choices = serializers.SerializerMethodField()
+
+    def get_skill_choices(self, klass):
+        return [skill.id for skill in klass.skill_choices.all()]
+
+    class Meta:
+        model = Class
+
+
+class SubRaceSerializer(RaceSerializerMixin, serializers.ModelSerializer):
+    class Meta:
+        model = SubRace
+
+
+class ParentRaceSerializer(RaceSerializerMixin, serializers.ModelSerializer):
+    subraces = SubRaceSerializer(many=True)
+
+    class Meta:
+        model = ParentRace
+
+# ITEMS
+# includes: Weapons, Armor, Tools, Trinkets
+
+class WeaponSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Weapon
+
+
+class WeaponPreviewSerializer(WeaponSerializer):
+    class Meta(WeaponSerializer.Meta):
+        fields = (
+            'id',
+            'name',
+            'damage',
+            'damage_type',
+            'special',
+            'dice_count',
+        )
+
+
+class ArmorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Armor
+
+
+class ItemSerializer(serializers.Serializer):
+    weapons = serializers.SerializerMethodField()
+    armor = serializers.SerializerMethodField()
+
+    def get_weapons(self, obj):
+        import ipdb; ipdb.set_trace()
+
+
+class ResourceSerializer(serializers.Serializer):
     races = ParentRaceSerializer(many=True)
+    classes = ClassSerializer(many=True)
+    skills = SkillSerializer(many=True)
     weapons = WeaponSerializer(many=True)
     armor = ArmorSerializer(many=True)
 
 
-class ResourceSerializer(serializers.ModelSerializer):
+class SubClassSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Item
+        model = SubClass
+
+
+class ParentCharacterClassSerializer(serializers.ModelSerializer):
+    subclasses = SubClassSerializer(many=True)
+
+    class Meta:
+        model = ParentCharacterClass
+
+
+class RaceSelectionSerializer(serializers.ModelSerializer):
+    races = ParentRaceSerializer(many=True)
+    weapons = WeaponSerializer(many=True)
+    armor = ArmorSerializer(many=True)
 
 
 class PlayerCharacterSerializer(serializers.ModelSerializer):
@@ -128,3 +200,14 @@ class PlayerCharacterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Player
+
+
+class SpellSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Spell
+
+
+class CharacterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Character
+        exclude = ('modified', 'created')

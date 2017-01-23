@@ -23,14 +23,11 @@ PROJECT_ROOT = root()
 DEBUG = False
 SSLIFY_DISABLE = True
 CORS_ORIGIN_WHITELIST = (
-    'http://localhost:9393/',
+    'http://localhost:3000',
 )
 CORS_ORIGIN_ALLOW_ALL = True
 ADMINS = (
-    ('Ben Beecher', 'Ben@a.com'),
-    ('Greg Hausheer', 'Greg@a.com'),
-    ('Ryan Hinchey', 'Ryan@a.com'),
-    ('Josh Schneier', 'Josh@a.com'),
+    ('MM', 'm@m.com'),
 )
 
 MANAGERS = ADMINS
@@ -158,23 +155,24 @@ AUTHENTICATION_BACKENDS = (
 
 REST_FRAMEWORK = {
     'PAGE_SIZE': 10,
-    'EXCEPTION_HANDLER': 'rest_framework_json_api.exceptions.exception_handler',
+    'EXCEPTION_HANDLER': 'rest_framework.views.exception_handler',
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ),
     'DEFAULT_PAGINATION_CLASS':
-        'rest_framework_json_api.pagination.PageNumberPagination',
+        'rest_framework.pagination.PageNumberPagination',
     'DEFAULT_PARSER_CLASSES': (
-        'rest_framework_json_api.parsers.JSONParser',
+        'djangorestframework_camel_case.parser.CamelCaseJSONParser',
+        'rest_framework.parsers.JSONParser',
         'rest_framework.parsers.FormParser',
-        'rest_framework.parsers.MultiPartParser'
+        'rest_framework.parsers.MultiPartParser',
     ),
     'DEFAULT_RENDERER_CLASSES': (
-        'rest_framework_json_api.renderers.JSONRenderer',
+        'djangorestframework_camel_case.render.CamelCaseJSONRenderer',
+        'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
     ),
-    'DEFAULT_METADATA_CLASS': 'rest_framework_json_api.metadata.JSONAPIMetadata',
 }
 
 AUTH_USER_MODEL = 'account.User'
