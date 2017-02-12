@@ -1,4 +1,4 @@
-from rest_framework_json_api import serializers
+from rest_framework import serializers
 from django.db.models import Q
 
 from .constants import abilities_all
@@ -16,7 +16,8 @@ from .models import (
     Skill,
     Character,
     ParentCharacterClass,
-    SubCharacterClass
+    Encounter,
+    CharacterState
 )
 
 
@@ -133,6 +134,7 @@ class ParentRaceSerializer(RaceSerializerMixin, serializers.ModelSerializer):
 # ITEMS
 # includes: Weapons, Armor, Tools, Trinkets
 
+
 class WeaponSerializer(serializers.ModelSerializer):
     class Meta:
         model = Weapon
@@ -158,9 +160,6 @@ class ArmorSerializer(serializers.ModelSerializer):
 class ItemSerializer(serializers.Serializer):
     weapons = serializers.SerializerMethodField()
     armor = serializers.SerializerMethodField()
-
-    def get_weapons(self, obj):
-        import ipdb; ipdb.set_trace()
 
 
 class ResourceSerializer(serializers.Serializer):
@@ -210,4 +209,97 @@ class SpellSerializer(serializers.ModelSerializer):
 class CharacterSerializer(serializers.ModelSerializer):
     class Meta:
         model = Character
-        exclude = ('modified', 'created')
+
+
+class NextStateSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = ('current_hit_points', 'readied_action', 'conditions', 'id')
+        model = CharacterState
+
+
+class CharacterStateSerializer(serializers.ModelSerializer):
+    next_state = NextStateSerializer(required=False)
+
+    def update(self, character_state, data):
+        next_state = data.get('next_state', {})
+        character_state.next_state = CharacterState.objects.create(
+            encounter=character_state.encounter,
+            character=character_state.character,
+            current_hit_points=next_state.get('hit_points', character_state.current_hit_points),
+            readied_action=next_state.get('readied_action', False),
+            conditions=next_state.get('conditions', character_state.conditions)
+        )
+        character_state.next_state.save()
+        character_state.save()
+        return character_state
+
+    class Meta:
+        model = CharacterState
+
+
+class CharacterStateUpdateSerializer(CharacterStateSerializer):
+    class Meta(CharacterStateSerializer.Meta):
+        fields = ('current_hit_points', 'characterstate')
+
+
+class InitialRoster(CharacterStateSerializer):
+    class Meta(CharacterStateSerializer.Meta):
+        fields = ('current_hit_points', 'initiative_roll', 'character')
+        extra_kwargs = {
+            'encounter': {'required': False}
+        }
+
+
+class BaseEncounterSerializer(serializers.ModelSerializer):
+    roster = CharacterStateSerializer(many=True)
+
+    class Meta:
+        model = Encounter
+        fields = ('id', 'name', 'current_turn', 'created', 'modified', 'surprise_round', 'roster')
+
+
+class EncounterCreationSerializer(BaseEncounterSerializer):
+    characters = InitialRoster(many=True, write_only=True)
+
+    def create(self, data):
+        characters = data.pop('characters')
+        encounter = super().create(data)
+        for char in characters:
+            encounter.roster.create(**char)
+        return encounter
+
+    class Meta(BaseEncounterSerializer.Meta):
+        fields = ('name', 'characters', 'id')
+
+
+class EncounterUpdateSerializer(BaseEncounterSerializer):
+    end_of_round = serializers.BooleanField(required=False, read_only=True)
+    roster = CharacterStateUpdateSerializer(many=True, required=True)
+
+    def update(self, encounter, data):
+        end_of_round = data.pop('end_of_round', False)
+        if end_of_round:
+            # encounter.current_turn = F('current_turn') + 1
+            encounter.current_turn += 1
+            encounter.save()
+        for char in data['roster']:
+            char_state = char['characterstate']
+            char_state.next_state = CharacterState.objects.create(
+                encounter=encounter,
+                character=char_state.character,
+                current_hit_points=char.get('current_hit_points', char_state.character.max_hit_points),
+            )
+            char_state.save()
+        return encounter
+
+    class Meta(BaseEncounterSerializer.Meta):
+        fields = ('end_of_round',) + BaseEncounterSerializer.Meta.fields
+        extra_kwargs = {
+            'name': {'required': False},
+            'roster': {'queryset': CharacterState.objects.filter(next_state__isnull=True)}
+        }
+
+
+class EncounterDataSerializer(serializers.Serializer):
+    encounters = BaseEncounterSerializer(many=True)
+    characters = CharacterSerializer(many=True)

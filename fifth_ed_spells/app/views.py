@@ -9,11 +9,8 @@ from rest_framework.authentication import (
 
 from fifth_ed_spells.account.models import User
 from fifth_ed_spells.app.models import (
-    BaseRace,
     ParentRace,
-    SubRace,
     ParentCharacterClass,
-    Player,
     Class,
     Skill,
     Armor,
@@ -21,15 +18,19 @@ from fifth_ed_spells.app.models import (
     Spell,
     Character,
     Encounter,
+    CharacterState
 )
 
 from .serializers import (
     ParentRaceSerializer,
-    PlayerCharacterSerializer,
     ClassSerializer,
     ResourceSerializer,
     SpellSerializer,
-    CharacterSerializer
+    CharacterSerializer,
+    BaseEncounterSerializer,
+    EncounterCreationSerializer,
+    EncounterUpdateSerializer,
+    CharacterStateSerializer
 )
 
 
@@ -50,33 +51,6 @@ class GameInformationView(viewsets.ViewSet):
 class ParentRaceView(viewsets.ModelViewSet):
     queryset = ParentRace.objects.all()
     serializer_class = ParentRaceSerializer
-
-
-class CharacterView(viewsets.ModelViewSet):
-    queryset = Player.objects.filter(pk__lt=30)
-    serializer_class = PlayerCharacterSerializer
-
-    @detail_route(methods=['PUT'])
-    def race(self, request, pk=None):
-        player = Player.objects.get(pk=pk)
-        race = request.data.get('race')
-        race = BaseRace.objects.get(id=race)
-        player.race = race
-        return Response(status=200, data={'race_name': race.name})
-
-    def update(self, request, pk=None):
-        if not pk:
-            return Response(status=404)
-        player = Player.objects.get(pk=pk)
-        return Response(status=200, data={'id': player.id})
-
-    def create(self, request, *args, **kwargs):
-        qs = self.get_queryset()
-        data = request.data
-        race = SubRace.objects.get(pk=data.pop('race'))
-        data['race'] = race
-        player = qs.create(**data)
-        return Response(status=200, data={'id': player.id, 'name': player.character_name})
 
 
 class LoginView(views.APIView):
@@ -106,10 +80,38 @@ class SpellView(viewsets.ModelViewSet):
         return qs.filter(name__icontains=query)
 
 
-class EncounterView(viewsets.ViewSet):
+class CharacterView(viewsets.ModelViewSet):
+    queryset = Character.objects.all()
+    serializer_class = CharacterSerializer
+
+
+class EncounterView(viewsets.ModelViewSet):
+    queryset = Encounter.objects.all()
+    serializer_class = BaseEncounterSerializer
+
+    def update(self, request, pk=None, partial=False):
+        encounter = self.get_object()
+        serializer = EncounterUpdateSerializer(encounter, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        serialized_response = self.get_serializer(encounter)
+        return Response(data=serialized_response.data)
+
     def create(self, request, *args, **kwargs):
-        serializer = CharacterSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(data=serializer.data)
-        return Response(status=400)
+        serializer = EncounterCreationSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(data=serializer.data)
+
+
+class RosterView(viewsets.ModelViewSet):
+    queryset = CharacterState.objects.all()
+    serializer_class = CharacterStateSerializer
+
+    def update(self, request, pk=None):
+        character_state = self.get_object()
+        serializer = self.get_serializer(character_state, partial=True, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        next_state = self.get_serializer(character_state.next_state)
+        return Response(data=next_state.data)

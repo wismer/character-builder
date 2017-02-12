@@ -7,15 +7,18 @@ from .views import (
     ClassView,
     GameInformationView,
     SpellView,
-    EncounterView
+    EncounterView,
+    CharacterView,
+    RosterView
 )
 
 router = DefaultRouter()
 router.register(r'^api/game', GameInformationView, base_name='game')
 router.register(r'^api/encounter', EncounterView, base_name='encounter')
+router.register(r'^api/encounter/roster', RosterView, base_name='roster')
+router.register(r'^api/character', CharacterView)
 router.register(r'^races', ParentRaceView)
 router.register(r'^character-classes', ClassView)
-router.register(r'^players', CharacterView)
 router.register(r'^api/login', LoginView)
 router.register(r'^api/spell', SpellView)
 urlpatterns = router.urls

@@ -342,24 +342,60 @@ class Skill(models.Model):
 
 
 class Character(TimeStampedModel):
-    player_name = models.CharField(max_length=50)
+    player_name = models.CharField(max_length=50, unique=True)
     character_name = models.CharField(max_length=50)
     armor_class = models.IntegerField(default=8)
     is_npc = models.BooleanField(default=False)
     passive_wisdom = models.IntegerField(default=8)
     initiative = models.IntegerField(default=8)
+    max_hit_points = models.IntegerField(default=8)
+    encounters = models.ManyToManyField('Encounter', through='CharacterState')
+
+    def __str__(self):
+        return '{c} ({n})'.format(c=self.character_name, n=self.player_name)
+
+
+class RosterManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(next_state__isnull=True)
+
+    def create(self, encounter=None, current_hit_points=None, initiative_roll=None, character=None):
+        return super().create(
+            name='{} ({})'.format(character.character_name, character.player_name),
+            character=character,
+            encounter=encounter,
+            current_hit_points=current_hit_points or character.max_hit_points,
+            initiative_roll=initiative_roll or character.initiative,
+        )
+
+
+class CharacterState(TimeStampedModel):
+    name = models.CharField(max_length=50, blank=True, null=True)
+    character = models.ForeignKey('Character')
+    encounter = models.ForeignKey('Encounter', related_name='roster')
+    initiative_roll = models.IntegerField(default=0)
+    was_surprised = models.BooleanField(default=False)
+    readied_action = models.BooleanField(default=False)
+    current_hit_points = models.IntegerField(default=8)
     conditions = ArrayField(
         models.CharField(max_length=30), default=list, blank=True, null=True)
-    current_hit_points = models.IntegerField(default=8)
-    max_hit_points = models.IntegerField(default=8)
+    next_state = models.OneToOneField('self', null=True)
+    objects = RosterManager()
+
+    def __str__(self):
+        return '{} from {}'.format(self.name, self.encounter)
+
+    class Meta:
+        ordering = ['-initiative_roll']
 
 
 class Encounter(TimeStampedModel):
     name = models.CharField(max_length=50)
-    characters = models.ManyToManyField('Character')
     current_turn = models.IntegerField(default=1)
-    turn_order = ArrayField(models.IntegerField(default=1), default=list, null=True)
+    surprise_round = models.BooleanField(default=False)
 
+    def __str__(self):
+        return self.name
 
 # TODO
 # Models to eventually add:
