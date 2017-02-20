@@ -54,3 +54,9 @@ abilities_all = [
 ]
 
 ABILITIES = [(ability['name'], ability['desc']) for ability in abilities_all]
+
+DAMAGE_SOURCES = (
+    ('weapon', 'Weapon'),
+    ('spell', 'Spell'),
+    ('environment', 'Environment'),
+)

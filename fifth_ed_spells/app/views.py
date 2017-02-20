@@ -6,6 +6,7 @@ from rest_framework.authentication import (
     SessionAuthentication,
     BasicAuthentication
 )
+from django.db.models import Q
 
 from fifth_ed_spells.account.models import User
 from fifth_ed_spells.app.models import (
@@ -27,6 +28,7 @@ from .serializers import (
     ResourceSerializer,
     SpellSerializer,
     CharacterSerializer,
+    ActionSerializer,
     BaseEncounterSerializer,
     EncounterCreationSerializer,
     EncounterUpdateSerializer,
@@ -57,10 +59,6 @@ class LoginView(views.APIView):
     authentication_classes = (SessionAuthentication, BasicAuthentication)
     queryset = User.objects.all()
 
-    @csrf_exempt
-    def post(self, request):
-        import ipdb; ipdb.set_trace()
-
 
 class ClassView(viewsets.ModelViewSet):
     queryset = ParentCharacterClass.objects.all()
@@ -83,6 +81,15 @@ class SpellView(viewsets.ModelViewSet):
 class CharacterView(viewsets.ModelViewSet):
     queryset = Character.objects.all()
     serializer_class = CharacterSerializer
+
+    def get_queryset(self):
+        params = self.request.query_params
+        if params.get('name'):
+            return self.queryset.filter(
+                Q(character_name__iexact=params.get('name')) |
+                Q(player_name__iexact=params.get('name'))
+            )
+        return self.queryset
 
 
 class EncounterView(viewsets.ModelViewSet):
@@ -108,10 +115,13 @@ class RosterView(viewsets.ModelViewSet):
     queryset = CharacterState.objects.all()
     serializer_class = CharacterStateSerializer
 
-    def update(self, request, pk=None):
+    def update(self, request, pk=None, partial=False, encounter_id=None):
         character_state = self.get_object()
-        serializer = self.get_serializer(character_state, partial=True, data=request.data)
+        serializer = self.get_serializer(character_state, partial=partial, data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
-        next_state = self.get_serializer(character_state.next_state)
-        return Response(data=next_state.data)
+        actions = serializer.save()
+        encounter = BaseEncounterSerializer(character_state.encounter)
+        return Response(data={
+            'encounter': encounter.data,
+            'actions': ActionSerializer(actions, many=True).data
+        })

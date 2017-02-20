@@ -13,7 +13,8 @@ from .constants import (
     LONG_RANGE,
     MUNDANE_DAMAGE_TYPES,
     SPELL_SHAPES,
-    ABILITIES
+    ABILITIES,
+    DAMAGE_SOURCES
 )
 
 related_fields = [
@@ -356,9 +357,6 @@ class Character(TimeStampedModel):
 
 
 class RosterManager(models.Manager):
-    def get_queryset(self):
-        return super().get_queryset().filter(next_state__isnull=True)
-
     def create(self, encounter=None, current_hit_points=None, initiative_roll=None, character=None):
         return super().create(
             name='{} ({})'.format(character.character_name, character.player_name),
@@ -379,7 +377,6 @@ class CharacterState(TimeStampedModel):
     current_hit_points = models.IntegerField(default=8)
     conditions = ArrayField(
         models.CharField(max_length=30), default=list, blank=True, null=True)
-    next_state = models.OneToOneField('self', null=True)
     objects = RosterManager()
 
     def __str__(self):
@@ -396,6 +393,53 @@ class Encounter(TimeStampedModel):
 
     def __str__(self):
         return self.name
+
+
+class Action(TimeStampedModel):
+    """
+    Represents an action taken by a player or npc that includes status effects,
+    damage, healing, etc. The round field may change, but it should represent the
+    current round in the encounter. In addition, creation timestamps will determine
+    action order if more than one action occurs in a PC/NPCs turn.
+
+        value:
+            negative values represent damage
+            positive values represent healing
+
+        value_type:
+            sources of damage / healing
+
+        round:
+            current round in the encounter
+
+        recipient:
+            a character state whereupon the damage/healing/status effects gets applied
+            to
+
+        character:
+            character state enacting the particular action. Sometimes the character
+            may select him/herself as the intended target. So, recipient could be made to be
+            null if that happens?
+
+        spell:
+            The spell used (if any).
+
+            Example POST JSON:
+                {
+                    "character": 1,
+                    "recipient": 2,
+                    "round": 1,
+                    "value": -2,
+                    "spell": 54,
+                    "value_type": "spell"
+                }
+    """
+    character = models.ForeignKey('CharacterState', related_name='actions')
+    recipient = models.ForeignKey('CharacterState', related_name='recipients')
+    round = models.IntegerField(default=1)
+    value = models.IntegerField(default=0)
+    value_type = models.CharField(max_length=50, default='weapon', choices=DAMAGE_SOURCES)
+    spell = models.ForeignKey('Spell', null=True)
 
 # TODO
 # Models to eventually add:

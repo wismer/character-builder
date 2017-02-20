@@ -1,10 +1,11 @@
 from rest_framework import serializers
-from django.db.models import Q
+from django.db.models import Q, F
 
 from .constants import abilities_all
 from .models import (
     Player,
     SubRace,
+    Action,
     ParentRace,
     RacialTrait,
     Weapon,
@@ -206,6 +207,11 @@ class SpellSerializer(serializers.ModelSerializer):
         model = Spell
 
 
+class ActionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Action
+
+
 class CharacterSerializer(serializers.ModelSerializer):
     class Meta:
         model = Character
@@ -218,26 +224,34 @@ class NextStateSerializer(serializers.ModelSerializer):
 
 
 class CharacterStateSerializer(serializers.ModelSerializer):
-    next_state = NextStateSerializer(required=False)
+    is_npc = serializers.SerializerMethodField()
+    actions = ActionSerializer(many=True, write_only=True)
 
-    def update(self, character_state, data):
-        next_state = data.get('next_state', {})
-        character_state.next_state = CharacterState.objects.create(
-            encounter=character_state.encounter,
-            character=character_state.character,
-            current_hit_points=next_state.get('hit_points', character_state.current_hit_points),
-            readied_action=next_state.get('readied_action', False),
-            conditions=next_state.get('conditions', character_state.conditions)
-        )
-        character_state.next_state.save()
-        character_state.save()
-        return character_state
+    def get_is_npc(self, char_state):
+        return char_state.character.is_npc
+
+    def update(self, state, data):
+        actions = []
+        encounter = state.encounter
+        for action in data.get('actions', []):
+            action = Action.objects.create(round=encounter.current_turn, **action)
+            action.recipient.current_hit_points = F('current_hit_points') + action.value
+            action.recipient.save()
+            actions.append(action)
+
+        if encounter.roster.last() is state:
+            encounter.current_turn = F('current_turn') + 1
+            encounter.save()
+
+        return actions
 
     class Meta:
         model = CharacterState
 
 
 class CharacterStateUpdateSerializer(CharacterStateSerializer):
+    actions = ActionSerializer(many=True)
+
     class Meta(CharacterStateSerializer.Meta):
         fields = ('current_hit_points', 'characterstate')
 
@@ -276,21 +290,21 @@ class EncounterUpdateSerializer(BaseEncounterSerializer):
     end_of_round = serializers.BooleanField(required=False, read_only=True)
     roster = CharacterStateUpdateSerializer(many=True, required=True)
 
-    def update(self, encounter, data):
-        end_of_round = data.pop('end_of_round', False)
-        if end_of_round:
-            # encounter.current_turn = F('current_turn') + 1
-            encounter.current_turn += 1
-            encounter.save()
-        for char in data['roster']:
-            char_state = char['characterstate']
-            char_state.next_state = CharacterState.objects.create(
-                encounter=encounter,
-                character=char_state.character,
-                current_hit_points=char.get('current_hit_points', char_state.character.max_hit_points),
-            )
-            char_state.save()
-        return encounter
+    # def update(self, encounter, data):
+    #     end_of_round = data.pop('end_of_round', False)
+    #     if end_of_round:
+    #         # encounter.current_turn = F('current_turn') + 1
+    #         encounter.current_turn += 1
+    #         encounter.save()
+    #     for char in data['roster']:
+    #         char_state = char['characterstate']
+    #         char_state.next_state = CharacterState.objects.create(
+    #             encounter=encounter,
+    #             character=char_state.character,
+    #             current_hit_points=char.get('current_hit_points', char_state.character.max_hit_points),
+    #         )
+    #         char_state.save()
+    #     return encounter
 
     class Meta(BaseEncounterSerializer.Meta):
         fields = ('end_of_round',) + BaseEncounterSerializer.Meta.fields
