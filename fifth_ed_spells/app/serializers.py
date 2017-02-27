@@ -310,7 +310,7 @@ class EncounterUpdateSerializer(BaseEncounterSerializer):
         fields = ('end_of_round',) + BaseEncounterSerializer.Meta.fields
         extra_kwargs = {
             'name': {'required': False},
-            'roster': {'queryset': CharacterState.objects.filter(next_state__isnull=True)}
+            'roster': {'queryset': CharacterState.objects.all()}
         }
 
 

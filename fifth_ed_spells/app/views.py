@@ -72,7 +72,7 @@ class SpellView(viewsets.ModelViewSet):
     def get_queryset(self):
         qs = Spell.objects.all()
         query = self.request.query_params.get('name', None)
-        if not query:
+        if not query or query is '':
             return qs
 
         return qs.filter(name__icontains=query)
