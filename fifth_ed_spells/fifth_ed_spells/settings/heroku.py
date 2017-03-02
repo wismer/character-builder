@@ -52,15 +52,6 @@ AWS_QUERYSTRING_AUTH = False
 
 
 EMAIL_BACKEND = 'sgbackend.SendGridBackend'
-SENDGRID_USER = get_env_setting('SENDGRID_USERNAME')
-SENDGRID_PASSWORD = get_env_setting('SENDGRID_PASSWORD')
-
-STRIPE_PUBLIC_KEY = get_env_setting('STRIPE_PUBLIC_KEY')
-STRIPE_SECRET_KEY = get_env_setting('STRIPE_SECRET_KEY')
-
-AWS_ACCESS_KEY_ID = get_env_setting('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = get_env_setting('AWS_SECRET_ACCESS_KEY')
-AWS_STORAGE_BUCKET_NAME = get_env_setting('AWS_STORAGE_BUCKET_NAME')
 
 
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
@@ -73,6 +64,3 @@ TEMPLATES[0]['OPTIONS']['loaders'] = (
 
 # GEOS_LIBRARY_PATH = '/app/.heroku/vendor/lib/libgeos_c.so'
 # GDAL_LIBRARY_PATH = '/app/.heroku/vendor/lib/libgdal.so'
-
-# SOCIAL_AUTH_FACEBOOK_KEY = get_env_setting('SOCIAL_AUTH_FACEBOOK_KEY')
-# SOCIAL_AUTH_FACEBOOK_SECRET = get_env_setting('SOCIAL_AUTH_FACEBOOK_SECRET')

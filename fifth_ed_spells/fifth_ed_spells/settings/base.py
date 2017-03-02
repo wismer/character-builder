@@ -1,6 +1,5 @@
 # Django settings for project project.
-from environ import Env, Path, environ
-from django.core.exceptions import ImproperlyConfigured
+from environ import Env, Path
 
 env = Env()
 
@@ -8,16 +7,6 @@ env = Env()
 Env.read_env('.env')
 DEBUG = True
 SSLIFY_DISABLE = False
-
-def get_env_setting(setting, default=None):
-    """ Get the environment setting or return exception """
-    try:
-        var = environ.get(setting, default) if default else environ[setting]
-        return var
-    except KeyError:
-        error_msg = 'Set the %s env variable' % setting
-        raise ImproperlyConfigured(error_msg)
-
 root = Path(__file__) - 3
 PROJECT_ROOT = root()
 DEBUG = False
