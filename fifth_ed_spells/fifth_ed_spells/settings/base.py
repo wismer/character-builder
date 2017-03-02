@@ -1,5 +1,5 @@
 # Django settings for project project.
-from environ import Env, Path
+from environ import Env, Path, environ
 from django.core.exceptions import ImproperlyConfigured
 
 env = Env()
