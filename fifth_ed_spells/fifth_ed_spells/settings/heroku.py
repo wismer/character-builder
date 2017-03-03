@@ -15,21 +15,6 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 ALLOWED_HOSTS = []  # TODO
 
 STATIC_ROOT = PROJECT_ROOT + '/static'
-redis_url = urlparse(env('REDISTOGO_URL', default='redis://localhost:6959'))
-CACHES = {
-    'default': {
-        'BACKEND': 'redis_cache.RedisCache',
-        'LOCATION': '%s:%s' % (redis_url.hostname, redis_url.port),
-        'OPTIONS': {
-            'DB': 0,
-            'PASSWORD': redis_url.password,
-            'PARSER_CLASS': 'redis.connection.HiredisParser',
-            'PICKLE_VERSION': 2,
-        },
-    },
-}
-
-CACHES['default'] = env.cache('REDISTOGO_URL', default='redis://localhost:6959/?client_class=django_redis.client.DefaultClient&password=redis-un-githubbed-password', backend='redis_cache.RedisCache')
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 
