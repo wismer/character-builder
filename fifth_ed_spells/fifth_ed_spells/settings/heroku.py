@@ -12,8 +12,7 @@ DATABASES['default'] = dj_database_url.config()
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-ALLOWED_HOSTS = []  # TODO
-
+ALLOWED_HOSTS = ['.herokuapp.com']  # TODO
 STATIC_ROOT = PROJECT_ROOT + '/static'
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
@@ -35,11 +34,7 @@ AWS_QUERYSTRING_AUTH = False
 # put the cloudfront distro here
 # AWS_S3_CUSTOM_DOMAIN = 'foo.cloudfront.net'
 
-
-EMAIL_BACKEND = 'sgbackend.SendGridBackend'
-
-
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 TEMPLATES[0]['OPTIONS']['loaders'] = (
     ('django.template.loaders.cached.Loader', [
         'django.template.loaders.filesystem.Loader',
