@@ -119,11 +119,15 @@ class ClassSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Class
+        fields = '__all__'
+
 
 
 class SubRaceSerializer(RaceSerializerMixin, serializers.ModelSerializer):
     class Meta:
         model = SubRace
+        fields = '__all__'
+
 
 
 class ParentRaceSerializer(RaceSerializerMixin, serializers.ModelSerializer):
@@ -131,6 +135,8 @@ class ParentRaceSerializer(RaceSerializerMixin, serializers.ModelSerializer):
 
     class Meta:
         model = ParentRace
+        fields = '__all__'
+
 
 # ITEMS
 # includes: Weapons, Armor, Tools, Trinkets
@@ -139,6 +145,8 @@ class ParentRaceSerializer(RaceSerializerMixin, serializers.ModelSerializer):
 class WeaponSerializer(serializers.ModelSerializer):
     class Meta:
         model = Weapon
+        fields = '__all__'
+
 
 
 class WeaponPreviewSerializer(WeaponSerializer):
@@ -156,6 +164,8 @@ class WeaponPreviewSerializer(WeaponSerializer):
 class ArmorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Armor
+        fields = '__all__'
+
 
 
 class ItemSerializer(serializers.Serializer):
@@ -174,6 +184,8 @@ class ResourceSerializer(serializers.Serializer):
 class SubClassSerializer(serializers.ModelSerializer):
     class Meta:
         model = SubClass
+        fields = '__all__'
+
 
 
 class ParentCharacterClassSerializer(serializers.ModelSerializer):
@@ -181,6 +193,8 @@ class ParentCharacterClassSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ParentCharacterClass
+        fields = '__all__'
+
 
 
 class RaceSelectionSerializer(serializers.ModelSerializer):
@@ -200,21 +214,27 @@ class PlayerCharacterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Player
+        fields = '__all__'
 
 
 class SpellSerializer(serializers.ModelSerializer):
     class Meta:
         model = Spell
+        fields = '__all__'
 
 
 class ActionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Action
+        fields = '__all__'
+
 
 
 class CharacterSerializer(serializers.ModelSerializer):
     class Meta:
         model = Character
+        fields = '__all__'
+
 
 
 class NextStateSerializer(serializers.ModelSerializer):
