@@ -4,22 +4,12 @@
         "es6": true
     },
     "parserOptions": {
-        "sourceType": "module"
+        "sourceType": "module",
+        "ecmaFeatures": {
+          "jsx": true
+        }
     },
-    "extends": ["eslint:recommended"],
-    "rules": {
-        "linebreak-style": [
-            "error",
-            "unix"
-        ],
-        "quotes": [
-            "error",
-            "single"
-        ],
-        "semi": [
-            "error",
-            "always"
-        ],
-        "no-console": "off"
-    }
+    "plugins": [
+      "react"
+    ],
 }

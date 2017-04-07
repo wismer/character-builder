@@ -1,0 +1,252 @@
+.App {
+  text-align: center;
+  width: 1100px;
+  margin: 0 auto;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 80px;
+}
+
+.App-header {
+  background-color: #222;
+  height: 150px;
+  padding: 20px;
+  color: white;
+}
+
+.App-intro {
+  font-size: large;
+}
+
+@keyframes App-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.item {
+  position: absolute;
+  left: 100px;
+  text-align: center;
+  display: flex;
+  z-index: 0;
+}
+
+.items {
+  display: flex;
+  justify-content: space-between;
+  width: 300px;
+}
+
+.slide {
+  display: flex;
+}
+
+.create-character {
+  margin: 0 auto;
+  width: 1100px;
+}
+
+/* SELECT RACE LAYOUT */
+
+.race {
+  padding: 10px 0;
+}
+
+.race-select {
+  display: flex;
+}
+
+.race-selections {
+  width: 400px;
+  border: 1px solid black;
+  margin-right: 30px;
+}
+
+.race-info {
+  border: 1px solid black;
+}
+
+.char-select-body {
+  padding: 0 30px;
+}
+
+.racial-traits {
+  display: flex;
+  justify-content: space-around;
+}
+
+.racial-trait {
+  height: 150px;
+  width: 150px;
+  border: 1px solid black;
+}
+
+/* SLIDE FROM RIGHT TO LEFT */
+
+.item-slide-left.item-slide-left-enter {
+  left: -100px;
+  transition: left 700ms ease-in;
+}
+
+.item-slide-left-enter.item-slide-left-enter-active {
+  left: 100px;
+  transition: left 700ms ease-in;
+}
+
+.item-slide-left.item-slide-left-leave {
+  left: 0;
+  transition: left 700ms ease-in;
+}
+
+.item-slide-left-leave.item-slide-left-leave-active {
+  left: 300px;
+  transition: left 700ms ease-in;
+}
+
+/* FROM LEFT TO RIGHT */
+
+.item-slide-right.item-slide-right-enter {
+  left: 300px;
+  transition: left 700ms ease-in;
+}
+
+.item-slide-right-enter.item-slide-right-enter-active {
+  left: 100px;
+  transition: left 700ms ease-in;
+}
+
+.item-slide-right.item-slide-right-leave {
+  left: 100px;
+  transition: left 700ms ease-in;
+}
+
+.item-slide-right-leave.item-slide-right-leave-active {
+  left: -100px;
+  transition: left 700ms ease-in;
+}
+
+/* Ability scores */
+
+
+.ability-scores {
+  flex-flow: column;
+}
+
+.ability-score {
+  display: flex;
+  flex-flow: row;
+  justify-content: space-around;
+  border: 1px solid black;
+}
+
+.score {
+  font-size: 5em;
+  padding: 10px;
+  align-self: center;
+  width: 100px;
+}
+
+.score-desc {
+  align-self: center;
+  padding: 10px;
+}
+
+.score-name {
+  font-weight: 800;
+  align-self: center;
+  width: 100px;
+  padding: 10px;
+}
+
+/* ancillary traits for race select */
+
+.ancillary-traits {
+  display: flex;
+  justify-content: space-around;
+}
+
+
+/* racial traits */
+
+.race-attributes {
+  display: flex;
+}
+
+.racial-traits {
+  flex-flow: row;
+}
+
+.race-detail {
+  display: flex;
+  flex-flow: column;
+}
+
+
+/* proficiencies */
+
+.racial-proficiencies {
+  display: flex;
+  flex-flow: row;
+  justify-content: space-around;
+}
+
+.proficiencies {
+  display: flex;
+  flex-flow: column;
+}
+
+.proficiencies ul {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-flow: column;
+  align-content: flex-end;
+}
+
+/* class selection */
+
+.subclass-preview {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-around;
+}
+
+.subclass {
+  padding: 10px;
+  height: 200px;
+  width: 200px;
+}
+
+.subclass.subclass-active {
+  color: white;
+  background-color: black;
+}
+
+#skill-selection ul {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+#skill-selection li {
+  text-align: left;
+  display: flex;
+  flex-flow: row;
+  padding: 10px;
+}
+
+.skill {
+  align-self: center;
+}
+
+.skill-selected {
+  background-color: black;
+  color: white;
+}
+
+.skill-label {
+  width: 300px;
+  display: flex;
+  flex-flow: row nowrap;
+}
