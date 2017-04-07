@@ -1,35 +1,32 @@
-*.DS_STORE
+.DS_STORE
+
+# compiled output
+/dist
+/tmp
+
+# dependencies
 /node_modules
+/bower_components
+
+# misc
+/.sass-cache
+/connect.lock
+/coverage/*
+/libpeerconnection.log
+npm-debug.log
+testem.log
+/client/public/js/app.js
 .sass-cache/
+/fifth_ed_spells/node_modules/
+/fifth_ed_spells/node/
+/fifth_ed_spells/.buildpacks
+/fifth_ed_spells/circle.yaml
 *.pyc
 .outdated
-# See http://help.github.com/ignore-files/ for more about ignoring files.
-
-# dependencies
-node_modules
-
-# testing
-coverage
-
-# production
-build
-
-# misc
-.DS_Store
-.env
-npm-debug.log
-# See http://help.github.com/ignore-files/ for more about ignoring files.
-
-# dependencies
-node_modules
-
-# testing
-coverage
-
-# production
-build
-
-# misc
-.DS_Store
-.env
-npm-debug.log
+/client/public/css/
+.bowerrc
+.editorconfig
+.ember-cli
+.jshintrc
+.travis.yml
+.watchmanconfig
