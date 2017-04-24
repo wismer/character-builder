@@ -5,6 +5,7 @@ from .constants import abilities_all
 from .models import (
     Player,
     SubRace,
+    Chapter,
     Action,
     ParentRace,
     RacialTrait,
@@ -337,3 +338,8 @@ class EncounterUpdateSerializer(BaseEncounterSerializer):
 class EncounterDataSerializer(serializers.Serializer):
     encounters = BaseEncounterSerializer(many=True)
     characters = CharacterSerializer(many=True)
+
+
+class ChapterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Chapter

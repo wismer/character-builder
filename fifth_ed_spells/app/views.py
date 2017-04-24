@@ -14,6 +14,7 @@ from fifth_ed_spells.app.models import (
     ParentCharacterClass,
     Class,
     Skill,
+    Chapter,
     Armor,
     Weapon,
     Spell,
@@ -24,6 +25,7 @@ from fifth_ed_spells.app.models import (
 
 from .serializers import (
     ParentRaceSerializer,
+    ChapterSerializer,
     ClassSerializer,
     ResourceSerializer,
     SpellSerializer,
@@ -125,3 +127,8 @@ class RosterView(viewsets.ModelViewSet):
             'encounter': encounter.data,
             'actions': ActionSerializer(actions, many=True).data
         })
+
+
+class ChapterView(viewsets.ModelViewSet):
+    queryset = Chapter.objects.all()
+    serializer_class = ChapterSerializer

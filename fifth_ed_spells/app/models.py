@@ -395,6 +395,11 @@ class Encounter(TimeStampedModel):
         return self.name
 
 
+class Chapter(TimeStampedModel):
+    title = models.CharField(max_length=50)
+    description = models.TextField(max_length=2000)
+
+
 class Action(TimeStampedModel):
     """
     Represents an action taken by a player or npc that includes status effects,

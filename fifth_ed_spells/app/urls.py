@@ -2,6 +2,7 @@ from rest_framework.routers import DefaultRouter
 
 from .views import (
     ParentRaceView,
+    ChapterView,
     CharacterView,
     LoginView,
     ClassView,
@@ -21,4 +22,5 @@ router.register(r'^races', ParentRaceView)
 router.register(r'^character-classes', ClassView)
 router.register(r'^api/login', LoginView)
 router.register(r'^api/spell', SpellView)
+router.register(r'^api/chapter', ChapterView)
 urlpatterns = router.urls
