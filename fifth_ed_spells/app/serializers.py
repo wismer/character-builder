@@ -19,7 +19,9 @@ from .models import (
     Character,
     ParentCharacterClass,
     Encounter,
-    CharacterState
+    CharacterState,
+    Clue,
+    ClueOutcome
 )
 
 
@@ -343,3 +345,16 @@ class EncounterDataSerializer(serializers.Serializer):
 class ChapterSerializer(serializers.ModelSerializer):
     class Meta:
         model = Chapter
+
+
+class ClueOutcomeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ClueOutcome
+
+
+class ClueSerializer(serializers.ModelSerializer):
+    required_stats = serializers.ListField(child=serializers.CharField(max_length=50))
+    outcomes = ClueOutcomeSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Clue

@@ -34,7 +34,8 @@ from .serializers import (
     BaseEncounterSerializer,
     EncounterCreationSerializer,
     EncounterUpdateSerializer,
-    CharacterStateSerializer
+    CharacterStateSerializer,
+    ClueSerializer
 )
 
 
@@ -132,3 +133,13 @@ class RosterView(viewsets.ModelViewSet):
 class ChapterView(viewsets.ModelViewSet):
     queryset = Chapter.objects.all()
     serializer_class = ChapterSerializer
+
+    @detail_route(methods=['POST'])
+    def add_clue(self, request, pk=None):
+        # chapter = self.get_object()
+        data = request.data
+        data['chapter'] = pk
+        serializer = ClueSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(data=serializer.data)

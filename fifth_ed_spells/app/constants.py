@@ -1,3 +1,30 @@
+abilities_and_skills = (
+    ('strength', 'Strength'),
+    ('dexterity', 'Dexterity'),
+    ('constitution', 'Constitution'),
+    ('wisdom', 'Wisdom'),
+    ('intellect', 'Intellect'),
+    ('charisma', 'Charisma'),
+    ('investigation', 'Investigation'),
+    ('deception', 'Deception'),
+    ('perception', 'Perception'),
+    ('athletics', 'Athletics'),
+    ('acrobatics', 'Acrobatics'),
+    ('sleight of hand', 'Sleight of Hand'),
+    ('stealth', 'Stealth'),
+    ('arcana', 'Arcana'),
+    ('history', 'History'),
+    ('nature', 'Nature'),
+    ('religion', 'Religion'),
+    ('animal handling', 'Animal Handling'),
+    ('insight', 'Insight'),
+    ('medicine', 'Medicine'),
+    ('survival', 'Survival'),
+    ('intimidation', 'Intimidation'),
+    ('performance', 'Performance'),
+    ('persuasion', 'Persuasion')
+)
+
 number_range = [i for i in range(0, 30)]
 
 ITEM_CATEGORIES = [

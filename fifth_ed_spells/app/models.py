@@ -4,6 +4,7 @@ from model_utils.models import TimeStampedModel
 
 from .util import default_components
 from .constants import (
+    abilities_and_skills,
     ARMOR_TYPES,
     ARMOR_VALUES,
     ITEM_CATEGORIES,
@@ -16,6 +17,7 @@ from .constants import (
     ABILITIES,
     DAMAGE_SOURCES
 )
+
 
 related_fields = [
     ('skills', []),
@@ -398,6 +400,31 @@ class Encounter(TimeStampedModel):
 class Chapter(TimeStampedModel):
     title = models.CharField(max_length=50)
     description = models.TextField(max_length=2000)
+
+    def __str__(self):
+        return self.title
+
+
+class Clue(TimeStampedModel):
+    chapter = models.ForeignKey('Chapter', related_name='clues')
+    description = models.CharField(max_length=200)
+    required_stats = ArrayField(
+        models.CharField(max_length=50),
+        choices=abilities_and_skills,
+        default=list
+    )
+
+    def __str__(self):
+        return '{title}: ({stats})'.format(
+            title=self.chapter.title,
+            stats=', '.join(self.required_stats)
+        )
+
+
+class ClueOutcome(TimeStampedModel):
+    clue = models.ForeignKey('Clue', related_name='dc_check_outcomes')
+    dc = models.IntegerField(default=5)
+    description = models.CharField(max_length=200, null=True)
 
 
 class Action(TimeStampedModel):
